@@ -1,7 +1,6 @@
 // src/app/signup/page.jsx
 
 'use client';
-
 import React, { useState } from 'react';
 // src/app/signup/page.jsx 상단에 추가
 import { Button } from '@/components/common/Button';
@@ -9,8 +8,12 @@ import Image from 'next/image';
 // Figma 이미지와 정확히 일치하도록 색상 정의
 const LOGO_COLOR_CLASS = 'text-[#3F3356]';
 const GOOGLE_TEXT_COLOR_CLASS = 'text-gray-600';
-const TOOLTIP_BG_COLOR_CLASS = 'bg-blue-500'; // Figma 이미지 파란색 (blue-500이 가장 유사)
-const TOOLTIP_CARET_BORDER_COLOR_CLASS = 'border-b-blue-500';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 export default function SignupPage() {
   const [isSnsTooltipVisible, setIsSnsTooltipVisible] = useState(false);
@@ -29,10 +32,10 @@ export default function SignupPage() {
             alt="공모자들 로고"
             width={80}
             height={50}
-            className="mb--8"
+            className="mb-2"
           />
         </div>
-        <h1 className="text-xl font-bold text-gray-800 mb-10">
+        <h1 className="text-3xl font-bold text-gray-800 mb-10">
           회원가입/로그인
         </h1>
 
@@ -61,33 +64,12 @@ export default function SignupPage() {
           </Button>
 
           {/* 2. SNS로 간편하게 시작하기 (말풍선/팝오버) */}
-          {isSnsTooltipVisible && (
-            <div
-              // 💡 위치 조정: top-full 대신 정확한 픽셀 위치를 위해 style 속성 사용 (버튼 높이를 고려)
-              // 💡 transition-all로 부드러운 등장 효과 추가
-              className="absolute z-20 transition-all duration-300 opacity-100 visible pointer-events-none"
-              style={{
-                top: 'calc(100% + 10px)',
-                left: '50%',
-                transform: 'translateX(-50%)',
-              }} // 버튼 높이 + 간격(10px)만큼 아래로 이동
-            >
-              <div
-                className={`relative py-2 px-4 ${TOOLTIP_BG_COLOR_CLASS} text-white font-medium rounded-full shadow-lg flex justify-center items-center whitespace-nowrap`}
-              >
-                {/* 💡 꼬리 (Caret) div: 최종 픽셀 위치 조정 */}
-                <div
-                  className={`
-                                    absolute -top-[6px] left-1/2 transform -translate-x-1/2 
-                                    w-0 h-0 
-                                    border-l-[6px] border-r-[6px] border-l-transparent border-r-transparent 
-                                    border-b-[6px] ${TOOLTIP_CARET_BORDER_COLOR_CLASS} 
-                                `}
-                ></div>
-                SNS로 간편하게 시작하기
-              </div>
-            </div>
-          )}
+          <Tooltip open={true}>
+            <TooltipTrigger></TooltipTrigger>
+            <TooltipContent side="bottom" sideOffset={5}>
+              <p>SNS로 간편하게 시작하기</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </div>
     </div>
