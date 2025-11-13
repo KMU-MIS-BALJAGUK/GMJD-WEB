@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import MultiSelectDropdown from './components/MultiSelectDropdown';
 import ContestCard from './components/ContestCard';
+import { Button } from '@/components/common/Button';
 
 const categories = [
   '기획/아이디어',
@@ -113,10 +114,10 @@ const ContestPage: NextPage = () => {
         />
 
         {/* 정렬 옵션 */}
-        <div className="flex items-center gap-4 text-sm text-gray-500">
-          <button className="font-bold text-black">전체</button>
-          <button>인기순</button>
-          <button>마감임박순</button>
+        <div className="flex items-center gap-4 text-sm">
+          <Button variant="active">전체</Button>
+          <Button variant="ghost">인기순</Button>
+          <Button variant="ghost">마감임박순</Button>
         </div>
       </div>
 
@@ -129,10 +130,10 @@ const ContestPage: NextPage = () => {
 
       {/* 더보기 버튼 */}
       <div className="mt-[60px] text-center">
-        <button className="bg-white border-[1px] border-[#e4e4e4] rounded-lg w-[343px] h-[48px] flex items-center justify-center mx-auto text-sm font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+        <Button variant="ghost" className="w-[343px] mx-auto">
           더보기
           <svg className="inline-block h-4 w-4 ml-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-        </button>
+        </Button>
       </div>
     </div>
   );

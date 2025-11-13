@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { Tag } from '@/components/common/Tag';
 
 // The 'Contest' type should ideally be in a shared types file,
 // but for this fix, we'll define the expected props structure.
@@ -30,12 +31,8 @@ export default function ContestCard({ contest }: ContestCardProps) {
       </div>
       <div className="pt-3 flex-grow">
         <div className="flex items-center gap-[6px] text-xs mb-[12px]">
-          <div className="w-[45px] h-[26px] flex items-center justify-center rounded" style={{ backgroundColor: '#dcedfe' }}>
-            <span className="font-semibold text-blue-600">{contest.dDay}</span>
-          </div>
-          <div className="w-[71px] h-[26px] flex items-center justify-center rounded" style={{ backgroundColor: '#e6e6e6' }}>
-            <span className="text-gray-500">{contest.teams}</span>
-          </div>
+          <Tag variant="blue" shape="square">{contest.dDay}</Tag>
+          <Tag variant="gray" shape="square">{contest.teams}</Tag>
         </div>
         <h3 className="font-bold truncate mb-[6px]">{contest.title}</h3>
         <p className="text-sm text-gray-600">{contest.organizer}</p>
