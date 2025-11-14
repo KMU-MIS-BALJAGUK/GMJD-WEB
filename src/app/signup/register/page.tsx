@@ -16,7 +16,7 @@ interface FormFieldProps {
   children: React.ReactNode;
 }
 const FormField = ({ label, children }: FormFieldProps) => (
-  <div className="space-y-2">
+  <div className="space-y-2 flex flex-col">
     <label className="text-base font-bold text-[#1D1D1D] block">{label}</label>
     {children}
   </div>
@@ -34,10 +34,13 @@ export default function RegisterPage() {
   // 2. 선택형 데이터 상태 관리
   const [selectedEducation, setSelectedEducation] = useState('대학교');
   const [selectedMajorType, setSelectedMajorType] = useState('대학교 (4년)');
-  //3. 버튼 활성화 상태 관리
+
+  // 💡 3. 새로 추가된 스킬 목록 상태 (배열)
+  const [skillsList, setSkillsList] = useState<string[]>([]);
+  //4. 버튼 활성화 상태 관리
   const [isButtonActive, setIsButtonActive] = useState(false);
 
-  // 4. 입력값 변경 핸들러
+  // 5. 입력값 변경 핸들러
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -46,7 +49,30 @@ export default function RegisterPage() {
     }));
   };
 
-  // 5. 유효성 검사 (값이 변경될 때마다 실행)
+  // 💡 6. "추가" 버튼 클릭 핸들러
+  const handleAddSkill = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault(); // 폼 제출 방지
+    const newSkill = formData.skills.trim();
+
+    // 비어있지 않고, 중복되지 않은 스킬만 추가
+    if (newSkill && !skillsList.includes(newSkill)) {
+      setSkillsList((prevList) => [...prevList, newSkill]);
+      // 스킬 입력창 비우기
+      setFormData((prevData) => ({
+        ...prevData,
+        skills: '',
+      }));
+    }
+  };
+
+  // 💡 7. 'x' 버튼 클릭 핸들러 (스킬 제거)
+  const handleRemoveSkill = (skillToRemove: string) => {
+    setSkillsList((prevList) =>
+      prevList.filter((skill) => skill !== skillToRemove)
+    );
+  };
+
+  // 8. 유효성 검사 (값이 변경될 때마다 실행)
   useEffect(() => {
     console.log('Form Data Updated:', formData);
     // 필수 필드 체크: 한줄소개, 학교명, 학과명, 관심분야 (스킬은 선택사항일 경우 제외 가능)
@@ -55,12 +81,25 @@ export default function RegisterPage() {
       formData.school.trim() !== '' &&
       formData.department.trim() !== '' &&
       formData.interest !== '' &&
-      formData.skills.trim() !== '';
+      skillsList.length > 0;
 
     console.log('Is Form Valid:', isValid);
 
     setIsButtonActive(isValid);
-  }, [formData]);
+  }, [formData, skillsList]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isButtonActive) return; // 비활성화 시 return
+
+    console.log('완료되었습니다. 최종 폼 데이터:', {
+      ...formData,
+      education: selectedEducation,
+      majorType: selectedMajorType,
+      skillSet: skillsList,
+    });
+    // TODO: 서버로 폼 데이터 전송
+  };
 
   // 시안에 맞는 스타일 정의
   const FORM_MAX_WIDTH = 'max-w-3xl';
@@ -187,18 +226,41 @@ export default function RegisterPage() {
 
             {/* 7. 스킬/툴 */}
             <FormField label="스킬셋">
-              <div className="flex items-center gap-2">
-                <CustomInput
-                  name="skills"
-                  value={formData.skills}
-                  onChange={handleInputChange}
-                  placeholder="활용 가능한 기술을 작성해주세요"
-                  iconRight={
-                    <button className="text-[#1487F9] font-medium whitespace-nowrap text-sm">
-                      추가
-                    </button>
-                  }
-                />
+              <CustomInput
+                name="skills"
+                value={formData.skills}
+                onChange={handleInputChange}
+                placeholder="활용 가능한 기술을 작성해주세요"
+                iconRight={
+                  <button
+                    className="text-[#1487F9] font-medium whitespace-nowrap text-sm"
+                    onClick={handleAddSkill}
+                  >
+                    추가
+                  </button>
+                }
+              />
+              {/* 💡 8. 추가된 스킬 태그 렌더링 영역 */}
+              <div className="flex flex-wrap gap-3">
+                {skillsList.map((skill, index) => (
+                  <Tag
+                    key={index}
+                    variant="default" // Figma 시안의 회색 배경
+                    shape="rounded"
+                    // 💡 'x' 버튼을 'icon' prop으로 전달
+                    icon={
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveSkill(skill)}
+                      >
+                        <Image src="/X.png" alt="X" width={16} height={16} />
+                      </button>
+                    }
+                    className="w-[83px] h-[32px] justify-center text-[#555555]"
+                  >
+                    {skill}
+                  </Tag>
+                ))}
               </div>
             </FormField>
           </div>
@@ -210,7 +272,7 @@ export default function RegisterPage() {
               fullWidth
               className="h-[52px]"
               disabled={!isButtonActive} // 실제 클릭 방지
-              onClick={console.log('완료되었습니다.')}
+              onClick={handleSubmit}
             >
               완료
             </Button>
