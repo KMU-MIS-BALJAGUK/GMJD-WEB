@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import MultiSelectDropdown from './components/MultiSelectDropdown';
 import ContestCard from './components/ContestCard';
+import SortButton from './components/SortButton';
 import { Button } from '@/components/common/Button';
 
 const categories = [
@@ -96,10 +97,11 @@ const contests: Contest[] = [
   },
 ];
 
-
+const sortOptions = ['전체', '인기순', '마감임박순'];
 
 const ContestPage: NextPage = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [activeSort, setActiveSort] = useState('전체');
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[904px]">
@@ -114,10 +116,16 @@ const ContestPage: NextPage = () => {
         />
 
         {/* 정렬 옵션 */}
-        <div className="flex items-center gap-4 text-sm">
-          <Button variant="active">전체</Button>
-          <Button variant="ghost">인기순</Button>
-          <Button variant="ghost">마감임박순</Button>
+        <div className="flex items-center gap-3 text-sm">
+          {sortOptions.map((option) => (
+            <SortButton
+              key={option}
+              isActive={activeSort === option}
+              onClick={() => setActiveSort(option)}
+            >
+              {option}
+            </SortButton>
+          ))}
         </div>
       </div>
 
