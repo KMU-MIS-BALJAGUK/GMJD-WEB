@@ -97,7 +97,7 @@ export default function MyPage() {
               <h1 className="text-xl font-bold text-gray-900">
                 {MOCK_USER_DATA.name}
               </h1>
-              <p className="text-sm text-gray-500">{MOCK_USER_DATA.intro}</p>
+              <p className="text-sm text-[#888888]">{MOCK_USER_DATA.intro}</p>
             </div>
           </div>
 
@@ -127,11 +127,11 @@ export default function MyPage() {
 
             <ProfileFieldVertical label="학력" onEdit={handleEditEducation}>
               <div className="flex items-center space-x-2">
-                <p className="text-base text-gray-900">
+                <p className="text-base text-[#1D1D1D]">
                   {MOCK_USER_DATA.school}
                 </p>
-                <span className="text-gray-400">|</span>
-                <p className="text-base text-gray-900">
+                <div className="h-[10px] w-px bg-[#E7E7E7]"></div>
+                <p className="text-base text-[#1D1D1D]">
                   {MOCK_USER_DATA.major}
                 </p>
               </div>
