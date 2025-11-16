@@ -8,7 +8,7 @@ import { cva } from 'class-variance-authority';
 const baseClasses =
   'w-full rounded-[8px] text-[15px] px-4 py-2 text-sm ' +
   'placeholder:text-text-03 disabled:cursor-not-allowed disabled:opacity-50 ' +
-  'ring-offset-0 outline-none shadow-none focus-visible:outline-none' +
+  'ring-offset-0 outline-none shadow-none focus-visible:outline-none ' +
   'transition-colors duration-200 ease-in-out ';
 
 const inputVariants = cva(baseClasses, {
@@ -22,7 +22,7 @@ const inputVariants = cva(baseClasses, {
       textArea:
         'bg-bg-02 p-4 align-top resize-none h-[124px] border-none focus-visible:ring-1 focus-visible:ring-blue',
       chat: 'bg-bg-02 h-12 rounded-[30px] px-6 border-none focus-visible:ring-1 focus-visible:ring-blue',
-      error: 'bg-bg-02 h-12 border border-red-500 text-red-600 focus-visible:ring-0 ',
+      error: 'bg-bg-02 h-12 border border-red-500 text-red-600 focus-visible:ring-0',
     },
   },
   defaultVariants: {
@@ -30,13 +30,21 @@ const inputVariants = cva(baseClasses, {
   },
 });
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  variant?: 'default' | 'rounded' | 'heroInput' | 'textArea' | 'chat' | 'error';
+type VariantType = 'default' | 'rounded' | 'heroInput' | 'textArea' | 'chat' | 'error';
+
+type BaseProps = {
+  variant?: VariantType;
   icon?: React.ReactNode;
   error?: string;
-}
+};
 
-export default function Input({ variant, error, className, icon, ...props }: InputProps) {
+type InputProps =
+  | (BaseProps & React.InputHTMLAttributes<HTMLInputElement>)
+  | (BaseProps & React.TextareaHTMLAttributes<HTMLTextAreaElement>);
+
+export default function Input(props: InputProps) {
+  const { variant, error, className, icon, ...rest } = props;
+
   const isTextArea = variant === 'textArea';
   const v = error ? 'error' : variant;
 
@@ -44,10 +52,13 @@ export default function Input({ variant, error, className, icon, ...props }: Inp
     <div className="flex flex-col space-y-1">
       <div className="relative">
         {isTextArea ? (
-          <textarea {...(props as any)} className={cn(inputVariants({ variant: v }), className)} />
+          <textarea
+            {...(rest as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
+            className={cn(inputVariants({ variant: v }), className)}
+          />
         ) : (
           <BaseInput
-            {...props}
+            {...(rest as React.InputHTMLAttributes<HTMLInputElement>)}
             className={cn(inputVariants({ variant: v }), icon && 'pr-14', className)}
           />
         )}
