@@ -1,42 +1,53 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
+@custom-variant dark (&:is(.dark *));
+
+/* Pretendard */
 @font-face {
-  font-family: "Pretendard";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Regular.woff2")
-    format("woff2");
+  font-family: 'Pretendard';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Regular.woff2')
+    format('woff2');
   font-weight: 400;
   font-display: swap;
 }
-
 @font-face {
-  font-family: "Pretendard";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Medium.woff2")
-    format("woff2");
+  font-family: 'Pretendard';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Medium.woff2')
+    format('woff2');
   font-weight: 500;
   font-display: swap;
 }
-
 @font-face {
-  font-family: "Pretendard";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Bold.woff2")
-    format("woff2");
+  font-family: 'Pretendard';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Bold.woff2')
+    format('woff2');
   font-weight: 700;
   font-display: swap;
 }
 
-:root {
-  /* 기본 컬러 */
-  --background: #ffffff;
-  --foreground: #171717;
-  --blue: #1487f9;
-  --bg-blue: #f1f8ff;
+@theme {
+  --color-blue: #3b82f6;
+  --color-bg-blue: #dbeafe;
+  --color-bg-02: #f9fafb;
+  --color-text-01: #111827;
+  --color-text-02: #6b7280;
+  --color-btn-disabled: #d1d5db;
+
+  --color-background: #ffffff;
+  --color-foreground: #0a0a0a;
+  --color-border: #e5e7eb;
+  --color-ring: #0a0a0a;
 }
 
-/* 전역 스타일 */
-body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Helvetica Neue", Arial, "Noto Sans KR", sans-serif;
-  font-weight: 500;
+@layer base {
+  * {
+    border-color: theme('colors.border');
+    outline-color: theme('colors.ring');
+  }
+  body {
+    background-color: theme('colors.background');
+    color: theme('colors.foreground');
+    font-family: 'Pretendard', sans-serif;
+  }
 }
