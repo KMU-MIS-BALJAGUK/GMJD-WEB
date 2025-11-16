@@ -1,8 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
-@custom-variant dark (&:is(.dark *));
-
 /* Pretendard */
 @font-face {
   font-family: 'Pretendard';
@@ -32,7 +30,11 @@
   --color-bg-02: #f9fafb;
   --color-text-01: #111827;
   --color-text-02: #6b7280;
+  --color-text-03: #888888;
+  --color-border-01: #e7e7e7;
+  --color-border-02: #dddddd;
   --color-btn-disabled: #d1d5db;
+  --color-btn-gray: #f2f2f2;
 
   --color-background: #ffffff;
   --color-foreground: #0a0a0a;
@@ -41,13 +43,14 @@
 }
 
 @layer base {
-  * {
-    border-color: theme('colors.border');
-    outline-color: theme('colors.ring');
-  }
+  html,
   body {
-    background-color: theme('colors.background');
-    color: theme('colors.foreground');
-    font-family: 'Pretendard', sans-serif;
+    font-family: 'Pretendard', sans-serif !important;
+  }
+
+  * {
+    border-color: var(--color-border);
+    outline-color: var(--color-ring);
+    font-family: inherit;
   }
 }
