@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { cva } from 'class-variance-authority';
 
 const baseClasses =
-  'w-full rounded-[8px] text-[15px] px-4 py-2 text-sm ' +
+  'w-full rounded-[8px] text-[15px] px-4 py-2' +
   'placeholder:text-text-03 disabled:cursor-not-allowed disabled:opacity-50 ' +
   'ring-offset-0 outline-none shadow-none focus-visible:outline-none ' +
   'transition-colors duration-200 ease-in-out ';
@@ -14,15 +14,15 @@ const baseClasses =
 const inputVariants = cva(baseClasses, {
   variants: {
     variant: {
-      default: 'bg-bg-02 h-12 border-none focus-visible:ring-1 focus-visible:ring-blue',
+      default: 'bg-bg-02 h-11 border-none focus-visible:ring-1 focus-visible:ring-blue',
       rounded:
-        'bg-bg-02 h-12 rounded-[42px] px-6 border-none focus-visible:ring-1 focus-visible:ring-blue',
+        'bg-bg-02 h-11 rounded-[42px] px-6 border-none focus-visible:ring-1 focus-visible:ring-blue',
       heroInput:
-        'bg-white h-12 rounded-[42px] px-6 drop-shadow-sm border-none focus-visible:ring-1 focus-visible:ring-blue',
+        'bg-white h-11 rounded-[42px] px-6 drop-shadow-sm border-none focus-visible:ring-1 focus-visible:ring-blue',
       textArea:
-        'bg-bg-02 p-4 align-top resize-none h-[124px] border-none focus-visible:ring-1 focus-visible:ring-blue',
-      chat: 'bg-bg-02 h-12 rounded-[30px] px-6 border-none focus-visible:ring-1 focus-visible:ring-blue',
-      error: 'bg-bg-02 h-12 border border-red-500 text-red-600 focus-visible:ring-0',
+        'bg-bg-02 p-4 h-11 align-top resize-none h-[124px] border-none focus-visible:ring-1 focus-visible:ring-blue',
+      chat: 'bg-bg-02 h-11 rounded-[30px] px-6 border-none focus-visible:ring-1 focus-visible:ring-blue',
+      error: 'bg-bg-02 h-11 border border-red-500 text-red-600 focus-visible:ring-0',
     },
   },
   defaultVariants: {
