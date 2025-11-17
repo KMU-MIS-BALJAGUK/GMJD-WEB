@@ -2,8 +2,6 @@
 
 import { useState } from 'react';
 import type { NextPage } from 'next';
-import Image from 'next/image';
-import Link from 'next/link';
 import MultiSelectDropdown from './components/MultiSelectDropdown';
 import ContestCard from './components/ContestCard';
 import SortButton from './components/SortButton';
