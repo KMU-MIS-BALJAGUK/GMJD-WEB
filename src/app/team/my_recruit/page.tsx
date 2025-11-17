@@ -1,6 +1,6 @@
 "use client";
 
-import RecruitCard from "@/components/RecruitCard";
+import RecruitCard from "@/app/team/my_recruit/components/RecruitCard";
 import Link from "next/link";
 
 // 임시 데이터

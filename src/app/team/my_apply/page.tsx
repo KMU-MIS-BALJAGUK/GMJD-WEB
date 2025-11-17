@@ -1,6 +1,6 @@
 "use client";
 
-import MyApplyCard from "@/components/MyApplyCard";
+import MyApplyCard from "@/app/team/my_apply/components/MyApplyCard";
 import Link from "next/link";
 
 // 임시 데이터

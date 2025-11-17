@@ -1,6 +1,6 @@
 "use client";
 
-import TeamCard from "@/components/TeamCard";
+import TeamCard from "@/app/team/components/TeamCard";
 import Link from "next/link";
 
 // 임시 데이터 (나의 팀 전용)
