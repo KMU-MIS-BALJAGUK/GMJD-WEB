@@ -104,7 +104,7 @@ const ContestPage: NextPage = () => {
       <h1 className="text-3xl font-bold mb-[60px]">공모전</h1>
 
       <div className="flex justify-between items-center mb-4">
-        {/* 필터 드롭다운 */}
+
         <MultiSelectDropdown
           options={categories}
           selectedOptions={selectedCategories}
@@ -134,9 +134,20 @@ const ContestPage: NextPage = () => {
 
       {/* 더보기 버튼 */}
       <div className="mt-[60px] text-center">
-        <Button variant="ghost" className="w-[343px] mx-auto">
+        <Button
+          variant="ghost"
+          className="w-[343px] mx-auto bg-white text-[#555555] border border-[#E7E7E7] rounded"
+        >
           더보기
-          <svg className="inline-block h-4 w-4 ml-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+          <svg
+            className="inline-block h-4 w-4 ml-1"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
         </Button>
       </div>
     </div>

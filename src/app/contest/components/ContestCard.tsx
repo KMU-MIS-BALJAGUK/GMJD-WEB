@@ -1,8 +1,6 @@
 import Image from 'next/image';
 import { Tag } from '@/components/common/Tag';
 
-// The 'Contest' type should ideally be in a shared types file,
-// but for this fix, we'll define the expected props structure.
 type Contest = {
   id: number;
   dDay: string;
@@ -18,6 +16,14 @@ type ContestCardProps = {
 
 // 공모전 카드 컴포넌트
 export default function ContestCard({ contest }: ContestCardProps) {
+  const getDdayVariant = (dDay: string) => {
+    const day = parseInt(dDay.replace('D-', ''), 10);
+    if (!isNaN(day) && day <= 2) {
+      return 'orange';
+    }
+    return 'blue';
+  };
+
   return (
     <div className="w-[280px] h-[299px] flex flex-col">
       <div className="relative flex-shrink-0 border-[1px] border-[#e7e7e7] rounded-lg">
@@ -31,7 +37,9 @@ export default function ContestCard({ contest }: ContestCardProps) {
       </div>
       <div className="pt-3 flex-grow">
         <div className="flex items-center gap-[6px] text-xs mb-[12px]">
-          <Tag variant="blue" shape="square">{contest.dDay}</Tag>
+          <Tag variant={getDdayVariant(contest.dDay)} shape="square">
+            {contest.dDay}
+          </Tag>
           <Tag variant="gray" shape="square">{contest.teams}</Tag>
         </div>
         <h3 className="font-bold truncate mb-[6px]">{contest.title}</h3>
