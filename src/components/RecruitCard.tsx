@@ -1,58 +1,69 @@
 "use client";
 
 import Image from "next/image";
-import MoreMenu from "./MoreMenu";
 
 export interface RecruitCardProps {
   id: number;
   title: string;
   subtitle: string;
-  members: string;
   image: string;
-  applicants?: number; // 나의 모집 모드에서만 사용
-  teamOnly?: boolean; // 나의 팀 모드에서만 사용
+  totalMembers: number;
+  applicants: number;
+  status: "open" | "closed";
 }
 
 export default function RecruitCard({
   title,
   subtitle,
-  members,
   image,
+  totalMembers,
   applicants,
-  teamOnly = false,
+  status,
 }: RecruitCardProps) {
   return (
-    <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow relative">
-      
-      {/* 이미지 영역 */}
+    <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow relative bg-white">
+
+      {/* 이미지 */}
       <div className="relative w-full h-[160px] bg-gray-100">
-        <Image src={image} alt={title} fill className="object-cover" />
+        <Image
+          src={image}
+          alt={title}
+          fill
+          className="object-cover"
+        />
+
+        {/* 상태 배지 — 이미지 좌측 하단 */}
+        <div className="absolute bottom-2 left-2 z-10">
+          {status === "open" ? (
+            <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-semibold shadow">
+              모집중
+            </span>
+          ) : (
+            <span className="bg-gray-600 text-white px-2 py-1 rounded text-xs font-semibold shadow">
+              모집완료
+            </span>
+          )}
+        </div>
       </div>
 
-      {/* 카드 내용 */}
-      <div className="p-4 relative">
-
-        {/* 점 3개 메뉴 */}
-        <div className="absolute top-3 right-3">
-          <MoreMenu />
-        </div>
+      {/* 내용 */}
+      <div className="p-4">
 
         {/* 제목 */}
-        <p className="font-semibold text-sm leading-tight min-h-[40px] pr-6">
+        <p className="font-semibold text-sm leading-tight min-h-[40px]">
           {title}
         </p>
 
         {/* 기관명 */}
         <p className="text-xs text-gray-500 mt-1">{subtitle}</p>
 
-        {/* 모집 인원 */}
-        {!teamOnly && (
-          <p className="text-sm mt-2">👥 {members} / 지원 {applicants}명</p>
-        )}
-
-        {teamOnly && (
-          <p className="text-sm mt-2">👥 {members} / 팀원</p>
-        )}
+        {/* 모집 인원 / 지원 인원 */}
+        <p className="text-sm mt-2">
+          👥 모집 인원 {totalMembers}명{" "}
+          <span className="text-blue-500 font-medium text-sm ml-1">
+            / 지원 {applicants}명
+          </span>
+        </p>
       </div>
     </div>
   );
