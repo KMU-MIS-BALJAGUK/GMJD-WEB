@@ -3,31 +3,31 @@
 import { cn } from '@/lib/utils';
 import { Menu, X, Search, UserRound } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import React, { useState } from 'react';
 import Input from './common/Input';
 
 const Header = () => {
   const isLogin = true; // TODO: 로그인 상태 관리
-  const [page, setPage] = useState<'home' | 'contest' | 'team' | 'chat' | 'profile'>('home');
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
   return (
     <header className="w-full h-[68px] border-b border-border-01">
       <div className="flex justify-between w-[80%] mx-auto items-center h-full">
         <div className="flex gap-3 items-center flex-1">
-          <Image
-            src={'/logo.png'}
-            alt="logo"
-            width={70}
-            height={40}
-            className="cursor-pointer"
-            onClick={() => {
-              setPage('home');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-          />
+          <Link href="/">
+            <Image
+              src={'/logo.png'}
+              alt="logo"
+              width={70}
+              height={40}
+              className="cursor-pointer"
+            />
+          </Link>
 
-          {page === 'home' && (
+          {pathname === '/' && (
             <div className="hidden md:block w-full max-w-[500px] mr-7">
               <Input
                 placeholder="공모전 정보를 검색해 보세요"
@@ -40,30 +40,30 @@ const Header = () => {
 
         <div className="hidden md:flex gap-4 items-center">
           <div className="flex gap-5 text-text-01 font-semibold text-[15px]">
-            <p
+            <Link
+              href="/contest"
               className={`cursor-pointer ${
-                page === 'contest' && 'text-blue'
+                pathname === '/contest' && 'text-blue'
               } hover:text-blue transition-colors`}
-              onClick={() => setPage('contest')}
             >
               공모전
-            </p>
-            <p
+            </Link>
+            <Link
+              href="/team"
               className={`cursor-pointer ${
-                page === 'team' && 'text-blue'
+                pathname === '/team' && 'text-blue'
               } hover:text-blue transition-colors`}
-              onClick={() => setPage('team')}
             >
               팀 관리
-            </p>
-            <p
+            </Link>
+            <Link
+              href="/chat"
               className={`cursor-pointer ${
-                page === 'chat' && 'text-blue'
+                pathname === '/chat' && 'text-blue'
               } hover:text-blue transition-colors`}
-              onClick={() => setPage('chat')}
             >
               채팅
-            </p>
+            </Link>
           </div>
 
           <div className="text-border-02">|</div>
@@ -75,19 +75,19 @@ const Header = () => {
               <p className="cursor-pointer hover:text-blue transition-colors">로그인</p>
             </div>
           ) : (
-            <div
+            <Link
+              href="/profile"
               className={cn(
                 'flex gap-1 items-end text-text-03 font-semibold text-[15px] cursor-pointer hover:text-blue transition-colors',
-                page === 'profile' && 'text-blue'
+                pathname === '/profile' && 'text-blue'
               )}
-              onClick={() => setPage('profile')}
             >
               <UserRound size={20} className="mb-0.5" />
               <div className="flex gap-0.5 items-center">
                 <p>김주미</p>
                 <p>님</p>
               </div>
-            </div>
+            </Link>
           )}
         </div>
 
@@ -117,43 +117,46 @@ const Header = () => {
           </div>
 
           <nav className="flex flex-col gap-4 text-[17px] font-semibold">
-            <p
-              onClick={() => setPage('contest')}
+            <Link
+              href="/contest"
+              onClick={() => setOpen(false)}
               className={`cursor-pointer ${
-                page === 'contest' && 'text-blue'
+                pathname === '/contest' && 'text-blue'
               } hover:text-blue transition-colors`}
             >
               공모전
-            </p>
-            <p
-              onClick={() => setPage('team')}
+            </Link>
+            <Link
+              href="/team"
+              onClick={() => setOpen(false)}
               className={`cursor-pointer ${
-                page === 'team' && 'text-blue'
+                pathname === '/team' && 'text-blue'
               } hover:text-blue transition-colors`}
             >
               팀 관리
-            </p>
-            <p
-              onClick={() => setPage('chat')}
+            </Link>
+            <Link
+              href="/chat"
+              onClick={() => setOpen(false)}
               className={`cursor-pointer ${
-                page === 'chat' && 'text-blue'
+                pathname === '/chat' && 'text-blue'
               } hover:text-blue transition-colors`}
             >
               채팅
-            </p>
-            <p
-              onClick={() => setPage('profile')}
+            </Link>
+            <Link
+              href="/profile"
+              onClick={() => setOpen(false)}
               className={`cursor-pointer ${
-                page === 'profile' && 'text-blue'
+                pathname === '/profile' && 'text-blue'
               } hover:text-blue transition-colors`}
             >
               프로필
-            </p>
+            </Link>
           </nav>
 
           <div
             className={`mt-auto flex gap-2 text-text-03 cursor-pointer font-semibold`}
-            onClick={() => setPage('profile')}
           >
             <UserRound size={20} />
             <p>김주미 님</p>
