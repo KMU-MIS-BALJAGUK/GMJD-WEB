@@ -35,12 +35,9 @@ const ProfileField: React.FC<ProfileFieldProps> = ({ label, children }) => (
 interface ProfileFieldVerticalProps {
   label: string;
   children: React.ReactNode;
+  onEdit?: () => void;
 }
-const ProfileFieldVertical: React.FC<ProfileFieldVerticalProps> = ({
-  label,
-  children,
-  onEdit,
-}) => (
+const ProfileFieldVertical: React.FC<ProfileFieldVerticalProps> = ({ label, children, onEdit }) => (
   <div>
     <div className="flex justify-between items-center ">
       <p className="text-sm font-medium text-[#888888] mb-3">{label}</p>
@@ -49,12 +46,7 @@ const ProfileFieldVertical: React.FC<ProfileFieldVerticalProps> = ({
           onClick={onEdit}
           className="flex items-center gap-1 text-sm font-medium text-[#888888] hover:text-[#1487F9] mb-3"
         >
-          <Image
-            src="/PencilSimpleLine.png"
-            alt="수정"
-            width={16}
-            height={16}
-          />
+          <Image src="/PencilSimpleLine.png" alt="수정" width={16} height={16} />
           수정
         </button>
       )}
@@ -94,9 +86,7 @@ export default function MyPage() {
               className="rounded-full border"
             />
             <div className="text-center">
-              <h1 className="text-xl font-bold text-gray-900">
-                {MOCK_USER_DATA.name}
-              </h1>
+              <h1 className="text-xl font-bold text-gray-900">{MOCK_USER_DATA.name}</h1>
               <p className="text-sm text-[#888888]">{MOCK_USER_DATA.intro}</p>
             </div>
           </div>
@@ -127,13 +117,9 @@ export default function MyPage() {
 
             <ProfileFieldVertical label="학력" onEdit={handleEditEducation}>
               <div className="flex items-center space-x-2">
-                <p className="text-base text-[#1D1D1D]">
-                  {MOCK_USER_DATA.school}
-                </p>
+                <p className="text-base text-[#1D1D1D]">{MOCK_USER_DATA.school}</p>
                 <div className="h-[10px] w-px bg-[#E7E7E7]"></div>
-                <p className="text-base text-[#1D1D1D]">
-                  {MOCK_USER_DATA.major}
-                </p>
+                <p className="text-base text-[#1D1D1D]">{MOCK_USER_DATA.major}</p>
               </div>
             </ProfileFieldVertical>
 

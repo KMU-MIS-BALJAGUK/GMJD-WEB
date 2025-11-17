@@ -41,9 +41,7 @@ export default function RegisterPage() {
   const [isButtonActive, setIsButtonActive] = useState(false);
 
   // 5. 입력값 변경 핸들러
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -69,9 +67,7 @@ export default function RegisterPage() {
 
   // 💡 7. 'x' 버튼 클릭 핸들러 (스킬 제거)
   const handleRemoveSkill = (skillToRemove: string) => {
-    setSkillsList((prevList) =>
-      prevList.filter((skill) => skill !== skillToRemove)
-    );
+    setSkillsList((prevList) => prevList.filter((skill) => skill !== skillToRemove));
   };
 
   // 8. 유효성 검사 (값이 변경될 때마다 실행)
@@ -100,7 +96,7 @@ export default function RegisterPage() {
       majorType: selectedMajorType,
       skillSet: skillsList,
     });
-    // TODO: 서버로 폼 데이터 전송
+    // 해야할것: 서버로 폼 데이터 전송
   };
 
   // 시안에 맞는 스타일 정의
@@ -111,7 +107,7 @@ export default function RegisterPage() {
     <div className="min-h-screen bg-white">
       <div className={`mx-auto px-4 ${FORM_MAX_WIDTH} pt-20`}>
         {/* 메인 콘텐츠 시작 */}
-        <div className="space-y-12 pb-20">
+        <form onSubmit={handleSubmit} className="space-y-12 pb-20">
           {/* 환영 헤더 */}
           <h1 className={HEADING_CLASS}>
             공모자들에 오신 것을 <br />
@@ -158,12 +154,7 @@ export default function RegisterPage() {
                   placeholder="학교 명을 입력해주세요"
                   iconRight={
                     <div className="cursor-pointer">
-                      <Image
-                        src="/돋보기.png"
-                        alt="돋보기"
-                        width={20}
-                        height={20}
-                      />
+                      <Image src="/돋보기.png" alt="돋보기" width={20} height={20} />
                     </div>
                   }
                 />
@@ -200,30 +191,36 @@ export default function RegisterPage() {
 
             {/* 6. 관심 분야 (Dropdown Placeholder) */}
             <FormField label="관심분야">
-              <select
-                name="interest"
-                value={formData.interest}
-                onChange={handleInputChange}
-                className={cn(
-                  'w-full h-[48px] border-none bg-[#F8F8F8] rounded-[8px] text-sm placeholder:text-[#888888] focus:outline-none focus:ring-1 focus:ring-[#1487F9]',
-                  'appearance-none px-3',
-                  // 💡 수정됨: 값이 비어있으면 #888888, 있으면 #1D1D1D 적용
-                  !formData.interest ? 'text-[#888888]' : 'text-[#1D1D1D]'
-                )}
-              >
-                <option value="" disabled hidden>
-                  선택해주세요
-                </option>
-                <option value="디자인" className="text sm text-[#1D1D1D]">
-                  디자인
-                </option>
-                <option value="개발" className="text sm text-[#1D1D1D]">
-                  개발
-                </option>
-                <option value="기획" className="text sm text-[#1D1D1D]">
-                  기획
-                </option>
-              </select>
+              <div className="relative w-full">
+                <select
+                  name="interest"
+                  value={formData.interest}
+                  onChange={handleInputChange}
+                  className={cn(
+                    'w-full h-[48px] border-none bg-[#F8F8F8] rounded-[8px] text-sm placeholder:text-[#888888] focus:outline-none focus:ring-1 focus:ring-[#1487F9]',
+                    'appearance-none px-3',
+                    // 💡 수정됨: 값이 비어있으면 #888888, 있으면 #1D1D1D 적용
+                    !formData.interest ? 'text-[#888888]' : 'text-[#1D1D1D]'
+                  )}
+                >
+                  <option value="" disabled hidden>
+                    선택해주세요
+                  </option>
+                  <option value="디자인" className="text sm text-[#1D1D1D]">
+                    디자인
+                  </option>
+                  <option value="개발" className="text sm text-[#1D1D1D]">
+                    개발
+                  </option>
+                  <option value="기획" className="text sm text-[#1D1D1D]">
+                    기획
+                  </option>
+                </select>
+                {/* 커스텀 화살표 */}
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
+                  ▼
+                </span>
+              </div>
             </FormField>
 
             {/* 7. 스킬/툴 */}
@@ -251,10 +248,7 @@ export default function RegisterPage() {
                     shape="rounded"
                     // 💡 'x' 버튼을 'icon' prop으로 전달
                     icon={
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveSkill(skill)}
-                      >
+                      <button type="button" onClick={() => handleRemoveSkill(skill)}>
                         <Image src="/X.png" alt="X" width={16} height={16} />
                       </button>
                     }
@@ -270,6 +264,7 @@ export default function RegisterPage() {
           {/* 하단 버튼 (유효성 검사에 따라 variant 변경) */}
           <div className="pt-8">
             <Button
+              type="submit"
               variant={isButtonActive ? 'primary' : 'disabled'}
               fullWidth
               className="h-[52px]"
@@ -279,7 +274,7 @@ export default function RegisterPage() {
               완료
             </Button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );
