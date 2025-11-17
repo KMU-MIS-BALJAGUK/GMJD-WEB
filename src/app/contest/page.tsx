@@ -17,17 +17,15 @@ const categories = [
   '건축/건설/인테리어',
 ];
 
-// 공모전 데이터 타입을 정의합니다.
 type Contest = {
   id: number;
   dDay: string;
   teams: string;
   title: string;
   organizer: string;
-  status: 'recruiting' | 'soon' | 'closed'; // 모집중, 예정, 마감
+  status: 'recruiting' | 'soon' | 'closed';
 };
 
-// 임시 공모전 데이터입니다.
 const contests: Contest[] = [
   {
     id: 1,
