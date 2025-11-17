@@ -14,7 +14,6 @@ type ContestCardProps = {
   contest: Contest;
 };
 
-// 공모전 카드 컴포넌트
 export default function ContestCard({ contest }: ContestCardProps) {
   const getDdayVariant = (dDay: string) => {
     const day = parseInt(dDay.replace('D-', ''), 10);

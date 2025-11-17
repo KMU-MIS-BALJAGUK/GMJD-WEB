@@ -2,20 +2,10 @@
 
 import { useState } from 'react';
 import type { NextPage } from 'next';
-import MultiSelectDropdown from './components/MultiSelectDropdown';
 import ContestCard from './components/ContestCard';
 import SortButton from './components/SortButton';
 import { Button } from '@/components/common/Button';
-
-const categories = [
-  '기획/아이디어',
-  '광고/마케팅',
-  '사진/영상/UCC',
-  '디자인/순수미술/공예',
-  '네이밍/슬로건',
-  '캐릭터/만화/게임',
-  '건축/건설/인테리어',
-];
+import { SelectBox } from '@/components/common/SelectBox';
 
 type Contest = {
   id: number;
@@ -96,21 +86,31 @@ const contests: Contest[] = [
 const sortOptions = ['전체', '인기순', '마감임박순'];
 
 const ContestPage: NextPage = () => {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [activeSort, setActiveSort] = useState('전체');
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const categories = [
+    { value: '기획/아이디어', label: '기획/아이디어' },
+    { value: '광고/마케팅', label: '광고/마케팅' },
+    { value: '사진/영상/UCC', label: '사진/영상/UCC' },
+    { value: '디자인/순수미술/공예', label: '디자인/순수미술/공예' },
+    { value: '네이밍/슬로건', label: '네이밍/슬로건' },
+    { value: '캐릭터/만화/게임', label: '캐릭터/만화/게임' },
+    { value: '건축/건설/인테리어', label: '건축/건설/인테리어' },
+  ];
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[904px]">
       <h1 className="text-3xl font-bold mb-[60px]">공모전</h1>
 
       <div className="flex justify-between items-center mb-4">
-
-        <MultiSelectDropdown
+        <SelectBox
+          type="multiple"
           options={categories}
-          selectedOptions={selectedCategories}
+          value={selectedCategories}
           onChange={setSelectedCategories}
+          placeholder="전체"
+          className="w-[74px] h-[40px] rounded bg-[#E6E6E6] text-[#555555] font-semibold"
         />
-
         {/* 정렬 옵션 */}
         <div className="flex items-center gap-3 text-sm">
           {sortOptions.map((option) => (
