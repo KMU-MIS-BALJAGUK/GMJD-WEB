@@ -25,15 +25,6 @@ export default function RightPopoverSelect({
 
   return (
     <div ref={ref} className={cn('relative', fullWidth ? 'w-full' : 'w-[588px]')}>
-      {/*  
-        🔥 CustomInput과 완전히 동일한 wrapper
-        - h-12
-        - bg-[#F8F8F8]
-        - rounded-[8px]
-        - px-3
-        - flex items-center
-        - border-transparent
-      */}
       <div
         className={cn(
           'flex items-center justify-between',
