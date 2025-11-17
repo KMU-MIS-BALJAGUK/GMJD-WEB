@@ -41,7 +41,9 @@ export default function RegisterPage() {
   const [isButtonActive, setIsButtonActive] = useState(false);
 
   // 5. 입력값 변경 핸들러
-  const handleInputChange = (e) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
