@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import { SelectionChip } from './components/SelectionChip';
 import { CustomInput } from './components/CustomInput';
 import Image from 'next/image';
+import RightPopoverSelect from './components/RightPopoverSelect';
 
 // 폼 필드 구조를 단순화하기 위한 헬퍼 컴포넌트
 interface FormFieldProps {
@@ -21,6 +22,14 @@ const FormField = ({ label, children }: FormFieldProps) => (
     {children}
   </div>
 );
+
+// SelectBox에 전달할 옵션 목록을 정의합니다. (SelectBox 컴포넌트의 Option 타입과 일치)
+const interestOptions = [
+  { value: '사진/영상/UCC', label: '사진/영상/UCC' },
+  { value: '광고/마케팅', label: '광고/마케팅' },
+  { value: '디자인/순수미술/공예', label: '디자인/순수미술/공예' },
+  { value: '네이밍/슬로건', label: '네이밍/슬로건' },
+];
 
 export default function RegisterPage() {
   // 1. 폼 데이터 상태 관리
@@ -49,6 +58,13 @@ export default function RegisterPage() {
     }));
   };
 
+  // 💡 SelectBox 전용 핸들러 (SelectBox는 'value'를 직접 전달함)
+  const handleInterestChange = (value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      interest: value,
+    }));
+  };
   // 💡 6. "추가" 버튼 클릭 핸들러
   const handleAddSkill = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault(); // 폼 제출 방지
@@ -191,36 +207,14 @@ export default function RegisterPage() {
 
             {/* 6. 관심 분야 (Dropdown Placeholder) */}
             <FormField label="관심분야">
-              <div className="relative w-full">
-                <select
-                  name="interest"
-                  value={formData.interest}
-                  onChange={handleInputChange}
-                  className={cn(
-                    'w-full h-[48px] border-none bg-[#F8F8F8] rounded-[8px] text-sm placeholder:text-[#888888] focus:outline-none focus:ring-1 focus:ring-[#1487F9]',
-                    'appearance-none px-3',
-                    // 💡 수정됨: 값이 비어있으면 #888888, 있으면 #1D1D1D 적용
-                    !formData.interest ? 'text-[#888888]' : 'text-[#1D1D1D]'
-                  )}
-                >
-                  <option value="" disabled hidden>
-                    선택해주세요
-                  </option>
-                  <option value="디자인" className="text sm text-[#1D1D1D]">
-                    디자인
-                  </option>
-                  <option value="개발" className="text sm text-[#1D1D1D]">
-                    개발
-                  </option>
-                  <option value="기획" className="text sm text-[#1D1D1D]">
-                    기획
-                  </option>
-                </select>
-                {/* 커스텀 화살표 */}
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
-                  ▼
-                </span>
-              </div>
+              <RightPopoverSelect
+                type="single"
+                options={interestOptions}
+                placeholder="선택해주세요"
+                value={formData.interest}
+                onChange={handleInterestChange}
+                className="bg-[#F8F8F8] text-[#1D1D1D]"
+              />
             </FormField>
 
             {/* 7. 스킬/툴 */}
