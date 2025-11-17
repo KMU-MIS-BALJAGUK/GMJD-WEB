@@ -128,7 +128,7 @@ const ContestPage: NextPage = () => {
       {/* 공모전 그리드 */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
         {contests.map((contest) => (
-          <ContestCard contest={contest} />
+          <ContestCard key={contest.id} contest={contest} />
         ))}
       </div>
 
