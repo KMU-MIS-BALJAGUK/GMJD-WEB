@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import type { NextPage } from 'next';
 import MultiSelectDropdown from './components/MultiSelectDropdown';
-import ContestCard from './components/ContestCard';
+import ContestCard from '../../components/common/ContestCard';
 import SortButton from './components/SortButton';
 import { Button } from '@/components/common/Button';
 
@@ -136,7 +136,15 @@ const ContestPage: NextPage = () => {
       <div className="mt-[60px] text-center">
         <Button variant="ghost" className="w-[343px] mx-auto">
           더보기
-          <svg className="inline-block h-4 w-4 ml-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+          <svg
+            className="inline-block h-4 w-4 ml-1"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
         </Button>
       </div>
     </div>
