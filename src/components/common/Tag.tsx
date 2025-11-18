@@ -7,6 +7,7 @@ export type TagShape = 'square' | 'rounded';
 export type TagVariant =
   | 'default'
   | 'gray'
+  | 'green'
   | 'blue'
   | 'orange'
   | 'transparentDefault'
@@ -38,6 +39,7 @@ export const Tag: React.FC<TagProps> = ({
   const variantStyles: Record<TagVariant, string> = {
     default: 'bg-white text-[#555555] border border-[#E7E7E7]',
     gray: 'bg-[#E6E6E6] text-[#555555]',
+    green: 'bg-[#DFF0D7] text-[#0CA36F]',
     blue: 'bg-[#1487F9]/15 text-[#1487F9]',
     orange: 'bg-[#F2953E]/15 text-[#F2953E]',
     transparentDefault: 'bg-white/20 text-white',
