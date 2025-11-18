@@ -7,8 +7,10 @@ import { Button } from '@/components/common/Button';
 import { Tag } from '@/components/common/Tag';
 import { cn } from '@/lib/utils';
 import { SelectionChip } from './components/SelectionChip';
-import { CustomInput } from './components/CustomInput';
 import Image from 'next/image';
+import { SelectBox } from '@/components/common/SelectBox';
+import { Input } from '@/components/ui/input';
+import { Search } from 'lucide-react';
 
 // 폼 필드 구조를 단순화하기 위한 헬퍼 컴포넌트
 interface FormFieldProps {
@@ -49,6 +51,13 @@ export default function RegisterPage() {
     }));
   };
 
+  // 💡 SelectBox 전용 핸들러 (SelectBox는 'value'를 직접 전달함)
+  const handleInterestChange = (value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      interest: value,
+    }));
+  };
   // 💡 6. "추가" 버튼 클릭 핸들러
   const handleAddSkill = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault(); // 폼 제출 방지
@@ -102,6 +111,13 @@ export default function RegisterPage() {
   // 시안에 맞는 스타일 정의
   const FORM_MAX_WIDTH = 'max-w-3xl';
   const HEADING_CLASS = 'text-lg font-bold text-[#1D1D1D]';
+  //  3. Figma 시안에 맞는 Input 스타일 정의
+  const inputStyles =
+    'h-12 p-3 rounded-[8px] border-none ' +
+    'text-sm placeholder:text-[#888888] text-[#1D1D1D] ' +
+    'bg-[#F8F8F8] ' +
+    'focus:outline-none focus:ring-1 focus:ring-[#1487F9] focus:bg-white ' +
+    'transition-all duration-200';
 
   return (
     <div className="min-h-screen bg-white">
@@ -118,11 +134,12 @@ export default function RegisterPage() {
           <div className="space-y-10">
             {/* 1. 한줄 소개 */}
             <FormField label="한 줄 소개">
-              <CustomInput
+              <Input
+                placeholder="한 줄 소개를 입력해주세요"
                 name="intro"
                 value={formData.intro}
                 onChange={handleInputChange}
-                placeholder="한 줄 소개를 입력해주세요"
+                className={inputStyles}
               />
             </FormField>
 
@@ -146,18 +163,18 @@ export default function RegisterPage() {
 
             {/* 3. 학교명 검색 */}
             <FormField label="학교 명 검색">
-              <div className="relative">
-                <CustomInput
+              <div className="relative w-full flex items-center">
+                <Input
                   name="school"
                   value={formData.school}
                   onChange={handleInputChange}
                   placeholder="학교 명을 입력해주세요"
-                  iconRight={
-                    <div className="cursor-pointer">
-                      <Image src="/돋보기.png" alt="돋보기" width={20} height={20} />
-                    </div>
-                  }
+                  className={cn(inputStyles, 'pr-10')} // 아이콘 공간(padding) 확보
                 />
+                {/*Input 바깥에 아이콘을 배치합니다. 안에 넣으니까 오류가 생김 */}
+                <div className="absolute right-4 cursor-pointer z-10 text-gray-400">
+                  <Search size={20} />
+                </div>
               </div>
             </FormField>
 
@@ -181,72 +198,60 @@ export default function RegisterPage() {
 
             {/* 5. 학과 명 입력 */}
             <FormField label="학과 명 입력">
-              <CustomInput
+              <Input
                 name="department"
                 value={formData.department}
                 onChange={handleInputChange}
                 placeholder="학과 명을 입력해주세요"
+                className={inputStyles}
               />
             </FormField>
 
             {/* 6. 관심 분야 (Dropdown Placeholder) */}
             <FormField label="관심분야">
-              <div className="relative w-full">
-                <select
-                  name="interest"
-                  value={formData.interest}
-                  onChange={handleInputChange}
-                  className={cn(
-                    'w-full h-[48px] border-none bg-[#F8F8F8] rounded-[8px] text-sm placeholder:text-[#888888] focus:outline-none focus:ring-1 focus:ring-[#1487F9]',
-                    'appearance-none px-3',
-                    // 💡 수정됨: 값이 비어있으면 #888888, 있으면 #1D1D1D 적용
-                    !formData.interest ? 'text-[#888888]' : 'text-[#1D1D1D]'
-                  )}
-                >
-                  <option value="" disabled hidden>
-                    선택해주세요
-                  </option>
-                  <option value="디자인" className="text sm text-[#1D1D1D]">
-                    디자인
-                  </option>
-                  <option value="개발" className="text sm text-[#1D1D1D]">
-                    개발
-                  </option>
-                  <option value="기획" className="text sm text-[#1D1D1D]">
-                    기획
-                  </option>
-                </select>
-                {/* 커스텀 화살표 */}
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
-                  ▼
-                </span>
-              </div>
+              <SelectBox
+                type="single"
+                placeholder="선택해주세요"
+                value={formData.interest}
+                onChange={handleInterestChange}
+                options={[
+                  { value: '사진/영상/UCC', label: '사진/영상/UCC' },
+                  { value: '광고/마케팅', label: '광고/마케팅' },
+                  { value: '디자인/순수미술/공예', label: '디자인/순수미술/공예' },
+                  { value: '네이밍/슬로건', label: '네이밍/슬로건' },
+                ]}
+              />
             </FormField>
 
             {/* 7. 스킬/툴 */}
             <FormField label="스킬셋">
-              <CustomInput
-                name="skills"
-                value={formData.skills}
-                onChange={handleInputChange}
-                placeholder="활용 가능한 기술을 작성해주세요"
-                iconRight={
+              <div className="relative w-full flex items-center">
+                <Input
+                  name="skills"
+                  value={formData.skills}
+                  onChange={handleInputChange}
+                  placeholder="활용 가능한 기술을 작성해주세요"
+                  className={cn(inputStyles, 'pr-20')} // 버튼 공간(padding) 확보
+                />
+                <div className="absolute right-4 z-10">
+                  {/* 💡 오류 수정: 
+        <p> 태그를 <button> 태그로 변경해야 합니다. 
+    */}
                   <button
-                    className="text-[#1487F9] font-medium whitespace-nowrap text-sm"
-                    onClick={handleAddSkill}
+                    type="button" // 👈 폼 제출을 방지하기 위해 type="button"을 꼭 넣어주세요.
+                    className="text-[#1487F9] font-medium whitespace-nowrap text-sm cursor-pointer" // 👈 p 태그와 동일한 스타일
+                    onClick={handleAddSkill} // 👈 이제 <button> 이벤트와 타입이 일치합니다.
                   >
                     추가
                   </button>
-                }
-              />
+                </div>
+              </div>
               {/* 💡 8. 추가된 스킬 태그 렌더링 영역 */}
               <div className="flex flex-wrap gap-3">
                 {skillsList.map((skill, index) => (
                   <Tag
                     key={index}
-                    variant="default" // Figma 시안의 회색 배경
                     shape="rounded"
-                    // 💡 'x' 버튼을 'icon' prop으로 전달
                     icon={
                       <button type="button" onClick={() => handleRemoveSkill(skill)}>
                         <Image src="/X.png" alt="X" width={16} height={16} />
