@@ -2,20 +2,10 @@
 
 import { useState } from 'react';
 import type { NextPage } from 'next';
-import MultiSelectDropdown from './components/MultiSelectDropdown';
 import ContestCard from '../../components/common/ContestCard';
 import SortButton from './components/SortButton';
 import { Button } from '@/components/common/Button';
-
-const categories = [
-  '기획/아이디어',
-  '광고/마케팅',
-  '사진/영상/UCC',
-  '디자인/순수미술/공예',
-  '네이밍/슬로건',
-  '캐릭터/만화/게임',
-  '건축/건설/인테리어',
-];
+import { SelectBox } from '@/components/common/SelectBox';
 
 const contests = [
   {
