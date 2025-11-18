@@ -1,8 +1,26 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+// 💡 1. 'ReactNode' 타입을 React에서 가져옵니다.
+import { useState, useEffect, useRef, ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 
+// 💡 2. 옵션 타입을 명확히 정의합니다.
+type Option = {
+  value: string;
+  label: string;
+};
+
+// 💡 3. 컴포넌트가 받을 Props의 타입을 Interface로 정의합니다.
+interface RightPopoverSelectProps {
+  options: Option[]; // 'any' 대신 'Option[]'
+  value?: string; // 'any' 대신 'string'
+  onChange: (value: string) => void; // 'any' 대신 명확한 함수 타입
+  placeholder?: string;
+  fullWidth?: boolean;
+  className?: string; // 'any' 대신 'string'
+}
+
+// 💡 4. 컴포넌트 인자에 Props 타입을 적용합니다.
 export default function RightPopoverSelect({
   options,
   value,
@@ -10,20 +28,26 @@ export default function RightPopoverSelect({
   placeholder = '선택해주세요',
   fullWidth = true,
   className,
-}) {
+}: RightPopoverSelectProps) {
   const [open, setOpen] = useState(false);
-  const ref = useRef(null);
+  // 💡 5. useRef의 타입을 명시합니다. (DOM 노드를 참조)
+  const ref = useRef<HTMLDivElement>(null);
 
-  // 바깥 클릭 닫기
+  // 💡 6. 'useEffect'의 훅 타입을 수정합니다.
   useEffect(() => {
-    const close = (e) => {
-      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    // 💡 7. 'e'의 타입을 'any' 대신 'MouseEvent'로 명시합니다.
+    const close = (e: MouseEvent) => {
+      // 💡 8. 'e.target'이 DOM Node임을 타입스크립트에게 알려줍니다. (as Node)
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
     };
     window.addEventListener('mousedown', close);
     return () => window.removeEventListener('mousedown', close);
   }, []);
 
   return (
+    // 💡 9. 'ref'를 div에 연결합니다.
     <div ref={ref} className={cn('relative', fullWidth ? 'w-full' : 'w-[588px]')}>
       <div
         className={cn(
@@ -36,7 +60,7 @@ export default function RightPopoverSelect({
         onClick={() => setOpen(!open)}
       >
         <span className={cn('text-sm', value ? 'text-[#1D1D1D]' : 'text-[#888888]')}>
-          {value || placeholder}
+          {value ? options.find((o) => o.value === value)?.label : placeholder}
         </span>
 
         {/* 드롭다운 화살표 */}
@@ -61,6 +85,7 @@ export default function RightPopoverSelect({
             'shadow-[0_8px_24px_rgba(0,0,0,0.08)]'
           )}
         >
+          {/* 💡 10. 'opt'는 'options' 타입(Option[])을 따라 'Option'으로 자동 추론됩니다. */}
           {options.map((opt) => (
             <div
               key={opt.value}
