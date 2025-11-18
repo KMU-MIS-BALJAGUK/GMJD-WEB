@@ -15,8 +15,15 @@ type ContestCardProps = {
   contest: Contest;
 };
 
-// 공모전 카드 컴포넌트
 export default function ContestCard({ contest }: ContestCardProps) {
+  const getDdayVariant = (dDay: string) => {
+    const day = parseInt(dDay.replace('D-', ''), 10);
+    if (!isNaN(day) && day <= 2) {
+      return 'orange';
+    }
+    return 'blue';
+  };
+
   return (
     <div className="w-[280px] h-[299px] flex flex-col cursor-pointer">
       <div className="relative flex-shrink-0 border-[1px] border-[#e7e7e7] rounded-lg">
