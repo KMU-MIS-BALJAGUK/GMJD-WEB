@@ -1,10 +1,11 @@
 "use client";
 
-import RecruitCard from "@/app/team/my_recruit/components/RecruitCard";
+import RecruitCard, { RecruitManageCardProps } 
+  from "@/app/team/my_recruit/components/RecruitCard";
 import Link from "next/link";
 
 // 임시 데이터
-const mockCards = [
+const mockCards: RecruitManageCardProps[] = [
   {
     id: 1,
     title: "NH농협카드 플레이토&스터디 디자인 콘테스트",
@@ -47,10 +48,8 @@ export default function MyRecruitPage() {
   return (
     <div className="max-w-[1200px] mx-auto py-10 px-4">
 
-      {/* 제목 */}
       <h1 className="text-2xl font-bold mb-6">팀 관리</h1>
 
-      {/* 탭 메뉴 */}
       <nav className="flex gap-6 mb-8 border-b pb-2 text-sm">
         <Link href="/team" className="text-gray-600 hover:text-black">
           나의 팀
@@ -65,13 +64,9 @@ export default function MyRecruitPage() {
         </Link>
       </nav>
 
-      {/* 카드 리스트 */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {mockCards.map((card) => (
-          <RecruitCard     // ← 나의 모집 전용 카드
-            key={card.id}
-            {...card}
-          />
+          <RecruitCard key={card.id} {...card} />
         ))}
       </div>
     </div>
