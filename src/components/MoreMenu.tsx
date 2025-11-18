@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function MoreMenu({
   onEdit,
@@ -10,9 +10,24 @@ export default function MoreMenu({
   onDelete?: () => void;
 }) {
   const [open, setOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // 🔥 외부 클릭 감지
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
-    <div className="relative">
+    <div ref={menuRef} className="relative">
       {/* 점 3개 버튼 */}
       <button
         onClick={() => setOpen(!open)}
@@ -23,7 +38,7 @@ export default function MoreMenu({
 
       {/* 메뉴 팝업 */}
       {open && (
-        <div className="absolute right-0 mt-2 w-28 bg-white border border-gray-200 rounded-md shadow-md z-10">
+        <div className="absolute right-0 mt-2 w-28 bg-white border border-gray-200 rounded-md shadow-md z-50">
           <button
             onClick={onEdit}
             className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100"
