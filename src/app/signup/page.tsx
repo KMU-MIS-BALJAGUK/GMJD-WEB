@@ -8,12 +8,7 @@ import Image from 'next/image';
 // Figma 이미지와 정확히 일치하도록 색상 정의
 const LOGO_COLOR_CLASS = 'text-[#3F3356]';
 const GOOGLE_TEXT_COLOR_CLASS = 'text-gray-600';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export default function SignupPage() {
   const [isSnsTooltipVisible, setIsSnsTooltipVisible] = useState(false);
@@ -35,9 +30,7 @@ export default function SignupPage() {
             className="mb-2"
           />
         </div>
-        <h1 className="text-3xl font-bold text-gray-800 mb-10">
-          회원가입/로그인
-        </h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-10">회원가입/로그인</h1>
 
         {/* 1. Google 버튼과 말풍선을 감싸는 부모 컨테이너 */}
         <div
@@ -50,20 +43,16 @@ export default function SignupPage() {
             onClick={handleGoogleSignIn}
             variant="ghost"
             fullWidth
-            className={`w-full py-2 border border-gray-300 rounded-lg flex items-center justify-center 
-                                  ${GOOGLE_TEXT_COLOR_CLASS} hover:bg-gray-50 transition duration-150 shadow-sm space-x-2`}
+            className={`
+              ${GOOGLE_TEXT_COLOR_CLASS} 
+              space-x-2
+            `}
           >
-            <Image
-              src="/icon.png" // public 폴더 기준 경로
-              alt="Google logo"
-              width={20} // 로고 크기 조절 (필요에 따라 변경)
-              height={20}
-              className="mr-2" // Google 텍스트와의 간격
-            />
+            <Image src="/icon.png" alt="Google logo" width={20} height={20} className="mr-2" />
             <span>Sign in with Google</span>
           </Button>
 
-          {/* 2. SNS로 간편하게 시작하기 (말풍선/팝오버) */}
+          {/* 2. SNS로 간편하게 시작하기 (툴팁) */}
           <Tooltip open={true}>
             <TooltipTrigger></TooltipTrigger>
             <TooltipContent side="bottom" sideOffset={5}>

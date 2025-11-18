@@ -208,7 +208,6 @@ export default function RegisterPage() {
             {/* 6. 관심 분야 (Dropdown Placeholder) */}
             <FormField label="관심분야">
               <RightPopoverSelect
-                type="single"
                 options={interestOptions}
                 placeholder="선택해주세요"
                 value={formData.interest}
@@ -238,9 +237,8 @@ export default function RegisterPage() {
                 {skillsList.map((skill, index) => (
                   <Tag
                     key={index}
-                    variant="default" // Figma 시안의 회색 배경
+                    variant="default"
                     shape="rounded"
-                    // 💡 'x' 버튼을 'icon' prop으로 전달
                     icon={
                       <button type="button" onClick={() => handleRemoveSkill(skill)}>
                         <Image src="/X.png" alt="X" width={16} height={16} />
