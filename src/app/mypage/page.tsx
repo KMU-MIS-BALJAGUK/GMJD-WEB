@@ -6,7 +6,7 @@ import { Button } from '@/components/common/Button';
 import { Tag } from '@/components/common/Tag';
 import { cn } from '@/lib/utils';
 
-// 💡 1. 가짜(Mock) 데이터: 나중에 DB에서 이 데이터를 불러올 것입니다.
+// 1. 가짜(Mock) 데이터: 나중에 DB에서 이 데이터를 불러올 예정
 const MOCK_USER_DATA = {
   name: '김주미',
   email: 'gongmoja@example.com',
@@ -17,9 +17,10 @@ const MOCK_USER_DATA = {
   school: '국민대학교',
   major: '경영정보학부',
   skills: ['Figma', 'Python'],
+  interest: '광고마케팅',
 };
 
-// 💡 2. (가로추가) 가로 정렬 프로필 필드 헬퍼 컴포넌트
+//  2. (가로추가) 가로 정렬 프로필 필드 헬퍼 컴포넌트
 interface ProfileFieldProps {
   label: string;
   children: React.ReactNode;
@@ -31,7 +32,7 @@ const ProfileField: React.FC<ProfileFieldProps> = ({ label, children }) => (
   </div>
 );
 
-// 💡 3. (새로 추가) 세로 정렬 프로필 필드 헬퍼 컴포넌트
+// 3. (세로추가) 세로 정렬 프로필 필드 헬퍼 컴포넌트
 interface ProfileFieldVerticalProps {
   label: string;
   children: React.ReactNode;
@@ -41,7 +42,7 @@ const ProfileFieldVertical: React.FC<ProfileFieldVerticalProps> = ({ label, chil
   <div>
     <div className="flex justify-between items-center ">
       <p className="text-sm font-medium text-[#888888] mb-3">{label}</p>
-      {onEdit && ( // 💡 onEdit prop이 있을 때만 "수정" 버튼 렌더링
+      {onEdit && ( //  onEdit prop이 있을 때만 "수정" 버튼 렌더링
         <button
           onClick={onEdit}
           className="flex items-center gap-1 text-sm font-medium text-[#888888] hover:text-[#1487F9] mb-3"
@@ -55,9 +56,9 @@ const ProfileFieldVertical: React.FC<ProfileFieldVerticalProps> = ({ label, chil
   </div>
 );
 
-// 💡 3. 마이페이지 메인 컴포넌트
+//  3. 마이페이지 메인 컴포넌트
 export default function MyPage() {
-  // 💡 팝업 상태 관리 (나중에 유원누나 팝업 컴포넌트와 연결)
+  //  팝업 상태 관리 (나중에 유원누나 팝업 컴포넌트와 연결)
   const handleEditEducation = () => {
     console.log('학력 수정 팝업 열기');
     // 예: setIsEducationPopupOpen(true);
@@ -67,6 +68,10 @@ export default function MyPage() {
     console.log('스킬셋 수정 팝업 열기');
     // 예: setIsSkillsPopupOpen(true);
   };
+
+  const handleEditInterest = () => {
+    console.log('관심사 수정 팝업 열기');
+  };
   return (
     <div className="min-h-screen bg-white flex justify-center items-center py-16">
       {/* 페이지 네비게이션 카드 섹션 */}
@@ -74,7 +79,7 @@ export default function MyPage() {
         {/* "내 프로필" 제목 */}
         <h2 className="text-xl font-bold mb-4">마이페이지</h2>
 
-        {/* 💡 6. 모든 정보를 담는 메인 카드 */}
+        {/* 6. 모든 정보를 담는 메인 카드 */}
         <div className="bg-white border border-[#DDDDDD] rounded-[8px] p-6 shadow-sm space-y-6">
           {/* A. 프로필 헤더 (사진, 이름, 이메일, 레벨) */}
           <div className="flex flex-col items-center gap-2">
@@ -123,8 +128,13 @@ export default function MyPage() {
               </div>
             </ProfileFieldVertical>
 
+            <ProfileFieldVertical label="관심분야" onEdit={handleEditInterest}>
+              <div className="flex items-center space-x-2">
+                <p className="text-base text-[#1D1D1D]">{MOCK_USER_DATA.interest}</p>
+              </div>
+            </ProfileFieldVertical>
+
             <ProfileFieldVertical label="스킬셋" onEdit={handleEditSkills}>
-              {/* 💡 justify-end 제거 (왼쪽 정렬이 기본값) */}
               <div className="flex flex-wrap gap-2">
                 {MOCK_USER_DATA.skills.map((skill) => (
                   <Tag

@@ -18,13 +18,7 @@ const Header = () => {
       <div className="flex justify-between w-[80%] mx-auto items-center h-full">
         <div className="flex gap-3 items-center flex-1">
           <Link href="/">
-            <Image
-              src={'/logo.png'}
-              alt="logo"
-              width={70}
-              height={40}
-              className="cursor-pointer"
-            />
+            <Image src={'/logo.png'} alt="logo" width={70} height={40} className="cursor-pointer" />
           </Link>
 
           {pathname === '/' && (
@@ -69,14 +63,8 @@ const Header = () => {
           <div className="text-border-02">|</div>
 
           {isLogin ? (
-            <div className="flex gap-2 text-text-03 font-semibold text-[15px]">
-              <p className="cursor-pointer hover:text-blue transition-colors">회원가입</p>
-              <p>/</p>
-              <p className="cursor-pointer hover:text-blue transition-colors">로그인</p>
-            </div>
-          ) : (
             <Link
-              href="/profile"
+              href="/mypage"
               className={cn(
                 'flex gap-1 items-end text-text-03 font-semibold text-[15px] cursor-pointer hover:text-blue transition-colors',
                 pathname === '/profile' && 'text-blue'
@@ -88,6 +76,16 @@ const Header = () => {
                 <p>님</p>
               </div>
             </Link>
+          ) : (
+            <div className="flex gap-2 text-text-03 font-semibold text-[15px]">
+              <Link href="/signup" className="cursor-pointer hover:text-blue transition-colors">
+                회원가입
+              </Link>
+              <p>/</p>
+              <Link href="/signup" className="cursor-pointer hover:text-blue transition-colors">
+                로그인
+              </Link>
+            </div>
           )}
         </div>
 
@@ -155,9 +153,7 @@ const Header = () => {
             </Link>
           </nav>
 
-          <div
-            className={`mt-auto flex gap-2 text-text-03 cursor-pointer font-semibold`}
-          >
+          <div className={`mt-auto flex gap-2 text-text-03 cursor-pointer font-semibold`}>
             <UserRound size={20} />
             <p>김주미 님</p>
           </div>

@@ -27,8 +27,8 @@ const FormField = ({ label, children }: FormFieldProps) => (
 export default function RegisterPage() {
   // 1. 폼 데이터 상태 관리
   const [formData, setFormData] = useState({
-    intro: '',
-    school: '',
+    intro: '', // 한줄 소개
+    school: '', // 학교명
     department: '', // 학과명
     interest: '', // 관심분야
     skills: '', // 스킬/툴
@@ -37,7 +37,7 @@ export default function RegisterPage() {
   const [selectedEducation, setSelectedEducation] = useState('대학교');
   const [selectedMajorType, setSelectedMajorType] = useState('대학교 (4년)');
 
-  // 💡 3. 새로 추가된 스킬 목록 상태 (배열)
+  //  3. 새로 추가된 스킬 목록 상태 (배열)
   const [skillsList, setSkillsList] = useState<string[]>([]);
   //4. 버튼 활성화 상태 관리
   const [isButtonActive, setIsButtonActive] = useState(false);
@@ -82,7 +82,7 @@ export default function RegisterPage() {
   // 8. 유효성 검사 (값이 변경될 때마다 실행)
   useEffect(() => {
     console.log('Form Data Updated:', formData);
-    // 필수 필드 체크: 한줄소개, 학교명, 학과명, 관심분야 (스킬은 선택사항일 경우 제외 가능)
+    // 필수 필드 체크: 한줄소개, 학교명, 학과명, 관심분야 (스킬은 하나 이상 선택)
     const isValid =
       formData.intro.trim() !== '' &&
       formData.school.trim() !== '' &&
@@ -169,7 +169,7 @@ export default function RegisterPage() {
                   value={formData.school}
                   onChange={handleInputChange}
                   placeholder="학교 명을 입력해주세요"
-                  className={cn(inputStyles, 'pr-10')} // 아이콘 공간(padding) 확보
+                  className={cn(inputStyles, 'pr-10')}
                 />
                 {/*Input 바깥에 아이콘을 배치합니다. 안에 넣으니까 오류가 생김 */}
                 <div className="absolute right-4 cursor-pointer z-10 text-gray-400">
@@ -231,22 +231,19 @@ export default function RegisterPage() {
                   value={formData.skills}
                   onChange={handleInputChange}
                   placeholder="활용 가능한 기술을 작성해주세요"
-                  className={cn(inputStyles, 'pr-20')} // 버튼 공간(padding) 확보
+                  className={cn(inputStyles, 'pr-20')}
                 />
                 <div className="absolute right-4 z-10">
-                  {/* 💡 오류 수정: 
-        <p> 태그를 <button> 태그로 변경해야 합니다. 
-    */}
                   <button
-                    type="button" // 👈 폼 제출을 방지하기 위해 type="button"을 꼭 넣어주세요.
-                    className="text-[#1487F9] font-medium whitespace-nowrap text-sm cursor-pointer" // 👈 p 태그와 동일한 스타일
-                    onClick={handleAddSkill} // 👈 이제 <button> 이벤트와 타입이 일치합니다.
+                    type="button" // 폼 제출을 방지하기 위해 type="button"을 꼭 넣어주세요.
+                    className="text-[#1487F9] font-medium whitespace-nowrap text-sm cursor-pointer"
+                    onClick={handleAddSkill}
                   >
                     추가
                   </button>
                 </div>
               </div>
-              {/* 💡 8. 추가된 스킬 태그 렌더링 영역 */}
+              {/*  8. 추가된 스킬 태그 렌더링 영역 */}
               <div className="flex flex-wrap gap-3">
                 {skillsList.map((skill, index) => (
                   <Tag
