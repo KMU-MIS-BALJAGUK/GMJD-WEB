@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 // 🚨🚨 백엔드 API 엔드포인트: 인가 코드를 POST 요청으로 보낼 주소 🚨🚨
@@ -12,7 +12,7 @@ const BACKEND_AUTH_API: string = 'https://dev.gmjd.site/oauth/google/callback';
  * 응답 헤더에서 액세스 토큰을 추출하여 로그인을 완료하는 페이지입니다.
  * * 타입: React.FC (Function Component)를 사용하여 TypeScript 컴포넌트임을 명시합니다.
  */
-const GoogleAuthCallbackPage: React.FC = () => {
+const CoreCallbackLogic: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -65,7 +65,7 @@ const GoogleAuthCallbackPage: React.FC = () => {
           );
         }
       } catch (e: unknown) {
-        // 💡 TypeScript에서 오류 처리를 위해 unknown으로 타입을 지정
+        // TypeScript에서 오류 처리를 위해 unknown으로 타입을 지정
         // 오류 객체의 message를 안전하게 사용하기 위해 타입 가드 사용
         setError(`로그인 실패: ${e instanceof Error ? e.message : '알 수 없는 오류 발생'}`);
         setLoading(false);
@@ -75,7 +75,7 @@ const GoogleAuthCallbackPage: React.FC = () => {
     exchangeCodeForTokens();
   }, [searchParams, router]); // 의존성 배열에 router와 searchParams 추가
 
-  // 로딩 및 에러 UI
+  //로딩 및 에러 UI
   return (
     <div className="flex flex-col items-center justify-center min-h-[50vh] p-4 text-center">
       {error ? (
@@ -98,6 +98,21 @@ const GoogleAuthCallbackPage: React.FC = () => {
         </div>
       )}
     </div>
+  );
+};
+
+const GoogleAuthCallbackPage: React.FC = () => {
+  return (
+    // Suspense로 감싸서, searchParams가 로드될 때까지 기다리도록 설정합니다.
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-[50vh] text-center">
+          <p className="text-gray-500">인증 정보를 준비 중입니다...</p>
+        </div>
+      }
+    >
+      <CoreCallbackLogic />
+    </Suspense>
   );
 };
 
