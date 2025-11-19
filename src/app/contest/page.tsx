@@ -108,7 +108,7 @@ const ContestPage: NextPage = () => {
           value={selectedCategories}
           onChange={setSelectedCategories}
           placeholder="전체"
-          className="w-[74px] h-[40px] rounded bg-[#E6E6E6] text-[#555555] font-semibold"
+          className="w-fit h-[40px] rounded bg-[#E6E6E6] text-[#555555] font-semibold"
         />
         {/* 정렬 옵션 */}
         <div className="flex items-center gap-3 text-sm">
