@@ -1,9 +1,9 @@
 'use client';
 
-import InfoEditPopup from '@/components/popup/my-recruit/InfoEditPopup';
+import InfoEditPopup from '@/components/popup/profile/InfoEditPopup';
 import MakeTeamPopup from '@/components/popup/contest-detail/MakeTeamPopup';
 import MyRecruitPopup from '@/components/popup/my-recruit/MyRecruitPopup';
-import PlayerInfoPopup from '@/components/popup/profile/PlayerInfoPopup';
+import PlayerInfoPopup from '@/components/popup/my-recruit/PlayerInfoPopup';
 import RemovePlayerPopup from '@/components/popup/my-team/RemovePlayerPopup';
 import RequestPopup from '@/components/popup/contest-detail/RequestPopup';
 import TeamInfoPopup from '@/components/popup/my-team/TeamInfoPopup';
@@ -18,6 +18,7 @@ export default function Home() {
   const [open6, setOpen6] = useState(false);
   const [open7, setOpen7] = useState(false);
   const [open8, setOpen8] = useState(false);
+  const [open9, setOpen9] = useState(false);
 
   const Btn = ({ label, onClick }: { label: string; onClick: () => void }) => (
     <button
@@ -56,6 +57,7 @@ export default function Home() {
         <div className="grid grid-cols-2 gap-3">
           <Btn label="스킬셋 수정 팝업" onClick={() => setOpen7(true)} />
           <Btn label="학력 수정 팝업" onClick={() => setOpen8(true)} />
+          <Btn label="관심분야 수정 팝업" onClick={() => setOpen9(true)} />
         </div>
       </section>
 
@@ -68,6 +70,7 @@ export default function Home() {
       <PlayerInfoPopup open={open6} setOpen={setOpen6} />
       <InfoEditPopup open={open7} setOpen={setOpen7} type="skill" />
       <InfoEditPopup open={open8} setOpen={setOpen8} type="education" />
+      <InfoEditPopup open={open9} setOpen={setOpen9} type="interest" />
     </div>
   );
 }

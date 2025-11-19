@@ -4,6 +4,7 @@ import Input from '../../common/Input';
 import { Search, X } from 'lucide-react';
 import Button from '../../common/Button';
 import Tag from '../../common/Tag';
+import { SelectBox } from '@/components/common/SelectBox';
 
 const InfoEditPopup = ({
   open,
@@ -20,6 +21,7 @@ const InfoEditPopup = ({
   const [skill, setSkill] = useState<string>('');
   const [skillSet, setSkillSet] = useState<string[]>([]);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
+  const [interest, setInterest] = useState<string>('');
 
   const univList = [
     '서울대학교',
@@ -48,8 +50,12 @@ const InfoEditPopup = ({
   };
 
   return (
-    <LayerPopup open={open} setOpen={setOpen} title={`${type == 'skill' ? '스킬셋' : '학력'} 수정`}>
-      {type !== 'skill' ? (
+    <LayerPopup
+      open={open}
+      setOpen={setOpen}
+      title={`${type == 'skill' ? '스킬셋' : type === 'education' ? '학력' : '관심분야'} 수정`}
+    >
+      {type === 'education' ? (
         <div className="flex flex-col gap-5 ">
           <div className="relative">
             <p>학교명 검색</p>
@@ -104,7 +110,7 @@ const InfoEditPopup = ({
             </Button>
           </div>
         </div>
-      ) : (
+      ) : type === 'skill' ? (
         <div className="flex flex-col gap-5">
           <div>
             <p>스킬셋</p>
@@ -145,6 +151,31 @@ const InfoEditPopup = ({
                 ))}
               </div>
             )}
+          </div>
+
+          <div className="pt-5">
+            <Button className="w-full" variant="primary" onClick={handleSubmit}>
+              수정 완료
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-5">
+          <div>
+            <p>관심분야</p>
+            <SelectBox
+              type="single"
+              placeholder="선택해주세요"
+              value={interest}
+              onChange={(value) => setInterest(value)}
+              options={[
+                { value: '사진/영상/UCC', label: '사진/영상/UCC' },
+                { value: '광고/마케팅', label: '광고/마케팅' },
+                { value: '디자인/순수미술/공예', label: '디자인/순수미술/공예' },
+                { value: '네이밍/슬로건', label: '네이밍/슬로건' },
+              ]}
+              className="mt-1"
+            />
           </div>
 
           <div className="pt-5">
