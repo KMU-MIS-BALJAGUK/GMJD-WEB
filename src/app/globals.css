@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import 'tw-animate-css';
 
 /* Pretendard */
 @font-face {
@@ -24,27 +25,30 @@
 }
 
 @theme {
+  --color-background: #ffffff;
+  --color-foreground: #0a0a0a;
+
   --color-blue: #3b82f6;
   --color-bg-blue: #dbeafe;
   --color-bg-02: #f9fafb;
   --color-text-01: #111827;
   --color-text-02: #6b7280;
   --color-text-03: #888888;
+  --color-text-04: #aaaaaa;
+  --color-border: #e5e7eb;
   --color-border-01: #e7e7e7;
   --color-border-02: #dddddd;
   --color-btn-disabled: #d1d5db;
   --color-btn-gray: #f2f2f2;
-
-  --color-background: #ffffff;
-  --color-foreground: #0a0a0a;
-  --color-border: #e5e7eb;
   --color-ring: #0a0a0a;
 }
 
 @layer base {
   html,
   body {
-    font-family: 'Pretendard', sans-serif !important;
+    font-family: 'Pretendard', sans-serif;
+    background: var(--color-background);
+    color: var(--color-foreground);
   }
 
   * {
@@ -52,6 +56,32 @@
     outline-color: var(--color-ring);
     font-family: inherit;
   }
+}
+
+/* 기본 커스텀 스크롤바 */
+.scrollbar {
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-neutral-400) transparent;
+}
+
+.scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-neutral-400);
+  border-radius: 2px;
+  transition: background-color 0.2s ease;
+}
+
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--color-neutral-500);
 }
 
 /* 애니메이션 */

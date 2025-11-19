@@ -2,115 +2,114 @@
 
 import { useState } from 'react';
 import type { NextPage } from 'next';
-import MultiSelectDropdown from './components/MultiSelectDropdown';
-import ContestCard from './components/ContestCard';
+import ContestCard from '../../components/common/ContestCard';
 import SortButton from './components/SortButton';
 import { Button } from '@/components/common/Button';
+import { SelectBox } from '@/components/common/SelectBox';
 
-const categories = [
-  '기획/아이디어',
-  '광고/마케팅',
-  '사진/영상/UCC',
-  '디자인/순수미술/공예',
-  '네이밍/슬로건',
-  '캐릭터/만화/게임',
-  '건축/건설/인테리어',
-];
-
-type Contest = {
-  id: number;
-  dDay: string;
-  teams: string;
-  title: string;
-  organizer: string;
-  status: 'recruiting' | 'soon' | 'closed';
-};
-
-const contests: Contest[] = [
+const contests = [
   {
     id: 1,
-    dDay: 'D-23',
-    teams: '개설된 팀 4',
+    thumbnailUrl: '/contest_example.png',
+    dDay: 23,
+    teams: 4,
     title: 'NH농협카드 플레이트&스티커 디자인 콘테스트',
     organizer: 'NH 농협은행',
     status: 'recruiting',
   },
   {
     id: 2,
-    dDay: 'D-13',
-    teams: '개설된 팀 0',
+    thumbnailUrl: '/contest_example.png',
+    dDay: 12,
+    teams: 0,
     title: '키움증권 사회 초년생 자산UP! 영상 공모전',
     organizer: '키움증권',
     status: 'recruiting',
   },
   {
     id: 3,
-    dDay: 'D-32',
-    teams: '개설된 팀 0',
+    thumbnailUrl: '/contest_example.png',
+    dDay: 32,
+    teams: 0,
     title: '제3회 기아 PBV 아이디어 공모전',
     organizer: '기아 (KIA)',
     status: 'recruiting',
   },
   {
     id: 4,
-    dDay: 'D-2',
-    teams: '개설된 팀 19',
+    thumbnailUrl: '/contest_example.png',
+    dDay: 2,
+    teams: 19,
     title: '한국방송통신대학교 상징물 캐릭터, 로고, 워드마크 디자인공모전',
     organizer: '한국방송통신대학교',
     status: 'recruiting',
   },
   {
     id: 5,
-    dDay: 'D-23',
-    teams: '개설된 팀 4',
+    thumbnailUrl: '/contest_example.png',
+    dDay: 23,
+    teams: 4,
     title: '경찰청 안보지킴이 공모전',
     organizer: '경찰청',
     status: 'recruiting',
   },
   {
     id: 6,
-    dDay: 'D-32',
-    teams: '개설된 팀 0',
+    thumbnailUrl: '/contest_example.png',
+    dDay: 32,
+    teams: 0,
     title: '제3회 기아 PBV 아이디어 공모전',
     organizer: '기아 (KIA)',
     status: 'recruiting',
   },
   {
     id: 7,
-    dDay: 'D-2',
-    teams: '개설된 팀 4',
+    thumbnailUrl: '/contest_example.png',
+    dDay: 2,
+    teams: 4,
     title: '한국방송통신대학교 상징물 캐릭터, 로고, 워드마크 디자인공모전',
     organizer: '한국방송통신대학교',
     status: 'recruiting',
   },
   {
     id: 8,
-    dDay: 'D-13',
-    teams: '개설된 팀 4',
+    thumbnailUrl: '/contest_example.png',
+    dDay: 13,
+    teams: 4,
     title: '서울시 2024 대학 광고동아리 광고제',
     organizer: '서울특별시',
     status: 'recruiting',
   },
-];
+] as const;
 
 const sortOptions = ['전체', '인기순', '마감임박순'];
 
 const ContestPage: NextPage = () => {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [activeSort, setActiveSort] = useState('전체');
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const categories = [
+    { value: '기획/아이디어', label: '기획/아이디어' },
+    { value: '광고/마케팅', label: '광고/마케팅' },
+    { value: '사진/영상/UCC', label: '사진/영상/UCC' },
+    { value: '디자인/순수미술/공예', label: '디자인/순수미술/공예' },
+    { value: '네이밍/슬로건', label: '네이밍/슬로건' },
+    { value: '캐릭터/만화/게임', label: '캐릭터/만화/게임' },
+    { value: '건축/건설/인테리어', label: '건축/건설/인테리어' },
+  ];
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[904px]">
       <h1 className="text-3xl font-bold mb-[60px]">공모전</h1>
 
       <div className="flex justify-between items-center mb-4">
-        {/* 필터 드롭다운 */}
-        <MultiSelectDropdown
+        <SelectBox
+          type="multiple"
           options={categories}
-          selectedOptions={selectedCategories}
+          value={selectedCategories}
           onChange={setSelectedCategories}
+          placeholder="전체"
+          className="w-[74px] h-[40px] rounded bg-[#E6E6E6] text-[#555555] font-semibold"
         />
-
         {/* 정렬 옵션 */}
         <div className="flex items-center gap-3 text-sm">
           {sortOptions.map((option) => (
@@ -134,9 +133,20 @@ const ContestPage: NextPage = () => {
 
       {/* 더보기 버튼 */}
       <div className="mt-[60px] text-center">
-        <Button variant="ghost" className="w-[343px] mx-auto">
+        <Button
+          variant="ghost"
+          className="w-[343px] mx-auto bg-white text-[#555555] border border-[#E7E7E7] rounded"
+        >
           더보기
-          <svg className="inline-block h-4 w-4 ml-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+          <svg
+            className="inline-block h-4 w-4 ml-1"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
         </Button>
       </div>
     </div>

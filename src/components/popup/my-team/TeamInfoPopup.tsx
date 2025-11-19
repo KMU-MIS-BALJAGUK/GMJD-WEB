@@ -1,0 +1,147 @@
+import React, { useState } from 'react';
+import Button from '../../common/Button';
+import { Crown, PenLine, UsersRound } from 'lucide-react';
+import Input from '../../common/Input';
+import LayerPopup from '../../common/layerpopup/LayerPopup';
+
+const TeamInfoPopup = ({ open, setOpen }: { open: boolean; setOpen: (value: boolean) => void }) => {
+  const data = {
+    title: '아이디어 기획 파트 4명 구합니다',
+    company: 'NH 농협카드',
+    number: 4,
+    players: [
+      { name: '김민수', role: '팀장', isMe: true },
+      { name: '이서연', role: '팀원', isMe: false },
+      { name: '박지훈', role: '팀원', isMe: false },
+      { name: '최유나', role: '팀원', isMe: false },
+    ],
+    homepageUrl: 'https://www.nhcard.com',
+    teamChatId: 1,
+  };
+
+  // 변수 관리
+  const [memo, setMemo] = useState<string>('');
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+
+  const reset = () => {
+    setMemo('');
+    setIsEditing(false);
+  };
+
+  const handleOpenChange = (value: boolean) => {
+    if (!value) reset();
+    setOpen(value);
+  };
+
+  const handleSave = () => {
+    console.log({ memo });
+    setIsEditing(false);
+  };
+
+  return (
+    <LayerPopup open={open} setOpen={handleOpenChange} title="팀 정보">
+      <div>
+        <div className="flex flex-col px-2 h-auto pb-1 max-h-[600px] overflow-y-auto scrollbar">
+          <div className="flex flex-col gap-3 pb-5 border-b">
+            <div>
+              <p className="text-text-01 font-semibold text-xl mb-1">{data.title}</p>
+              <p className="text-text-03 text-[13px]">{data.company}</p>
+            </div>
+
+            <div className="flex justify-between h-9 items-end">
+              <p className="flex gap-1 items-center text-text-02 text-[14px]">
+                <UsersRound size={16} />
+                인원 {data.number}명
+              </p>
+
+              {!isEditing && (
+                <Button
+                  variant="ghost"
+                  className="px-2 h-9 text-text-02 flex gap-1"
+                  onClick={() => setIsEditing((prev) => !prev)}
+                >
+                  <PenLine size={15} />
+                  수정
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {/* 메모 */}
+          <div className="flex flex-col gap-5 pt-5 text-text-01">
+            <div className="flex flex-col gap-1">
+              <p>메모</p>
+              <Input
+                placeholder={
+                  isEditing ? '메모를 자유롭게 작성해주세요.' : '작성된 메모가 없습니다.'
+                }
+                value={memo}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMemo(e.target.value)}
+                disabled={!isEditing}
+              />
+            </div>
+
+            <div className="flex flex-col gap-4 text-[14px]">
+              <p className="text-base">팀원 관리</p>
+
+              {data.players.map((player, index) => (
+                <div key={index}>
+                  <div className="flex items-center gap-3">
+                    <div className="relative w-8 h-8 rounded-full bg-amber-300 shrink-0">
+                      {player.role === '팀장' && (
+                        <div className="p-[1px] bg-blue absolute right-0 bottom-0 rounded-full">
+                          <Crown size={11} className="fill-white text-blue" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex justify-between w-full">
+                      <div className="flex gap-1.5">
+                        <p>{player.name}</p>
+                        <p className="text-text-04">
+                          {player.role} {player.isMe ? '/ 나' : ''}
+                        </p>
+                      </div>
+
+                      {/* 내보내기 → 수정 모드에서만 */}
+                      {isEditing && !player.isMe && (
+                        <button className="text-blue cursor-pointer">내보내기</button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* 하단 버튼 */}
+        <div className="pt-5 flex gap-3">
+          {isEditing ? (
+            <Button onClick={handleSave} className="w-full" variant="primary">
+              수정 완료
+            </Button>
+          ) : (
+            <>
+              <Button
+                className="w-full"
+                variant="secondary"
+                onClick={() => window.open(data.homepageUrl, '_blank')}
+              >
+                홈페이지 지원
+              </Button>
+              <Button
+                className="w-full"
+                variant="primary"
+                onClick={() => console.log('팀 채팅 이동', data.teamChatId)}
+              >
+                팀 채팅
+              </Button>
+            </>
+          )}
+        </div>
+      </div>
+    </LayerPopup>
+  );
+};
+
+export default TeamInfoPopup;

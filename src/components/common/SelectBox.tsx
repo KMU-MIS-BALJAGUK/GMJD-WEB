@@ -47,7 +47,7 @@ export function SelectBox(props: SelectBoxProps) {
           className={cn(
             `
             w-full !h-12 bg-bg-02 rounded-[8px] border-none text-[15px] px-4
-            focus:ring-1 focus:ring-blue cursor-pointer
+            focus-visible:ring-1 focus-visible:ring-blue cursor-pointer
           `,
             className
           )}
@@ -96,7 +96,7 @@ export function SelectBox(props: SelectBoxProps) {
             `
             w-full !h-12 bg-bg-02 rounded-[8px] border-none px-4 text-[15px]
             flex items-center justify-between
-            focus:ring-1 focus:ring-blue cursor-pointer
+            focus-visible:ring-1 focus-visible:ring-blue cursor-pointer
           `,
             className
           )}
