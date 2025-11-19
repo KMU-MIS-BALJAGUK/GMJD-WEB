@@ -234,9 +234,6 @@ export default function RegisterPage() {
                   className={cn(inputStyles, 'pr-20')} // 버튼 공간(padding) 확보
                 />
                 <div className="absolute right-4 z-10">
-                  {/* 💡 오류 수정: 
-        <p> 태그를 <button> 태그로 변경해야 합니다. 
-    */}
                   <button
                     type="button" // 👈 폼 제출을 방지하기 위해 type="button"을 꼭 넣어주세요.
                     className="text-[#1487F9] font-medium whitespace-nowrap text-sm cursor-pointer" // 👈 p 태그와 동일한 스타일

@@ -17,6 +17,7 @@ const MOCK_USER_DATA = {
   school: '국민대학교',
   major: '경영정보학부',
   skills: ['Figma', 'Python'],
+  interest: '광고마케팅',
 };
 
 // 💡 2. (가로추가) 가로 정렬 프로필 필드 헬퍼 컴포넌트
@@ -66,6 +67,10 @@ export default function MyPage() {
   const handleEditSkills = () => {
     console.log('스킬셋 수정 팝업 열기');
     // 예: setIsSkillsPopupOpen(true);
+  };
+
+  const handleEditinterest = () => {
+    console.log('관심사 수정 팝업 열기');
   };
   return (
     <div className="min-h-screen bg-white flex justify-center items-center py-16">
@@ -120,6 +125,12 @@ export default function MyPage() {
                 <p className="text-base text-[#1D1D1D]">{MOCK_USER_DATA.school}</p>
                 <div className="h-[10px] w-px bg-[#E7E7E7]"></div>
                 <p className="text-base text-[#1D1D1D]">{MOCK_USER_DATA.major}</p>
+              </div>
+            </ProfileFieldVertical>
+
+            <ProfileFieldVertical label="관심분야" onEdit={handleEditinterest}>
+              <div className="flex items-center space-x-2">
+                <p className="text-base text-[#1D1D1D]">{MOCK_USER_DATA.interest}</p>
               </div>
             </ProfileFieldVertical>
 
