@@ -3,8 +3,9 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-// 🚨🚨 백엔드 API 엔드포인트: 인가 코드를 POST 요청으로 보낼 주소 🚨🚨
-const BACKEND_AUTH_API: string = 'https://dev.gmjd.site/oauth/google/callback';
+// 백엔드 API 엔드포인트: 인가 코드를 GET 요청으로 보낼 주소
+// 인가 코드는 이 주소 뒤에 쿼리 파라미터로 붙여서 보낼 것입니다.
+const BACKEND_AUTH_BASE_API: string = 'https://dev.gmjd.site/oauth/google/callback';
 
 /**
  * GoogleAuthCallbackPage:
@@ -30,15 +31,15 @@ const CoreCallbackLogic: React.FC = () => {
       return;
     }
 
+    //  쿼리 파라미터에 인가 코드를 직접 포함하여 요청할 최종 URL 생성
+    // (예: https://dev.gmjd.site/oauth/google/callback?code=AUTH_CODE_FROM_GOOGLE)
+    const finalApiUrl = `${BACKEND_AUTH_BASE_API}?code=${authCode}`;
+
     const exchangeCodeForTokens = async () => {
       try {
-        // 2. fetch 요청 시작: 인가 코드를 JSON 형태로 백엔드에 POST 요청
-        const response: Response = await fetch(BACKEND_AUTH_API, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ code: authCode }),
+        // 2. 백엔드 API에 GET 요청을 보냅니다.
+        const response: Response = await fetch(finalApiUrl, {
+          method: 'GET',
         });
 
         if (!response.ok) {
@@ -75,7 +76,7 @@ const CoreCallbackLogic: React.FC = () => {
     exchangeCodeForTokens();
   }, [searchParams, router]); // 의존성 배열에 router와 searchParams 추가
 
-  //로딩 및 에러 UI
+  // 로딩 및 에러 UI
   return (
     <div className="flex flex-col items-center justify-center min-h-[50vh] p-4 text-center">
       {error ? (
