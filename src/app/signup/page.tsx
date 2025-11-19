@@ -8,9 +8,14 @@ const LOGO_COLOR_CLASS = 'text-[#3F3356]';
 const GOOGLE_TEXT_COLOR_CLASS = 'text-gray-600';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
+//구글 인가 요청 시작 주소
+const GOOGLE_LOGIN_START_URL = 'https://dev.gmjd.site/oauth/google';
+
 export default function SignupPage() {
   const handleGoogleSignIn = () => {
-    console.log('Google 로그인 버튼 클릭됨');
+    console.log('Google 로그인 버튼 클릭됨. 구글 인가 요청 시작.');
+    //구글 로그인 시작 주소로 강제 이동
+    window.location.href = GOOGLE_LOGIN_START_URL;
   };
 
   return (
