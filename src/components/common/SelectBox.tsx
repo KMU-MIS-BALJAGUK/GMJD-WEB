@@ -55,7 +55,7 @@ export function SelectBox(props: SelectBoxProps) {
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
 
-        <SelectContent className="rounded-[8px] shadow-md" align="start">
+        <SelectContent className="rounded-[8px] shadow-md bg-white" align="start">
           {options.map((opt) => (
             <SelectItem
               key={opt.value}
@@ -104,7 +104,7 @@ export function SelectBox(props: SelectBoxProps) {
           <span className={selected.length === 0 ? 'text-gray-400' : ''}>{display}</span>
         </SelectTrigger>
 
-        <SelectContent className="rounded-[8px] shadow-md max-h-[300px]" align="start">
+        <SelectContent className="rounded-[8px] shadow-md max-h-[300px] bg-white" align="start">
           {options.map((opt) => (
             <div
               key={opt.value}
