@@ -2,10 +2,8 @@
 
 'use client';
 import React from 'react';
-// src/app/signup/page.jsx 상단에 추가
 import { Button } from '@/components/common/Button';
 import Image from 'next/image';
-// Figma 이미지와 정확히 일치하도록 색상 정의
 const LOGO_COLOR_CLASS = 'text-[#3F3356]';
 const GOOGLE_TEXT_COLOR_CLASS = 'text-gray-600';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';

@@ -63,14 +63,8 @@ const Header = () => {
           <div className="text-border-02">|</div>
 
           {isLogin ? (
-            <div className="flex gap-2 text-text-03 font-semibold text-[15px]">
-              <p className="cursor-pointer hover:text-blue transition-colors">회원가입</p>
-              <p>/</p>
-              <p className="cursor-pointer hover:text-blue transition-colors">로그인</p>
-            </div>
-          ) : (
             <Link
-              href="/profile"
+              href="/mypage"
               className={cn(
                 'flex gap-1 items-end text-text-03 font-semibold text-[15px] cursor-pointer hover:text-blue transition-colors',
                 pathname === '/profile' && 'text-blue'
@@ -82,6 +76,16 @@ const Header = () => {
                 <p>님</p>
               </div>
             </Link>
+          ) : (
+            <div className="flex gap-2 text-text-03 font-semibold text-[15px]">
+              <Link href="/signup" className="cursor-pointer hover:text-blue transition-colors">
+                회원가입
+              </Link>
+              <p>/</p>
+              <Link href="/signup" className="cursor-pointer hover:text-blue transition-colors">
+                로그인
+              </Link>
+            </div>
           )}
         </div>
 
