@@ -67,7 +67,7 @@ const Header = () => {
               href="/mypage"
               className={cn(
                 'flex gap-1 items-end text-text-03 font-semibold text-[15px] cursor-pointer hover:text-blue transition-colors',
-                pathname === '/profile' && 'text-blue'
+                pathname === '/mypage' && 'text-blue'
               )}
             >
               <UserRound size={20} className="mb-0.5" />
@@ -142,21 +142,27 @@ const Header = () => {
             >
               채팅
             </Link>
-            <Link
+            {/* <Link
               href="/profile"
               onClick={() => setOpen(false)}
               className={`cursor-pointer ${
-                pathname === '/profile' && 'text-blue'
+                pathname === '/mypage' && 'text-blue'
               } hover:text-blue transition-colors`}
             >
               프로필
-            </Link>
+            </Link> */}
           </nav>
 
-          <div className={`mt-auto flex gap-2 text-text-03 cursor-pointer font-semibold`}>
+          <Link
+            className={`mt-auto flex gap-2 text-text-03 cursor-pointer font-semibold ${
+              pathname === '/mypage' && 'text-blue'
+            } hover:text-blue transition-colors`}
+            href="/mypage"
+            onClick={() => setOpen(false)}
+          >
             <UserRound size={20} />
             <p>김주미 님</p>
-          </div>
+          </Link>
         </div>
       </div>
     </header>

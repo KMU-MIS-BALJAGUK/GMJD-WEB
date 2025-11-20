@@ -22,7 +22,7 @@ const ChatLists = ({
         showChatRoom && 'max-md:hidden'
       )}
     >
-      <p className="max-md:text-xl text-[28px] font-bold">채팅</p>
+      <p className="max-md:text-xl text-2xl font-bold">채팅</p>
       <div className="w-full h-full border border-border-01 rounded-2xl">
         {roomList.map((room, index) => (
           <div

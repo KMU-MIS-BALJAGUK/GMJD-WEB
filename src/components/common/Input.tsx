@@ -18,7 +18,7 @@ const inputVariants = cva(baseClasses, {
       rounded:
         'bg-bg-02 h-11 rounded-[42px] px-6 border-none focus-visible:ring-1 focus-visible:ring-blue',
       heroInput:
-        'bg-white h-11 rounded-[42px] px-6 drop-shadow-sm border-none focus-visible:ring-1 focus-visible:ring-blue',
+        'text-text-02 bg-white h-11 rounded-[42px] px-6 drop-shadow-sm border-none focus-visible:ring-1 focus-visible:ring-blue',
       textArea:
         'bg-bg-02 p-4 h-11 align-top resize-none h-[124px] border-none focus-visible:ring-1 focus-visible:ring-blue',
       chat: 'bg-bg-02 h-11 rounded-[30px] px-6 border-none focus-visible:ring-1 focus-visible:ring-blue',

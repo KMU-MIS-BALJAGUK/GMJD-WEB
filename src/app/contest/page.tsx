@@ -1,16 +1,11 @@
 'use client';
 
-import { useState } from 'react';
-import type { NextPage } from 'next';
-import ContestCard from '../../components/common/ContestCard';
-import SortButton from './components/SortButton';
-import { Button } from '@/components/common/Button';
-import { SelectBox } from '@/components/common/SelectBox';
+import ContestPageClient from './components/ContestPageClient';
 
-const contests = [
+export const contests = [
   {
     id: 1,
-    thumbnailUrl: '/contest_example.png',
+    thumbnailUrl: '/contest.png',
     dDay: 23,
     teams: 4,
     title: 'NH농협카드 플레이트&스티커 디자인 콘테스트',
@@ -19,7 +14,7 @@ const contests = [
   },
   {
     id: 2,
-    thumbnailUrl: '/contest_example.png',
+    thumbnailUrl: '/contest2.png',
     dDay: 12,
     teams: 0,
     title: '키움증권 사회 초년생 자산UP! 영상 공모전',
@@ -28,7 +23,7 @@ const contests = [
   },
   {
     id: 3,
-    thumbnailUrl: '/contest_example.png',
+    thumbnailUrl: '/contest3.png',
     dDay: 32,
     teams: 0,
     title: '제3회 기아 PBV 아이디어 공모전',
@@ -37,7 +32,7 @@ const contests = [
   },
   {
     id: 4,
-    thumbnailUrl: '/contest_example.png',
+    thumbnailUrl: '/contest4.png',
     dDay: 2,
     teams: 19,
     title: '한국방송통신대학교 상징물 캐릭터, 로고, 워드마크 디자인공모전',
@@ -46,7 +41,7 @@ const contests = [
   },
   {
     id: 5,
-    thumbnailUrl: '/contest_example.png',
+    thumbnailUrl: '/contest.png',
     dDay: 23,
     teams: 4,
     title: '경찰청 안보지킴이 공모전',
@@ -55,7 +50,7 @@ const contests = [
   },
   {
     id: 6,
-    thumbnailUrl: '/contest_example.png',
+    thumbnailUrl: '/contest2.png',
     dDay: 32,
     teams: 0,
     title: '제3회 기아 PBV 아이디어 공모전',
@@ -64,7 +59,7 @@ const contests = [
   },
   {
     id: 7,
-    thumbnailUrl: '/contest_example.png',
+    thumbnailUrl: '/contest3.png',
     dDay: 2,
     teams: 4,
     title: '한국방송통신대학교 상징물 캐릭터, 로고, 워드마크 디자인공모전',
@@ -73,7 +68,7 @@ const contests = [
   },
   {
     id: 8,
-    thumbnailUrl: '/contest_example.png',
+    thumbnailUrl: '/contest4.png',
     dDay: 13,
     teams: 4,
     title: '서울시 2024 대학 광고동아리 광고제',
@@ -82,75 +77,6 @@ const contests = [
   },
 ] as const;
 
-const sortOptions = ['전체', '인기순', '마감임박순'];
-
-const ContestPage: NextPage = () => {
-  const [activeSort, setActiveSort] = useState('전체');
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const categories = [
-    { value: '기획/아이디어', label: '기획/아이디어' },
-    { value: '광고/마케팅', label: '광고/마케팅' },
-    { value: '사진/영상/UCC', label: '사진/영상/UCC' },
-    { value: '디자인/순수미술/공예', label: '디자인/순수미술/공예' },
-    { value: '네이밍/슬로건', label: '네이밍/슬로건' },
-    { value: '캐릭터/만화/게임', label: '캐릭터/만화/게임' },
-    { value: '건축/건설/인테리어', label: '건축/건설/인테리어' },
-  ];
-
-  return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[904px]">
-      <h1 className="text-3xl font-bold mb-[60px]">공모전</h1>
-
-      <div className="flex justify-between items-center mb-4">
-        <SelectBox
-          type="multiple"
-          options={categories}
-          value={selectedCategories}
-          onChange={setSelectedCategories}
-          placeholder="전체"
-          className="w-fit min-w-[74px] h-[40px] rounded bg-[#E6E6E6] text-[#555555] font-semibold"
-        />
-        {/* 정렬 옵션 */}
-        <div className="flex items-center gap-3 text-sm">
-          {sortOptions.map((option) => (
-            <SortButton
-              key={option}
-              isActive={activeSort === option}
-              onClick={() => setActiveSort(option)}
-            >
-              {option}
-            </SortButton>
-          ))}
-        </div>
-      </div>
-
-      {/* 공모전 그리드 */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
-        {contests.map((contest) => (
-          <ContestCard key={contest.id} contest={contest} />
-        ))}
-      </div>
-
-      {/* 더보기 버튼 */}
-      <div className="mt-[60px] text-center">
-        <Button
-          variant="ghost"
-          className="w-[343px] mx-auto bg-white text-[#555555] border border-[#E7E7E7] rounded"
-        >
-          더보기
-          <svg
-            className="inline-block h-4 w-4 ml-1"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </Button>
-      </div>
-    </div>
-  );
-};
-
-export default ContestPage;
+export default function ContestPage() {
+  return <ContestPageClient />;
+}
