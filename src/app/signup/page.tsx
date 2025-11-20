@@ -7,6 +7,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 //구글 인가 요청 시작 주소
 const GOOGLE_LOGIN_START_URL = 'https://dev.gmjd.site/oauth/google';
 
+const GOOGLE_TEXT_COLOR_CLASS = 'text-gray-600';
+
 export default function SignupPage() {
   const handleGoogleSignIn = () => {
     console.log('Google 로그인 버튼 클릭됨. 구글 인가 요청 시작.');
