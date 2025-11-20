@@ -142,7 +142,7 @@ const Header = () => {
             >
               채팅
             </Link>
-            <Link
+            {/* <Link
               href="/profile"
               onClick={() => setOpen(false)}
               className={`cursor-pointer ${
@@ -150,13 +150,19 @@ const Header = () => {
               } hover:text-blue transition-colors`}
             >
               프로필
-            </Link>
+            </Link> */}
           </nav>
 
-          <div className={`mt-auto flex gap-2 text-text-03 cursor-pointer font-semibold`}>
+          <Link
+            className={`mt-auto flex gap-2 text-text-03 cursor-pointer font-semibold ${
+              pathname === '/mypage' && 'text-blue'
+            } hover:text-blue transition-colors`}
+            href="/mypage"
+            onClick={() => setOpen(false)}
+          >
             <UserRound size={20} />
             <p>김주미 님</p>
-          </div>
+          </Link>
         </div>
       </div>
     </header>
