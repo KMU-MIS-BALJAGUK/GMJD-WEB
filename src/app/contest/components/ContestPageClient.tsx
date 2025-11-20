@@ -27,17 +27,17 @@ const ContestPageClient = () => {
       {/* 공모전 그리드 */}
       <h1 className="text-2xl font-bold mb-5 max-md:hidden mt-10">공모전</h1>
 
-      <div className="flex max-sm:flex-col justify-between items-center mb-4 max-md:mt-7">
+      <div className="flex justify-between items-center mb-4 max-sm:mt-7">
         <SelectBox
           type="multiple"
           options={categories}
           value={selectedCategories}
           onChange={setSelectedCategories}
           placeholder="전체"
-          className="w-52 max-sm:mb-2 max-sm:self-start"
+          className="w-52 max-sm:w-42 max-sm:mb-2 max-sm:self-start max-sm:text-sm! max-sm:h-10!"
         />
         {/* 정렬 옵션 */}
-        <div className="flex items-center gap-3 text-sm max-sm:mr-1 max-sm:self-end">
+        <div className="flex items-center gap-3 text-sm">
           {sortOptions.map((option) => (
             <SortButton
               key={option}

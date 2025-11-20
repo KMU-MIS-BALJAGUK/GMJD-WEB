@@ -70,7 +70,7 @@ export default function MyPageClient({ user }: MyPageClientProps) {
   return (
     <div className="h-[calc(100vh-68px-80px)] bg-white flex justify-center items-center py-16">
       <section className="w-full max-w-xl mx-auto px-4">
-        <h2 className="text-xl font-bold mb-4 text-text-01">마이페이지</h2>
+        <h2 className="text-xl font-bold mb-4 text-text-01 max-sm:hidden">마이페이지</h2>
 
         <div className="bg-white border border-border-2 rounded-[8px] p-6 shadow-sm space-y-6">
           <div className="flex flex-col items-center gap-2">
@@ -94,9 +94,9 @@ export default function MyPageClient({ user }: MyPageClientProps) {
               </Tag>
             </ProfileField>
 
-            <ProfileField label="생년월일">
+            {/* <ProfileField label="생년월일">
               <p className="text-[15px]">{user.born}</p>
-            </ProfileField>
+            </ProfileField> */}
 
             <ProfileField label="이메일">
               <p className="text-[15px]">{user.email}</p>
