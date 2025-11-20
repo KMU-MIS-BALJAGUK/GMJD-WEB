@@ -8,21 +8,14 @@ interface SortButtonProps {
   children: React.ReactNode;
 }
 
-const SortButton: React.FC<SortButtonProps> = ({
-  onClick,
-  isActive,
-  children,
-}) => {
+const SortButton: React.FC<SortButtonProps> = ({ onClick, isActive, children }) => {
   return (
     <button
       onClick={onClick}
-      className={cn(
-        'text-sm font-medium focus:outline-none',
-        {
-          'text-black': isActive,
-          'text-[#aaaaaa]': !isActive,
-        }
-      )}
+      className={cn('text-sm font-medium focus:outline-none cursor-pointer', {
+        'text-black': isActive,
+        'text-[#aaaaaa]': !isActive,
+      })}
     >
       {children}
     </button>
