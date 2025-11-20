@@ -8,7 +8,7 @@ import SortButton from './SortButton';
 import { SelectBox } from '@/components/common/SelectBox';
 import { contests } from '../page';
 
-const Contest = () => {
+const ContestPageClient = () => {
   const sortOptions = ['전체', '인기순', '마감임박순'];
   const [activeSort, setActiveSort] = useState('전체');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -25,7 +25,7 @@ const Contest = () => {
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[904px]">
       {/* 공모전 그리드 */}
-      <h1 className="text-[28px] font-bold mb-5 mt-10 max-md:hidden">공모전</h1>
+      <h1 className="text-2xl font-bold mb-5 max-md:hidden mt-10">공모전</h1>
 
       <div className="flex max-sm:flex-col justify-between items-center mb-4 max-md:mt-7">
         <SelectBox
@@ -72,4 +72,4 @@ const Contest = () => {
   );
 };
 
-export default Contest;
+export default ContestPageClient;

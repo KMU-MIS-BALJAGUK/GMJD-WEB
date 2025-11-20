@@ -1,6 +1,6 @@
 'use client';
 
-import Contest from './components/Contest';
+import ContestPageClient from './components/ContestPageClient';
 
 export const contests = [
   {
@@ -78,5 +78,5 @@ export const contests = [
 ] as const;
 
 export default function ContestPage() {
-  return <Contest />;
+  return <ContestPageClient />;
 }
