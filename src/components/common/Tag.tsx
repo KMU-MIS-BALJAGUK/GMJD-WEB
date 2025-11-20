@@ -29,7 +29,7 @@ export const Tag: React.FC<TagProps> = ({
   ...props
 }) => {
   const baseStyles =
-    'inline-flex items-center gap-1.5 text-[12px] px-3 py-1.5 transition-colors duration-150';
+    'inline-flex items-center gap-1.5 text-[14px] px-3 py-1.5 transition-colors duration-150';
 
   const shapeStyles: Record<TagShape, string> = {
     rounded: 'rounded-full font-medium',
