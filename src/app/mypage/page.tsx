@@ -5,22 +5,10 @@ import Image from 'next/image';
 import { Button } from '@/components/common/Button';
 import { Tag } from '@/components/common/Tag';
 import { cn } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
+import { UserInfo } from '@/hooks/UserInfo';
 
-// 1. 가짜(Mock) 데이터: 나중에 DB에서 이 데이터를 불러올 예정
-const MOCK_USER_DATA = {
-  name: '김주미',
-  email: 'gongmoja@example.com',
-  Level: 'LV.3',
-  avatarUrl: '/profile.png',
-  intro: '안녕하세요. 잘 부탁드립니다.',
-  born: '2003.04.05',
-  school: '국민대학교',
-  major: '경영정보학부',
-  skills: ['Figma', 'Python'],
-  interest: '광고마케팅',
-};
-
-//  2. (가로추가) 가로 정렬 프로필 필드 헬퍼 컴포넌트
+//  (가로추가) 가로 정렬 프로필 필드 헬퍼 컴포넌트
 interface ProfileFieldProps {
   label: string;
   children: React.ReactNode;
@@ -32,7 +20,7 @@ const ProfileField: React.FC<ProfileFieldProps> = ({ label, children }) => (
   </div>
 );
 
-// 3. (세로추가) 세로 정렬 프로필 필드 헬퍼 컴포넌트
+// (세로추가) 세로 정렬 프로필 필드 헬퍼 컴포넌트
 interface ProfileFieldVerticalProps {
   label: string;
   children: React.ReactNode;
@@ -56,8 +44,11 @@ const ProfileFieldVertical: React.FC<ProfileFieldVerticalProps> = ({ label, chil
   </div>
 );
 
-//  3. 마이페이지 메인 컴포넌트
+//  마이페이지 메인 컴포넌트
 export default function MyPage() {
+  const router = useRouter();
+  //  useUserInfo 훅을 사용하여 데이터, 로딩, 에러 상태를 가져옵니다.
+  const { user, isLoading, error } = UserInfo();
   //  팝업 상태 관리 (나중에 유원누나 팝업 컴포넌트와 연결)
   const handleEditEducation = () => {
     console.log('학력 수정 팝업 열기');
@@ -72,6 +63,39 @@ export default function MyPage() {
   const handleEditInterest = () => {
     console.log('관심사 수정 팝업 열기');
   };
+
+  // 1. 로딩 상태 처리
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <div className="flex flex-col items-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-t-4 border-indigo-500"></div>
+          <p className="mt-4 text-gray-700">프로필 정보를 불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // 2. 에러 상태 또는 사용자 데이터가 없는 경우 처리
+  if (error || !user) {
+    // 토큰 만료 등의 오류가 발생하면 사용자에게 메시지 표시 후 로그인 페이지로 유도
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-gray-50 p-6">
+        <div className="text-center p-8 border border-red-300 rounded-lg shadow-xl bg-white max-w-sm">
+          <h2 className="text-xl font-bold text-red-600 mb-4">프로필 로드 실패</h2>
+          <p className="text-gray-700 mb-6">{error || '로그인이 필요합니다.'}</p>
+          <Button
+            onClick={() => router.push('/signup')}
+            variant="primary"
+            className="w-full bg-[#1487F9] text-white hover:bg-[#1176e3]"
+          >
+            다시 로그인하기
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white flex justify-center items-center py-16">
       {/* 페이지 네비게이션 카드 섹션 */}
@@ -84,15 +108,15 @@ export default function MyPage() {
           {/* A. 프로필 헤더 (사진, 이름, 이메일, 레벨) */}
           <div className="flex flex-col items-center gap-2">
             <Image
-              src={MOCK_USER_DATA.avatarUrl}
+              src={user.profileImageUrl || '/default-profile.png'}
               alt="프로필 이미지"
               width={100}
               height={100}
               className="rounded-full border"
             />
             <div className="text-center">
-              <h1 className="text-xl font-bold text-gray-900">{MOCK_USER_DATA.name}</h1>
-              <p className="text-sm text-[#888888]">{MOCK_USER_DATA.intro}</p>
+              <h1 className="text-xl font-bold text-gray-900">{user.name}</h1>
+              <p className="text-sm text-[#888888]">{user.introduction}</p>
             </div>
           </div>
 
@@ -105,38 +129,34 @@ export default function MyPage() {
                   shape="rounded"
                   className="w-[44px] h-[24px] p-0 justify-center text-xs"
                 >
-                  {MOCK_USER_DATA.Level}
+                  {`LV.${user.level}`}
                 </Tag>
               </p>
             </ProfileField>
 
-            <ProfileField label="생년월일">
-              <p>{MOCK_USER_DATA.born}</p>
-            </ProfileField>
-
             <ProfileField label="이메일">
-              <p>{MOCK_USER_DATA.email}</p>
+              <p>{user.email}</p>
             </ProfileField>
 
             <hr className="border-[#E7E7E7] mb-6" />
 
             <ProfileFieldVertical label="학력" onEdit={handleEditEducation}>
               <div className="flex items-center space-x-2">
-                <p className="text-base text-[#1D1D1D]">{MOCK_USER_DATA.school}</p>
+                <p className="text-base text-[#1D1D1D]">{user.universityName}</p>
                 <div className="h-[10px] w-px bg-[#E7E7E7]"></div>
-                <p className="text-base text-[#1D1D1D]">{MOCK_USER_DATA.major}</p>
+                <p className="text-base text-[#1D1D1D]">{user.major}</p>
               </div>
             </ProfileFieldVertical>
 
             <ProfileFieldVertical label="관심분야" onEdit={handleEditInterest}>
               <div className="flex items-center space-x-2">
-                <p className="text-base text-[#1D1D1D]">{MOCK_USER_DATA.interest}</p>
+                <p className="text-base text-[#1D1D1D]">{user.categoryList}</p>
               </div>
             </ProfileFieldVertical>
 
             <ProfileFieldVertical label="스킬셋" onEdit={handleEditSkills}>
               <div className="flex flex-wrap gap-2">
-                {MOCK_USER_DATA.skills.map((skill) => (
+                {user.skillList.map((skill) => (
                   <Tag
                     key={skill}
                     variant="default"

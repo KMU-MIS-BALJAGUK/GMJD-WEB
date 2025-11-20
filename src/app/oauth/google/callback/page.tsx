@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+//  AuthContext 연결: 토큰을 전역 상태에 저장하기 위해 useAuth 훅을 가져옵니다.
+import { useAuth } from '@/context/AuthContext';
 
 // 백엔드 API 엔드포인트: 인가 코드를 GET 요청으로 보낼 주소
 // 인가 코드는 이 주소 뒤에 쿼리 파라미터로 붙여서 보낼 것입니다.
@@ -17,12 +19,14 @@ const CoreCallbackLogic: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // 💡 상태 변수에 타입 명시: 로딩 상태는 boolean, 에러 메시지는 string 또는 null
+  const { login } = useAuth();
+
+  // 상태 변수에 타입 명시: 로딩 상태는 boolean, 에러 메시지는 string 또는 null
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // 💡 authCode는 문자열(string)이거나 없을 경우 null입니다.
+    // authCode는 문자열(string)이거나 없을 경우 null입니다.
     const authCode: string | null = searchParams.get('code');
 
     if (!authCode) {
@@ -40,6 +44,7 @@ const CoreCallbackLogic: React.FC = () => {
         // 2. 백엔드 API에 GET 요청을 보냅니다.
         const response: Response = await fetch(finalApiUrl, {
           method: 'GET',
+          credentials: 'include',
         });
 
         if (!response.ok) {
@@ -54,9 +59,11 @@ const CoreCallbackLogic: React.FC = () => {
         const accessToken: string | null = fullToken ? fullToken.replace('Bearer ', '') : null;
 
         if (accessToken) {
-          // 💡 다음 할 일: 이 accessToken을 브라우저의 전역 상태나
-          //    localStorage/sessionStorage 등에 저장해야 합니다.
-          console.log('액세스 토큰 추출 성공:', accessToken);
+          console.log('액세스 토큰 추출 성공, AuthContext에 저장 중:', accessToken);
+
+          // 추출한 토큰을 AuthContext의 login 함수에 전달하여
+          // 전역 상태 및 LocalStorage에 저장합니다.
+          login(accessToken);
 
           // 3-2. 성공 후 마이페이지로 이동
           router.push('/mypage');
@@ -74,7 +81,7 @@ const CoreCallbackLogic: React.FC = () => {
     };
 
     exchangeCodeForTokens();
-  }, [searchParams, router]); // 의존성 배열에 router와 searchParams 추가
+  }, [searchParams, router, login]); // 의존성 배열에 router와 searchParams,login 추가
 
   // 로딩 및 에러 UI
   return (
@@ -94,8 +101,9 @@ const CoreCallbackLogic: React.FC = () => {
         <div className="flex flex-col items-center">
           <div className="animate-spin rounded-full h-10 w-10 border-4 border-t-4 border-blue-500 border-opacity-25"></div>
           <p className="mt-4 text-lg font-semibold text-gray-700">
-            {loading ? '인증 정보 확인 중입니다...' : '인증 처리 완료'}
+            {loading ? 'Google 인증 정보 확인 중입니다...' : '인증 처리 완료'}
           </p>
+          <p className="mt-2 text-sm text-gray-500">잠시 후 자동으로 이동됩니다.</p>
         </div>
       )}
     </div>

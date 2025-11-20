@@ -1,17 +1,38 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { Menu, X, Search, UserRound } from 'lucide-react';
+import { Menu, X, Search, UserRound, LogOut as LogOutIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import Input from './common/Input';
+import { useAuth } from '@/context/AuthContext';
+
+//백엔드 서버로 연결
+const GOOGLE_AUTH_URL = 'https://dev.gmjd.site/oauth/google/callback';
 
 const Header = () => {
-  const isLogin = true; // TODO: 로그인 상태 관리
+  const { isLoggedIn, logout } = useAuth();
+  const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+
+  // 로그아웃 핸들러
+  const handleLogout = () => {
+    // Context의 logout 함수를 호출하여 로컬 스토리지에서 토큰을 제거합니다.
+    logout();
+    // 회원가입 페이지로 리디렉션합니다.
+    router.push('/signup');
+    setOpen(false); // 모바일 메뉴 닫기
+  };
+
+  // 비로그인 상태에서 로그인/회원가입 버튼 클릭 시 호출
+  const handleLoginOrSignupClick = (e: React.MouseEvent) => {
+    // Next.js Link 대신 window.location.href를 사용하여 OAuth 리다이렉트를 강제합니다.
+    e.preventDefault();
+    window.location.href = GOOGLE_AUTH_URL;
+  };
 
   return (
     <header className="w-full h-[68px] border-b border-border-01">
@@ -62,20 +83,29 @@ const Header = () => {
 
           <div className="text-border-02">|</div>
 
-          {isLogin ? (
-            <Link
-              href="/mypage"
-              className={cn(
-                'flex gap-1 items-end text-text-03 font-semibold text-[15px] cursor-pointer hover:text-blue transition-colors',
-                pathname === '/profile' && 'text-blue'
-              )}
-            >
-              <UserRound size={20} className="mb-0.5" />
-              <div className="flex gap-0.5 items-center">
-                <p>김주미</p>
-                <p>님</p>
-              </div>
-            </Link>
+          {isLoggedIn ? (
+            <>
+              <Link
+                href="/mypage"
+                className={cn(
+                  'flex gap-1 items-end text-text-03 font-semibold text-[15px] cursor-pointer hover:text-blue transition-colors',
+                  pathname === '/profile' && 'text-blue'
+                )}
+              >
+                <UserRound size={20} className="mb-0.5" />
+                <div className="flex gap-0.5 items-center">
+                  <p>김주미</p>
+                  <p>님</p>
+                </div>
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="text-text-03 hover:text-red-500 transition-colors"
+                title="로그아웃"
+              >
+                <LogOutIcon size={20} />
+              </button>
+            </>
           ) : (
             <div className="flex gap-2 text-text-03 font-semibold text-[15px]">
               <Link href="/signup" className="cursor-pointer hover:text-blue transition-colors">
@@ -142,20 +172,43 @@ const Header = () => {
             >
               채팅
             </Link>
-            <Link
-              href="/profile"
-              onClick={() => setOpen(false)}
-              className={`cursor-pointer ${
-                pathname === '/profile' && 'text-blue'
-              } hover:text-blue transition-colors`}
-            >
-              프로필
-            </Link>
+            {isLoggedIn ? (
+              <>
+                <Link
+                  href="/mypage"
+                  onClick={() => setOpen(false)}
+                  className={`cursor-pointer ${
+                    pathname === '/mypage' && 'text-blue'
+                  } hover:text-blue transition-colors`}
+                >
+                  마이페이지
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="text-left cursor-pointer hover:text-red-500 transition-colors"
+                >
+                  로그아웃
+                </button>
+              </>
+            ) : (
+              <Link
+                href={GOOGLE_AUTH_URL}
+                onClick={handleLoginOrSignupClick}
+                className="cursor-pointer hover:text-blue transition-colors"
+              >
+                로그인 / 회원가입
+              </Link>
+            )}
           </nav>
 
           <div className={`mt-auto flex gap-2 text-text-03 cursor-pointer font-semibold`}>
-            <UserRound size={20} />
-            <p>김주미 님</p>
+            {isLoggedIn && (
+              <>
+                <UserRound size={20} />
+                <p>김주미 님</p>
+              </>
+            )}
+            {!isLoggedIn && <p className="text-gray-500">로그인이 필요합니다.</p>}
           </div>
         </div>
       </div>
