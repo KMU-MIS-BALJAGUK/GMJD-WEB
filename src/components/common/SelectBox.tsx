@@ -46,7 +46,7 @@ export function SelectBox(props: SelectBoxProps) {
         <SelectTrigger
           className={cn(
             `
-            w-full !h-12 bg-bg-02 rounded-[8px] border-none text-[15px] px-4
+            w-full !h-11 bg-bg-02 rounded-[8px] border-none text-[15px] px-4
             focus-visible:ring-1 focus-visible:ring-blue cursor-pointer
           `,
             className

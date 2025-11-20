@@ -2,8 +2,6 @@
 import React from 'react';
 import { Button } from '@/components/common/Button';
 import Image from 'next/image';
-const LOGO_COLOR_CLASS = 'text-[#3F3356]';
-const GOOGLE_TEXT_COLOR_CLASS = 'text-gray-600';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const GOOGLE_TEXT_COLOR_CLASS = 'text-gray-600';
