@@ -12,7 +12,6 @@ import { SelectBox } from '@/components/common/SelectBox';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
 
-// 폼 필드 구조를 단순화하기 위한 헬퍼 컴포넌트
 interface FormFieldProps {
   label: string;
   children: React.ReactNode;
