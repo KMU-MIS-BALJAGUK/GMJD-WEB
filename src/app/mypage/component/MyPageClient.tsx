@@ -119,12 +119,7 @@ export default function MyPageClient({ user }: MyPageClientProps) {
             <ProfileFieldVertical label="스킬셋" onEdit={handleEditSkills}>
               <div className="flex flex-wrap gap-2">
                 {user.skills.map((skill) => (
-                  <Tag
-                    key={skill}
-                    variant="default"
-                    shape="rounded"
-                    className="w-[67px] h-[34px] justify-center text-text-02"
-                  >
+                  <Tag key={skill} variant="default" shape="rounded" className="text-text-02">
                     {skill}
                   </Tag>
                 ))}
