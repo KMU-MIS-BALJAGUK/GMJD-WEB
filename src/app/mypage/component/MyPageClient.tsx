@@ -88,19 +88,17 @@ export default function MyPageClient({ user }: MyPageClientProps) {
           </div>
 
           <div className="space-y-4">
-            <ProfileField label="추천레벨">
-              <Tag variant="blue" shape="rounded">
-                {user.Level}
-              </Tag>
-            </ProfileField>
+            <div>
+              <ProfileField label="추천레벨">
+                <Tag variant="blue" shape="rounded">
+                  {user.Level}
+                </Tag>
+              </ProfileField>
 
-            {/* <ProfileField label="생년월일">
-              <p className="text-[15px]">{user.born}</p>
-            </ProfileField> */}
-
-            <ProfileField label="이메일">
-              <p className="text-[15px]">{user.email}</p>
-            </ProfileField>
+              <ProfileField label="이메일">
+                <p className="text-[15px]">{user.email}</p>
+              </ProfileField>
+            </div>
 
             <hr className="border-border-1 mb-6" />
 
