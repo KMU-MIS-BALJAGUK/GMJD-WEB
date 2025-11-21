@@ -1,3 +1,5 @@
+//기존 register 페이지
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -33,7 +35,7 @@ export default function RegisterPage() {
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const [univ, setUniv] = useState<string>('');
 
-  const univList = [
+  const universityList = [
     '서울대학교',
     '연세대학교',
     '고려대학교',
@@ -41,6 +43,20 @@ export default function RegisterPage() {
     '한양대학교',
     '경희대학교',
   ];
+
+  const highSchoolList = [
+    '하나고등학교',
+    '대원외국어고등학교',
+    '민족사관고등학교',
+    '상산고등학교',
+    '용문고등학교',
+    '경기과학고등학교',
+  ];
+
+  const currentSchoolList = selectedEducation === '대학교' ? universityList : highSchoolList;
+
+  const isUniversitySelected = selectedEducation === '대학교';
+  const disabledClass = isUniversitySelected ? '' : 'opacity-50 pointer-events-none relative';
 
   //  3. 새로 추가된 스킬 목록 상태 (배열)
   const [skillsList, setSkillsList] = useState<string[]>([]);
@@ -54,6 +70,9 @@ export default function RegisterPage() {
       ...prev,
       [name]: value,
     }));
+    if (name === 'school') {
+      setShowDropdown(true);
+    }
   };
 
   // 💡 SelectBox 전용 핸들러 (SelectBox는 'value'를 직접 전달함)
@@ -87,17 +106,24 @@ export default function RegisterPage() {
   // 8. 유효성 검사 (값이 변경될 때마다 실행)
   useEffect(() => {
     console.log('Form Data Updated:', formData);
-    const isValid =
+    const baseValid =
       formData.intro.trim() !== '' &&
       formData.school.trim() !== '' &&
       formData.department.trim() !== '' &&
       formData.interest !== '' &&
       skillsList.length > 0;
 
-    console.log('Is Form Valid:', isValid);
+    let departmentValid = true;
+    if (isUniversitySelected) {
+      departmentValid = formData.department.trim() !== '';
+    }
+
+    const isValid = baseValid && departmentValid;
+
+    //console.log('Is Form Valid:', isValid);
 
     setIsButtonActive(isValid);
-  }, [formData, skillsList]);
+  }, [formData, skillsList, isUniversitySelected]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -110,6 +136,16 @@ export default function RegisterPage() {
       skillSet: skillsList,
     });
     // 해야할것: 서버로 폼 데이터 전송
+  };
+
+  const handleEducationChange = (education: '고등학교' | '대학교') => {
+    setSelectedEducation(education);
+    setFormData((prev) => ({
+      ...prev,
+      school: '',
+      department: '',
+    }));
+    setShowDropdown(false);
   };
 
   // 시안에 맞는 스타일 정의
@@ -145,14 +181,14 @@ export default function RegisterPage() {
                 <Button
                   variant={selectedEducation === '고등학교' ? 'active' : 'ghost'}
                   className="w-1/2"
-                  onClick={() => setSelectedEducation('고등학교')}
+                  onClick={() => handleEducationChange('고등학교')}
                 >
                   고등학교
                 </Button>
                 <Button
                   variant={selectedEducation === '대학교' ? 'active' : 'ghost'}
                   className="w-1/2"
-                  onClick={() => setSelectedEducation('대학교')}
+                  onClick={() => handleEducationChange('대학교')}
                 >
                   대학교
                 </Button>
@@ -188,8 +224,9 @@ export default function RegisterPage() {
                       animate-in fade-in zoom-in
                     "
                   >
-                    {univList.length > 0 ? (
-                      univList.map((name, index) => (
+                    {currentSchoolList
+                      .filter((name) => name.includes(formData.school))
+                      .map((name, index) => (
                         <li
                           key={index}
                           className="
@@ -206,10 +243,9 @@ export default function RegisterPage() {
                           {/* 체크 아이콘 */}
                           {formData.school === name && <Check className="size-4 text-blue" />}
                         </li>
-                      ))
-                    ) : (
-                      <li className="px-3 py-2 text-gray-500 text-sm">검색 결과 없음</li>
-                    )}
+                      ))}
+                    {currentSchoolList.filter((name) => name.includes(formData.school)).length ===
+                      0 && <li className="px-3 py-2 text-gray-500 text-sm">검색 결과 없음</li>}
                   </ul>
                 )}
               </div>
@@ -217,11 +253,12 @@ export default function RegisterPage() {
 
             {/* 4. 전공 선택 (Tags) */}
             <FormField label="인정 학력 선택">
-              <div className="flex gap-2 w-full">
+              <div className={`flex gap-2 w-full ${disabledClass}`}>
                 <Button
                   variant={selectedMajorType === '대학교 (2, 3년제)' ? 'active' : 'ghost'}
                   className="w-1/2"
                   onClick={() => setSelectedMajorType('대학교 (2, 3년제)')}
+                  disabled={!isUniversitySelected}
                 >
                   대학교 (2, 3년제)
                 </Button>
@@ -229,6 +266,7 @@ export default function RegisterPage() {
                   variant={selectedMajorType === '대학교 (4년제)' ? 'active' : 'ghost'}
                   className="w-1/2"
                   onClick={() => setSelectedMajorType('대학교 (4년제)')}
+                  disabled={!isUniversitySelected}
                 >
                   대학교 (4년제)
                 </Button>
@@ -237,12 +275,15 @@ export default function RegisterPage() {
 
             {/* 5. 학과 명 입력 */}
             <FormField label="학과 명 입력">
-              <Input
-                name="department"
-                value={formData.department}
-                onChange={handleInputChange}
-                placeholder="학과 명을 입력해주세요"
-              />
+              <div className={disabledClass}>
+                <Input
+                  name="department"
+                  value={formData.department}
+                  onChange={handleInputChange}
+                  placeholder="학과 명을 입력해주세요"
+                  disabled={!isUniversitySelected}
+                />
+              </div>
             </FormField>
 
             {/* 6. 관심 분야 (Dropdown Placeholder) */}
