@@ -4,9 +4,10 @@ import Input from '@/components/common/Input';
 import { formatDateOnly, formatTimeOnly } from '@/lib/utils';
 import { ChevronLeft, CircleArrowUp, UsersRound } from 'lucide-react';
 import Image from 'next/image';
-import React from 'react';
+import React, { useState } from 'react';
 import { RoomListItem } from '../type/chatType';
 import { useRouter } from 'next/navigation';
+import PlayerInfoPopup from '@/components/popup/my-recruit/PlayerInfoPopup';
 
 const messages = [
   {
@@ -92,6 +93,7 @@ const ChatRoom = ({
 }) => {
   const filteredMessages = messages.filter((msg) => msg.roomId === selectedRoom);
   const router = useRouter();
+  const [openInfo, setOpenInfo] = useState(false);
 
   return (
     <div className="flex flex-col h-full w-full">
@@ -120,7 +122,6 @@ const ChatRoom = ({
           </div>
         </div>
       </div>
-
       {/* 채팅 메시지 영역 */}
       <div className="px-5 py-8 flex-1">
         {filteredMessages.length === 0 ? (
@@ -136,7 +137,8 @@ const ChatRoom = ({
                   <img
                     src={message.sender.avatar}
                     alt={message.sender.name}
-                    className="w-8 h-8 rounded-full"
+                    className="w-8 h-8 rounded-full cursor-pointer"
+                    onClick={() => setOpenInfo(true)}
                   />
                   <div className="flex flex-col gap-1">
                     <p className="text-[13px] text-text-01">{message.sender.name}</p>
@@ -166,7 +168,6 @@ const ChatRoom = ({
           ))
         )}
       </div>
-
       {/* 메시지 영역 */}
       <div className="w-full h-[60px] bg-white mt-auto rounded-b-2xl px-4 flex items-center">
         <div className="flex-1">
@@ -178,6 +179,7 @@ const ChatRoom = ({
           />
         </div>
       </div>
+      <PlayerInfoPopup open={openInfo} setOpen={setOpenInfo} /> {/* TODO: id 연동 */}
     </div>
   );
 };
