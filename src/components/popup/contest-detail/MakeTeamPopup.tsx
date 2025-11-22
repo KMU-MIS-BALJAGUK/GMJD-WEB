@@ -4,7 +4,7 @@ import { CircleMinus, CirclePlus, CircleX } from 'lucide-react';
 import Input from '../../common/Input';
 import LayerPopup from '../../common/layerpopup/LayerPopup';
 
-const MakeTeamPopup = ({ open, setOpen, contestId }: { open: boolean; setOpen: (value: boolean) => void; contestId: number; }) => {
+const MakeTeamPopup = ({ open, setOpen, contestId }: { open: boolean; setOpen: (value: boolean) => void; contestId?: number; }) => {
   const AIQuestion = [
     // TODO: 나중에 API로 변경
     '해당 공모전에 지원한 동기가 무엇인가요?',
@@ -53,7 +53,7 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: { open: boolean; setOpen: (
 
   const handleSubmit = () => {
     console.log({
-      contestId: contestId, 
+
       title: title,
       recruitNumber: recruitNumber,
       content: content,
