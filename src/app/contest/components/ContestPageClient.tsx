@@ -60,10 +60,7 @@ const ContestPageClient = () => {
 
       {/* 더보기 버튼 */}
       <div className="mt-10 text-center">
-        <Button
-          variant="ghost"
-          className="w-[343px] mx-auto bg-white text-[#555555] border border-[#E7E7E7] rounded mb-10"
-        >
+        <Button variant="ghost" className="w-full max-w-[400px] mx-auto mb-5">
           더보기
           <ChevronDown size={20} className="ml-2" />
         </Button>
