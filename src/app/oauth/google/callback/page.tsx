@@ -73,15 +73,13 @@ const CoreCallbackLogic: React.FC = () => {
           );
         }
       } catch (e: unknown) {
-        // TypeScript에서 오류 처리를 위해 unknown으로 타입을 지정
-        // 오류 객체의 message를 안전하게 사용하기 위해 타입 가드 사용
         setError(`로그인 실패: ${e instanceof Error ? e.message : '알 수 없는 오류 발생'}`);
         setLoading(false);
       }
     };
 
     exchangeCodeForTokens();
-  }, [searchParams, router, login]); // 의존성 배열에 router와 searchParams,login 추가
+  }, [searchParams, router, login]);
 
   // 로딩 및 에러 UI
   return (
@@ -112,7 +110,6 @@ const CoreCallbackLogic: React.FC = () => {
 
 const GoogleAuthCallbackPage: React.FC = () => {
   return (
-    // Suspense로 감싸서, searchParams가 로드될 때까지 기다리도록 설정합니다.
     <Suspense
       fallback={
         <div className="flex items-center justify-center min-h-[50vh] text-center">
