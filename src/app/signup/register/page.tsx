@@ -6,14 +6,23 @@ import { Tag } from '@/components/common/Tag';
 import { SelectBox } from '@/components/common/SelectBox';
 import { Check, Search, X } from 'lucide-react';
 import Input from '@/components/common/Input';
+import { cn } from '@/lib/utils';
 
 interface FormFieldProps {
   label: string;
   children: React.ReactNode;
+  disabled?: boolean;
 }
-const FormField = ({ label, children }: FormFieldProps) => (
+const FormField = ({ label, children, disabled }: FormFieldProps) => (
   <div className="space-y-2 flex flex-col">
-    <label className="text-base font-bold text-[#1D1D1D] block">{label}</label>
+    <label
+      className={cn(
+        'text-base font-bold text-[#1D1D1D] block',
+        disabled && 'opacity-50  transition-opacity duration-300'
+      )}
+    >
+      {label}
+    </label>
     {children}
   </div>
 );
@@ -32,6 +41,7 @@ export default function RegisterPage() {
   const [selectedMajorType, setSelectedMajorType] = useState('대학교 (4년제)');
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const [univ, setUniv] = useState<string>('');
+  const isHighschool = selectedEducation === '고등학교';
 
   const univList = [
     '서울대학교',
@@ -160,8 +170,14 @@ export default function RegisterPage() {
             </FormField>
 
             {/* 3. 학교명 검색 */}
-            <FormField label="학교 명 검색">
-              <div className="relative w-full">
+            <FormField label="학교 명 검색" disabled={isHighschool}>
+              <div
+                className={`relative w-full ${
+                  isHighschool
+                    ? 'opacity-50 cursor-not-allowed pointer-events-none  transition-opacity duration-300'
+                    : ''
+                }`}
+              >
                 <Input
                   name="school"
                   variant="default"
@@ -178,46 +194,22 @@ export default function RegisterPage() {
                   }
                 />
 
+                {/* dropdown도 pointer-events-none 상태라 자동 비활성화됨 */}
                 {formData.school.length > 0 && showDropdown && (
-                  <ul
-                    className="
-                      absolute left-0 right-0 top-full z-50 
-                      mt-2 p-1 w-full 
-                      bg-white border border-gray-200 rounded-md shadow-md
-                      max-h-48 overflow-y-auto scrollbar
-                      animate-in fade-in zoom-in
-                    "
-                  >
-                    {univList.length > 0 ? (
-                      univList.map((name, index) => (
-                        <li
-                          key={index}
-                          className="
-                            px-3 py-2.5 rounded text-[15px] cursor-pointer
-                            hover:bg-gray-100 flex items-center justify-between
-                          "
-                          onClick={() => {
-                            setFormData((prev) => ({ ...prev, school: name }));
-                            setShowDropdown(false);
-                          }}
-                        >
-                          {name}
-
-                          {/* 체크 아이콘 */}
-                          {formData.school === name && <Check className="size-4 text-blue" />}
-                        </li>
-                      ))
-                    ) : (
-                      <li className="px-3 py-2 text-gray-500 text-sm">검색 결과 없음</li>
-                    )}
-                  </ul>
+                  <ul className="absolute ...">...</ul>
                 )}
               </div>
             </FormField>
 
             {/* 4. 전공 선택 (Tags) */}
-            <FormField label="인정 학력 선택">
-              <div className="flex gap-2 w-full">
+            <FormField label="인정 학력 선택" disabled={isHighschool}>
+              <div
+                className={`flex gap-2 w-full ${
+                  isHighschool
+                    ? 'opacity-50 cursor-not-allowed pointer-events-none  transition-opacity duration-300'
+                    : ''
+                }`}
+              >
                 <Button
                   variant={selectedMajorType === '대학교 (2, 3년제)' ? 'active' : 'ghost'}
                   className="w-1/2"
@@ -236,13 +228,21 @@ export default function RegisterPage() {
             </FormField>
 
             {/* 5. 학과 명 입력 */}
-            <FormField label="학과 명 입력">
-              <Input
-                name="department"
-                value={formData.department}
-                onChange={handleInputChange}
-                placeholder="학과 명을 입력해주세요"
-              />
+            <FormField label="학과 명 입력" disabled={isHighschool}>
+              <div
+                className={`${
+                  isHighschool
+                    ? 'opacity-50 cursor-not-allowed pointer-events-none transition-opacity duration-300'
+                    : ''
+                }`}
+              >
+                <Input
+                  name="department"
+                  value={formData.department}
+                  onChange={handleInputChange}
+                  placeholder="학과 명을 입력해주세요"
+                />
+              </div>
             </FormField>
 
             {/* 6. 관심 분야 (Dropdown Placeholder) */}
