@@ -1,6 +1,7 @@
 'use client';
 
 import Button from '@/components/common/Button';
+import Tag from '@/components/common/Tag';
 import { UsersRound } from 'lucide-react';
 import Image from 'next/image';
 
@@ -34,13 +35,13 @@ export default function MyApplyCard({
         {/* 상태 배지 */}
         <div className="absolute bottom-2 left-2">
           {isOpen ? (
-            <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-semibold shadow">
+            <Tag variant="green" shape="square" className="text-xs">
               모집중
-            </span>
+            </Tag>
           ) : (
-            <span className="bg-gray-600 text-white px-2 py-1 rounded text-xs font-semibold shadow">
+            <Tag variant="gray" shape="square" className="text-xs">
               모집완료
-            </span>
+            </Tag>
           )}
         </div>
       </div>
