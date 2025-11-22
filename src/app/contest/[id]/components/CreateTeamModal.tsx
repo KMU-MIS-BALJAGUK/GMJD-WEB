@@ -40,7 +40,7 @@ export default function CreateTeamModal({ isOpen, onClose, contestId }: CreateTe
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} width="700px" title="팀 만들기">
+    <Modal isOpen={isOpen} onClose={onClose} width="600px" title="팀 만들기">
       <div className="space-y-6">
         {/* 제목 */}
         <div className="space-y-2">
@@ -52,7 +52,7 @@ export default function CreateTeamModal({ isOpen, onClose, contestId }: CreateTe
             placeholder="팀 이름을 입력하세요"
             value={formData.title}
             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-            className="w-full h-12 px-4 bg-gray-50 border border-gray-300 rounded-lg text-base placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            className="w-full h-12 px-4 bg-[#F5F5F5] border border-gray-300 rounded-lg text-[15px] placeholder:text-[#888888] focus:outline-none focus:ring-2 focus:ring-[#1487F9] focus:border-transparent transition-all"
           />
         </div>
 
@@ -90,7 +90,7 @@ export default function CreateTeamModal({ isOpen, onClose, contestId }: CreateTe
             placeholder="팀 소개, 모집 역할, 필요 스킬 등을 작성해주세요"
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            className="w-full h-32 px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-base placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+            className="w-full h-32 px-4 py-3 bg-[#F5F5F5] border border-gray-300 rounded-lg text-[15px] placeholder:text-[#888888] focus:outline-none focus:ring-2 focus:ring-[#1487F9] focus:border-transparent transition-all resize-none"
           />
         </div>
 
@@ -106,11 +106,14 @@ export default function CreateTeamModal({ isOpen, onClose, contestId }: CreateTe
               value={formData.question}
               onChange={(e) => setFormData({ ...formData, question: e.target.value })}
               onKeyPress={(e) => e.key === 'Enter' && handleAddQuestion()}
-              className="flex-1 h-12 px-4 bg-gray-50 border border-gray-300 rounded-lg text-base placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              className="flex-1 h-12 px-4 bg-[#F5F5F5] border border-gray-300 rounded-lg text-[15px] placeholder:text-[#888888] focus:outline-none focus:ring-2 focus:ring-[#1487F9] focus:border-transparent transition-all"
             />
-            <Button onClick={handleAddQuestion} className="h-12 px-6">
+            <button
+              onClick={handleAddQuestion}
+              className="h-12 px-6 bg-[#1487F9] text-white rounded-lg hover:bg-blue-600 transition-colors"
+            >
               추가
-            </Button>
+            </button>
           </div>
 
           {/* 추가된 질문 목록 */}
@@ -134,22 +137,21 @@ export default function CreateTeamModal({ isOpen, onClose, contestId }: CreateTe
         {/* AI 추천 질문 */}
         <div className="space-y-3">
           <div className="flex items-center gap-2">
-            <Sparkles size={18} className="text-blue-600" />
+            <Sparkles size={18} className="text-[#1487F9]" />
             <label className="text-sm font-semibold text-gray-700">
               AI 추천 질문
             </label>
           </div>
           <div className="space-y-2">
             {aiQuestions.map((question, index) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors">
+              <div key={index} className="flex items-center justify-between p-3 bg-[#F5F5F5] border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors">
                 <span className="text-sm text-gray-700">{question}</span>
-                <Button
+                <button
                   onClick={() => setQuestions([...questions, question])}
-                  variant="ghost"
-                  className="h-8 px-4 text-xs"
+                  className="px-4 py-1 text-sm text-[#1487F9] hover:bg-blue-50 rounded transition-colors"
                 >
                   추가
-                </Button>
+                </button>
               </div>
             ))}
           </div>
@@ -157,17 +159,19 @@ export default function CreateTeamModal({ isOpen, onClose, contestId }: CreateTe
 
         {/* 버튼 */}
         <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
-          <Button variant="ghost" onClick={onClose} className="px-6">
+          <button
+            onClick={onClose}
+            className="px-6 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+          >
             취소
-          </Button>
-          <Button
-            variant="primary"
+          </button>
+          <button
             onClick={handleSubmit}
-            className="px-8"
             disabled={!formData.title || !formData.description || formData.memberCount === 0}
+            className="px-8 py-2 bg-[#1487F9] text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
           >
             팀 만들기
-          </Button>
+          </button>
         </div>
       </div>
     </Modal>

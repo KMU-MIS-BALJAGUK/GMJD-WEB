@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Modal from '@/components/common/Modal';
-import Button from '@/components/common/Button';
 import { X, Plus } from 'lucide-react';
 import { Team } from '@/types/contest';
 
@@ -42,10 +41,10 @@ export default function ApplyTeamModal({ isOpen, onClose, team }: ApplyTeamModal
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} width="700px" title={team.teamName}>
+    <Modal isOpen={isOpen} onClose={onClose} width="600px" title={team.teamName}>
       <div className="space-y-6">
         {/* 팀 정보 */}
-        <div className="p-4 bg-gray-50 rounded-lg space-y-2">
+        <div className="p-4 bg-[#F5F5F5] rounded-lg space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-sm font-semibold text-gray-700">팀장</span>
             <span className="text-sm text-gray-900">{team.leaderName}</span>
@@ -59,14 +58,16 @@ export default function ApplyTeamModal({ isOpen, onClose, team }: ApplyTeamModal
         {/* 모집 글 */}
         <div className="space-y-2">
           <h3 className="text-sm font-semibold text-gray-700">팀 소개</h3>
-          <p className="text-sm text-gray-600 leading-relaxed p-4 bg-gray-50 rounded-lg">
+          <p className="text-sm text-gray-600 leading-relaxed p-4 bg-[#F5F5F5] rounded-lg">
             {team.description}
           </p>
         </div>
 
         {/* 스킬셋 */}
         <div className="space-y-3">
-          <h3 className="text-sm font-semibold text-gray-700">보유 스킬 <span className="text-red-500">*</span></h3>
+          <h3 className="text-sm font-semibold text-gray-700">
+            보유 스킬 <span className="text-red-500">*</span>
+          </h3>
           <div className="flex gap-2">
             <input
               type="text"
@@ -74,11 +75,14 @@ export default function ApplyTeamModal({ isOpen, onClose, team }: ApplyTeamModal
               value={skillInput}
               onChange={(e) => setSkillInput(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleAddSkill()}
-              className="flex-1 h-12 px-4 bg-gray-50 border border-gray-300 rounded-lg text-base placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              className="flex-1 h-12 px-4 bg-[#F5F5F5] border border-gray-300 rounded-lg text-[15px] placeholder:text-[#888888] focus:outline-none focus:ring-2 focus:ring-[#1487F9] focus:border-transparent transition-all"
             />
-            <Button onClick={handleAddSkill} className="h-12 px-6">
+            <button
+              onClick={handleAddSkill}
+              className="h-12 w-12 bg-[#1487F9] text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center"
+            >
               <Plus size={18} />
-            </Button>
+            </button>
           </div>
 
           {/* 추가된 스킬 */}
@@ -111,7 +115,7 @@ export default function ApplyTeamModal({ isOpen, onClose, team }: ApplyTeamModal
                 placeholder="답변을 작성해주세요"
                 value={answers[index] || ''}
                 onChange={(e) => setAnswers({ ...answers, [index]: e.target.value })}
-                className="w-full h-24 px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+                className="w-full h-24 px-4 py-3 bg-[#F5F5F5] border border-gray-300 rounded-lg text-sm placeholder:text-[#888888] focus:outline-none focus:ring-2 focus:ring-[#1487F9] focus:border-transparent transition-all resize-none"
               />
             </div>
           ))}
@@ -119,17 +123,19 @@ export default function ApplyTeamModal({ isOpen, onClose, team }: ApplyTeamModal
 
         {/* 버튼 */}
         <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
-          <Button variant="ghost" onClick={onClose} className="px-6">
+          <button
+            onClick={onClose}
+            className="px-6 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+          >
             취소
-          </Button>
-          <Button
-            variant="primary"
+          </button>
+          <button
             onClick={handleSubmit}
-            className="px-8"
             disabled={skills.length === 0}
+            className="px-8 py-2 bg-[#1487F9] text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
           >
             신청하기
-          </Button>
+          </button>
         </div>
       </div>
     </Modal>

@@ -1,122 +1,122 @@
 {
-  "contest": {
-    "id": 1,
-    "title": "2025 국민대학교 SW 해커톤",
-    "organizer": "국민대학교 소프트웨어융합대학",
-    "posterUrl": "https://via.placeholder.com/800x400?text=Contest+Poster",
-    "category": "IT/소프트웨어",
-    "startDate": "2025-11-20",
-    "endDate": "2025-12-15",
-    "prize": "대상 300만원, 최우수상 200만원, 우수상 100만원",
-    "description": "국민대학교에서 주최하는 소프트웨어 해커톤입니다. 혁신적인 아이디어와 기술로 사회 문제를 해결하는 서비스를 개발해주세요.\n\n이번 해커톤의 주제는 '일상의 불편함을 해결하는 AI 서비스'입니다. 팀원들과 협력하여 창의적인 솔루션을 만들어보세요!\n\n참가자 전원에게는 참가 기념품이 제공되며, 수상팀에게는 상금과 함께 인턴십 기회가 주어집니다.",
-    "requirements": "- 대학생 또는 대학원생 (휴학생 포함)\n- 3~5인으로 구성된 팀\n- 개발 경험 필수는 아니지만 열정은 필수!",
-    "homepageUrl": "https://kmu-hackathon.example.com",
-    "status": "recruiting",
-    "viewCount": 1250,
-    "bookmarkCount": 89,
-    "createdAt": "2025-11-01T09:00:00Z",
-    "updatedAt": "2025-11-12T14:30:00Z"
-  },
-  "teams": [
-    {
-      "id": 101,
-      "contestId": 1,
-      "teamName": "코드마스터즈",
-      "description": "열정 넘치는 개발자들이 모인 팀입니다! AI 기술로 학생들의 학습을 돕는 서비스를 만들고 있어요. 함께 성장하며 멋진 결과물을 만들어봐요!",
-      "leaderName": "김민수",
-      "leaderProfile": "https://via.placeholder.com/100",
-      "currentMembers": 3,
-      "maxMembers": 5,
-      "requiredPositions": [
-        {
-          "role": "프론트엔드",
-          "count": 1,
-          "currentCount": 1
-        },
-        {
-          "role": "백엔드",
-          "count": 1,
-          "currentCount": 0
-        },
-        {
-          "role": "디자이너",
-          "count": 1,
-          "currentCount": 0
-        }
-      ],
-      "tags": ["열정적인", "실력파", "친근한"],
+    "contest": {
+      "id": 1,
+      "title": "2025 국민대학교 SW 해커톤",
+      "organizer": "국민대학교 소프트웨어융합대학",
+      "posterUrl": "https://via.placeholder.com/800x400?text=Contest+Poster",
+      "category": "IT/소프트웨어",
+      "startDate": "2025-11-20",
+      "endDate": "2025-12-15",
+      "prize": "대상 300만원, 최우수상 200만원, 우수상 100만원",
+      "description": "국민대학교에서 주최하는 소프트웨어 해커톤입니다. 혁신적인 아이디어와 기술로 사회 문제를 해결하는 서비스를 개발해주세요.\n\n이번 해커톤의 주제는 '일상의 불편함을 해결하는 AI 서비스'입니다. 팀원들과 협력하여 창의적인 솔루션을 만들어보세요!\n\n참가자 전원에게는 참가 기념품이 제공되며, 수상팀에게는 상금과 함께 인턴십 기회가 주어집니다.",
+      "requirements": "- 대학생 또는 대학원생 (휴학생 포함)\n- 3~5인으로 구성된 팀\n- 개발 경험 필수는 아니지만 열정은 필수!",
+      "homepageUrl": "https://kmu-hackathon.example.com",
       "status": "recruiting",
-      "createdAt": "2025-11-05T10:00:00Z"
+      "viewCount": 1250,
+      "bookmarkCount": 89,
+      "createdAt": "2025-11-01T09:00:00Z",
+      "updatedAt": "2025-11-12T14:30:00Z"
     },
-    {
-      "id": 102,
-      "contestId": 1,
-      "teamName": "AI 이노베이터",
-      "description": "AI와 머신러닝에 관심있는 분들 환영합니다. 이미 프로토타입이 있고, 추가 개발자가 필요해요.",
-      "leaderName": "이지은",
-      "leaderProfile": "https://via.placeholder.com/100",
-      "currentMembers": 4,
-      "maxMembers": 5,
-      "requiredPositions": [
-        {
-          "role": "프론트엔드",
-          "count": 1,
-          "currentCount": 0
-        }
-      ],
-      "tags": ["경험자우대", "체계적인"],
-      "status": "recruiting",
-      "createdAt": "2025-11-06T14:20:00Z"
-    },
-    {
-      "id": 103,
-      "contestId": 1,
-      "teamName": "스타트업 드림팀",
-      "description": "실제 창업까지 목표로 하는 진지한 팀입니다. 장기적으로 함께 할 수 있는 분을 찾습니다.",
-      "leaderName": "박준형",
-      "leaderProfile": "https://via.placeholder.com/100",
-      "currentMembers": 2,
-      "maxMembers": 4,
-      "requiredPositions": [
-        {
-          "role": "백엔드",
-          "count": 1,
-          "currentCount": 0
-        },
-        {
-          "role": "디자이너",
-          "count": 1,
-          "currentCount": 0
-        }
-      ],
-      "tags": ["장기프로젝트", "창업지향"],
-      "status": "recruiting",
-      "createdAt": "2025-11-08T09:30:00Z"
-    },
-    {
-      "id": 104,
-      "contestId": 1,
-      "teamName": "초보환영 프렌즈",
-      "description": "처음 공모전 참가하시는 분들도 환영합니다! 함께 배우면서 성장하는 팀을 만들고 싶어요.",
-      "leaderName": "최수진",
-      "leaderProfile": "https://via.placeholder.com/100",
-      "currentMembers": 3,
-      "maxMembers": 5,
-      "requiredPositions": [
-        {
-          "role": "프론트엔드",
-          "count": 1,
-          "currentCount": 0
-        },
-        {
-          "role": "백엔드",
-          "count": 1,
-          "currentCount": 0
-        }
-      ],
-      "tags": ["초보환영", "친근한", "배움지향"],
-      "status": "recruiting",
-      "createdAt": "2025-11-10T11:00:00Z"
-    }
-  ]
-}
+    "teams": [
+      {
+        "id": 101,
+        "contestId": 1,
+        "teamName": "코드마스터즈",
+        "description": "열정 넘치는 개발자들이 모인 팀입니다! AI 기술로 학생들의 학습을 돕는 서비스를 만들고 있어요. 함께 성장하며 멋진 결과물을 만들어봐요!",
+        "leaderName": "김민수",
+        "leaderProfile": "https://via.placeholder.com/100",
+        "currentMembers": 3,
+        "maxMembers": 5,
+        "requiredPositions": [
+          {
+            "role": "프론트엔드",
+            "count": 1,
+            "currentCount": 1
+          },
+          {
+            "role": "백엔드",
+            "count": 1,
+            "currentCount": 0
+          },
+          {
+            "role": "디자이너",
+            "count": 1,
+            "currentCount": 0
+          }
+        ],
+        "tags": ["열정적인", "실력파", "친근한"],
+        "status": "recruiting",
+        "createdAt": "2025-11-05T10:00:00Z"
+      },
+      {
+        "id": 102,
+        "contestId": 1,
+        "teamName": "AI 이노베이터",
+        "description": "AI와 머신러닝에 관심있는 분들 환영합니다. 이미 프로토타입이 있고, 추가 개발자가 필요해요.",
+        "leaderName": "이지은",
+        "leaderProfile": "https://via.placeholder.com/100",
+        "currentMembers": 4,
+        "maxMembers": 5,
+        "requiredPositions": [
+          {
+            "role": "프론트엔드",
+            "count": 1,
+            "currentCount": 0
+          }
+        ],
+        "tags": ["경험자우대", "체계적인"],
+        "status": "recruiting",
+        "createdAt": "2025-11-06T14:20:00Z"
+      },
+      {
+        "id": 103,
+        "contestId": 1,
+        "teamName": "스타트업 드림팀",
+        "description": "실제 창업까지 목표로 하는 진지한 팀입니다. 장기적으로 함께 할 수 있는 분을 찾습니다.",
+        "leaderName": "박준형",
+        "leaderProfile": "https://via.placeholder.com/100",
+        "currentMembers": 2,
+        "maxMembers": 4,
+        "requiredPositions": [
+          {
+            "role": "백엔드",
+            "count": 1,
+            "currentCount": 0
+          },
+          {
+            "role": "디자이너",
+            "count": 1,
+            "currentCount": 0
+          }
+        ],
+        "tags": ["장기프로젝트", "창업지향"],
+        "status": "recruiting",
+        "createdAt": "2025-11-08T09:30:00Z"
+      },
+      {
+        "id": 104,
+        "contestId": 1,
+        "teamName": "초보환영 프렌즈",
+        "description": "처음 공모전 참가하시는 분들도 환영합니다! 함께 배우면서 성장하는 팀을 만들고 싶어요.",
+        "leaderName": "최수진",
+        "leaderProfile": "https://via.placeholder.com/100",
+        "currentMembers": 3,
+        "maxMembers": 5,
+        "requiredPositions": [
+          {
+            "role": "프론트엔드",
+            "count": 1,
+            "currentCount": 0
+          },
+          {
+            "role": "백엔드",
+            "count": 1,
+            "currentCount": 0
+          }
+        ],
+        "tags": ["초보환영", "친근한", "배움지향"],
+        "status": "recruiting",
+        "createdAt": "2025-11-10T11:00:00Z"
+      }
+    ]
+  }
