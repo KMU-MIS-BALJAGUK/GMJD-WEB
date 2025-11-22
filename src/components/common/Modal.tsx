@@ -29,20 +29,18 @@ export default function Modal({ isOpen, onClose, children, width = '600px', titl
   if (!isOpen) return null;
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 animate-fadeIn backdrop-blur-sm p-4"
       onClick={onClose}
     >
-      <div 
+      <div
         className="relative bg-white rounded-2xl shadow-2xl animate-slideUp w-full"
         style={{ maxWidth: width, maxHeight: '90vh' }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* 헤더 */}
         <div className="flex items-center justify-between px-8 py-6 border-b border-gray-200">
-          {title && (
-            <h2 className="text-2xl font-bold text-black">{title}</h2>
-          )}
+          {title && <h2 className="text-2xl font-bold text-black">{title}</h2>}
           <button
             onClick={onClose}
             className="ml-auto p-2 hover:bg-gray-100 rounded-lg transition-colors"

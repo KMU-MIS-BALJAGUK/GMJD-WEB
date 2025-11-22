@@ -22,6 +22,9 @@ const InfoEditPopup = ({
   const [skillSet, setSkillSet] = useState<string[]>([]);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const [interest, setInterest] = useState<string>('');
+  const [selectedEducation, setSelectedEducation] = useState<string>('대학교');
+  const [selectedMajorType, setSelectedMajorType] = useState<string>('대학교 (4년제)');
+  const isHighschool = selectedEducation === '고등학교';
 
   const univList = [
     '서울대학교',
@@ -57,15 +60,38 @@ const InfoEditPopup = ({
     >
       {type === 'education' ? (
         <div className="flex flex-col gap-5 ">
-          <div className="relative">
+          <div>
+            <p>학력</p>
+            <div className="flex gap-2 mt-1">
+              <Button
+                variant={selectedEducation === '고등학교' ? 'active' : 'ghost'}
+                className="w-1/2"
+                onClick={() => setSelectedEducation('고등학교')}
+              >
+                고등학교
+              </Button>
+              <Button
+                variant={selectedEducation === '대학교' ? 'active' : 'ghost'}
+                className="w-1/2"
+                onClick={() => setSelectedEducation('대학교')}
+              >
+                대학교
+              </Button>
+            </div>
+          </div>
+
+          {/* 학교명 검색 */}
+          <div
+            className={`relative ${
+              isHighschool ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''
+            }`}
+          >
             <p>학교명 검색</p>
             <Input
               placeholder="학교명을 입력해주세요."
               className="mt-1"
               value={univ}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setUniv(e.target.value);
-              }}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUniv(e.target.value)}
               icon={
                 <Search
                   size={20}
@@ -75,7 +101,6 @@ const InfoEditPopup = ({
               }
             />
 
-            {/* 결과 드롭다운 UI  */}
             {univ.length > 0 && showDropdown && (
               <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-md max-h-40 overflow-y-auto scrollbar">
                 {univList.map((name, index) => (
@@ -94,7 +119,10 @@ const InfoEditPopup = ({
             )}
           </div>
 
-          <div>
+          {/* 학과명 입력 */}
+          <div
+            className={`${isHighschool ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
+          >
             <p>학과명 입력</p>
             <Input
               placeholder="학과명을 입력해주세요."
@@ -102,6 +130,29 @@ const InfoEditPopup = ({
               value={major}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMajor(e.target.value)}
             />
+          </div>
+
+          {/* 인정 학력 선택 */}
+          <div
+            className={`${isHighschool ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
+          >
+            <p>인정 학력 선택</p>
+            <div className="flex gap-2 mt-1">
+              <Button
+                variant={selectedMajorType === '대학교 (2, 3년제)' ? 'active' : 'ghost'}
+                className="w-1/2"
+                onClick={() => setSelectedMajorType('대학교 (2, 3년제)')}
+              >
+                대학교 (2, 3년제)
+              </Button>
+              <Button
+                variant={selectedMajorType === '대학교 (4년제)' ? 'active' : 'ghost'}
+                className="w-1/2"
+                onClick={() => setSelectedMajorType('대학교 (4년제)')}
+              >
+                대학교 (4년제)
+              </Button>
+            </div>
           </div>
 
           <div className="pt-5">
