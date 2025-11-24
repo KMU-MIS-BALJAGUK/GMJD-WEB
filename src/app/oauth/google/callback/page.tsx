@@ -4,18 +4,17 @@ import React, { useEffect, useState, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { useAuth } from '@/context/AuthContext';
-import { jwtDecode } from 'jwt-decode'; // 1. 디코딩 라이브러리 임포트
+import { jwtDecode } from 'jwt-decode';
 
 // 백엔드 API 주소
 const BACKEND_AUTH_BASE_API: string = 'https://dev.gmjd.site/oauth/google/callback';
 
-// 2. 토큰 내부 구조(Payload) 타입 정의
+// 토큰 구조 정의
 interface DecodedTokenPayload {
-  sub: string; // 유저 ID
-  exp: number; // 만료 시간
-  isRegistered?: boolean; // 토큰 안에 들어있을 수도 있는 값
-  role?: string;
-  [key: string]: any; // 그 외 다른 값들
+  sub: string;
+  exp: number;
+  isRegistered?: boolean; // 토큰 안에 있을 수도 있음
+  [key: string]: any;
 }
 
 const CoreCallbackLogic: React.FC = () => {
@@ -25,7 +24,6 @@ const CoreCallbackLogic: React.FC = () => {
 
   // 중복 요청 방지
   const isRequestSent = useRef<boolean>(false);
-
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,7 +31,7 @@ const CoreCallbackLogic: React.FC = () => {
     const authCode: string | null = searchParams.get('code');
 
     if (!authCode) {
-      setError('로그인에 필요한 인가 코드가 URL에서 누락되었습니다.');
+      setError('인가 코드가 없습니다. 다시 로그인해주세요.');
       setLoading(false);
       return;
     }
@@ -45,56 +43,51 @@ const CoreCallbackLogic: React.FC = () => {
       try {
         console.log('🚀 서버로 인가 코드 전송:', authCode);
 
+        // 1. 진짜 API 호출
         const response = await axios.get(BACKEND_AUTH_BASE_API, {
           params: { code: authCode },
         });
 
-        console.log('✅ 서버 응답 전체:', response);
+        console.log('✅ 서버 응답:', response);
 
-        // -------------------------------------------------------------
-        // 🔎 [핵심] isRegistered 값 찾기 (Body vs Token)
-        // -------------------------------------------------------------
+        // isRegistered 값 찾기
 
         let isRegistered: boolean | undefined = undefined;
 
-        // 1단계: 응답 바디(Body) 확인
+        // 1순위: Body 확인
         if (typeof response.data.isRegistered === 'boolean') {
           isRegistered = response.data.isRegistered;
-          console.log('📦 [확인] Body에서 isRegistered 발견:', isRegistered);
+          console.log('📦 Body에서 가입 여부 확인:', isRegistered);
         }
 
-        // 2단계: 토큰 추출
+        // 2순위: 헤더에서 토큰 추출 및 디코딩 확인
         const fullToken = response.headers['authorization'];
         const accessToken: string | null = fullToken
           ? fullToken.replace('Bearer ', '')
           : response.data.accessToken || null;
 
-        if (!accessToken) {
-          throw new Error('액세스 토큰을 찾을 수 없습니다.');
-        }
-
-        // 3단계: Body에 없었다면, 토큰 디코딩 시도!
-        if (isRegistered === undefined) {
-          try {
-            const decoded: DecodedTokenPayload = jwtDecode(accessToken);
-            console.log('🔓 [디코딩] 토큰 해독 결과:', decoded);
-
-            if (typeof decoded.isRegistered === 'boolean') {
-              isRegistered = decoded.isRegistered;
-              console.log('🔑 [확인] Token 내부에서 isRegistered 발견:', isRegistered);
+        if (accessToken) {
+          // 토큰이 있다면 디코딩 시도
+          if (isRegistered === undefined) {
+            try {
+              const decoded: DecodedTokenPayload = jwtDecode(accessToken);
+              if (typeof decoded.isRegistered === 'boolean') {
+                isRegistered = decoded.isRegistered;
+                console.log('🔑 Token 내부에서 가입 여부 확인:', isRegistered);
+              }
+            } catch (e) {
+              console.warn('토큰 디코딩 실패 (무시 가능):', e);
             }
-          } catch (decodeError) {
-            console.error('토큰 디코딩 실패:', decodeError);
           }
+        } else {
+          throw new Error('서버에서 토큰을 주지 않았습니다.');
         }
 
-        // -------------------------------------------------------------
-        // 🚦 분기 처리
-        // -------------------------------------------------------------
+        //분기처리
 
-        // 만약 끝까지 못 찾았으면 기본값(false=신규) 처리하거나 에러 띄움
+        // 값을 못 찾았으면 신규 회원으로 간주 (안전장치)
         if (isRegistered === undefined) {
-          console.warn('⚠️ isRegistered 값을 찾을 수 없습니다. 신규 회원으로 간주합니다.');
+          console.warn('⚠️ 가입 여부를 알 수 없어 신규 회원으로 처리합니다.');
           isRegistered = false;
         }
 
@@ -103,18 +96,20 @@ const CoreCallbackLogic: React.FC = () => {
 
         // 페이지 이동
         if (isRegistered === true) {
-          console.log('🏠 기존 회원 -> 메인 페이지(/)로 이동');
+          console.log('🏠 기존 회원 -> 메인 페이지');
           router.replace('/');
         } else {
-          console.log('📝 신규 회원 -> 회원가입 페이지(/signup/register)로 이동');
+          console.log('📝 신규 회원 -> 회원가입 페이지');
           router.replace('/signup/register');
         }
       } catch (e: unknown) {
         console.error('❌ 에러 발생:', e);
-        // ... (에러 처리 로직 동일)
-        let errorMessage = '알 수 없는 오류 발생';
+
+        let errorMessage = '로그인 처리 중 오류가 발생했습니다.';
         if (axios.isAxiosError(e)) {
           errorMessage = e.response?.data?.message || `서버 에러: ${e.response?.status}`;
+          // 상세 에러 내용을 콘솔에 출력
+          console.log('서버 에러 상세:', e.response?.data);
         } else if (e instanceof Error) {
           errorMessage = e.message;
         }
@@ -130,20 +125,20 @@ const CoreCallbackLogic: React.FC = () => {
     <div className="flex flex-col items-center justify-center min-h-[50vh] p-4 text-center">
       {error ? (
         <div className="text-red-600 p-6 border border-red-300 rounded-xl shadow-lg bg-red-50">
-          <h2 className="text-xl font-bold mb-3">오류 발생</h2>
+          <h2 className="text-xl font-bold mb-3">로그인 실패</h2>
           <p className="text-sm">{error}</p>
           <button
             onClick={() => router.push('/')}
             className="mt-5 px-5 py-2 bg-gray-700 text-white rounded-full hover:bg-gray-800 transition-colors shadow-md"
           >
-            홈으로 가기
+            홈으로 돌아가기
           </button>
         </div>
       ) : (
         <div className="flex flex-col items-center">
           <div className="animate-spin rounded-full h-10 w-10 border-4 border-t-4 border-blue-500 border-opacity-25"></div>
           <p className="mt-4 text-lg font-semibold text-gray-700">
-            {loading ? '인증 정보를 확인 중입니다...' : '잠시만 기다려주세요.'}
+            {loading ? '로그인 중입니다...' : '이동 중...'}
           </p>
         </div>
       )}
