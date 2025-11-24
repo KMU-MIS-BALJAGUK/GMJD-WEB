@@ -5,16 +5,43 @@ import Input from '../../common/Input';
 import LayerPopup from '../../common/layerpopup/LayerPopup';
 import Tag from '../../common/Tag';
 
-const RequestPopup = ({ open, setOpen }: { open: boolean; setOpen: (value: boolean) => void }) => {
+
+type Team = {
+  id: number;
+  teamName: string;
+  leaderName: string;
+  createdAt: string;
+  currentMembers: number;
+  maxMembers: number;
+  description: string;
+};
+
+const RequestPopup = ({ open, setOpen, team }: { open: boolean; setOpen: (value: boolean) => void; team?: Team | null; 
+}) => {
+  // team 이 없을 때 사용할 기본값
+  const fallbackTeam: Team = {
+    id: 0,
+    teamName: '팀 이름 미정',
+    leaderName: '팀장 미정',
+    createdAt: '',
+    currentMembers: 0,
+    maxMembers: 0,
+    description: '팀 소개가 아직 등록되지 않았습니다.',
+  };
+
+  // 항상 null/undefined 가 아닌 Team 객체로 만들어 둠
+  const effectiveTeam = team ?? fallbackTeam;
+  
   const data = {
-    // TODO: 나중에 API로 변경
-    title: '아이디어 기획 파트 4명 구합니다',
-    author: '김주미',
-    date: '2025.06.12',
-    recruitNumber: 2,
-    totalNumber: 4,
-    recruitDeadline: '2025.06.01',
-    content: '안녕하세요',
+    title: effectiveTeam.teamName,
+    author: effectiveTeam.leaderName,
+    date: effectiveTeam.createdAt
+      ? effectiveTeam.createdAt.split('T')[0].replace(/-/g, '.')
+      : '',
+    recruitNumber: effectiveTeam.currentMembers,
+    totalNumber: effectiveTeam.maxMembers,
+    recruitDeadline: '2025.06.01',  // TODO: 실제 데이터로 변경
+    content: team?.description ?? '팀 소개가 아직 등록되지 않았습니다.',
     AIQuestion: [
       '해당 공모전에 지원한 동기가 무엇인가요?',
       '평소에 즐겨 사용하는 디자인 툴이나 개발 언어가 있나요?',
@@ -28,7 +55,9 @@ const RequestPopup = ({ open, setOpen }: { open: boolean; setOpen: (value: boole
 
   // 함수 관리
   const addSkills = (q: string) => {
-    setSkills([...skills, q]);
+    if (q.trim() !== '') {  // ← 빈 문자열 체크 추가
+      setSkills([...skills, q]);
+    }
   };
 
   const removeSkills = (index: number) => {
@@ -64,7 +93,14 @@ const RequestPopup = ({ open, setOpen }: { open: boolean; setOpen: (value: boole
   };
 
   const handleSubmit = () => {
+    // team 이 없는 경우 방어 로직 추가
+    if (!team) {
+      console.error('팀 정보가 없습니다. team props가 전달되지 않았습니다.');
+      return;
+    }
+
     console.log({
+      teamId: team.id, 
       skill: skills,
       answers: answers,
     });
