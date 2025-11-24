@@ -75,6 +75,7 @@ const CoreCallbackLogic: React.FC = () => {
           }
         } catch (e) {
           console.error('JWT 디코딩 중 오류가 발생했습니다. (isRegistered 확인 실패):', e);
+          throw new Error('유효하지 않은 토큰 형식입니다. 다시 로그인해주세요.');
         }
 
         // 값을 못 찾았으면 신규 회원으로 간주 (안전장치)
