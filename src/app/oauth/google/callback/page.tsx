@@ -13,7 +13,7 @@ interface DecodedTokenPayload {
   sub: string;
   exp: number;
   isRegistered?: boolean; // 토큰 안에 있을 수도 있음
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 const CoreCallbackLogic: React.FC = () => {
