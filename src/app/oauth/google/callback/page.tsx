@@ -119,7 +119,9 @@ const CoreCallbackLogic: React.FC = () => {
       }
     };
 
-    exchangeCodeForTokens();
+    if (typeof window !== 'undefined') {
+      exchangeCodeForTokens();
+    }
   }, [searchParams, router, login]);
 
   return (
