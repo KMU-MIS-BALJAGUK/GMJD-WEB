@@ -3,15 +3,41 @@
 import Button from '@/components/common/Button';
 import ContestCard from '@/components/common/ContestCard';
 import { ChevronDown } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SortButton from './SortButton';
 import { SelectBox } from '@/components/common/SelectBox';
 import { contests } from '../page';
+import { ContestFilterParams, ContestItemDto } from '@/types/contest';
+import { CATEGORY_MAP, SORT_MAP } from '@/constants/contest';
+import { useFilteredContests } from '@/hooks/contest/useFilteredContests';
 
-const ContestPageClient = () => {
-  const sortOptions = ['전체', '인기순', '마감임박순'];
+const ContestPageClient = ({ initialData }: { initialData: ContestItemDto[] }) => {
   const [activeSort, setActiveSort] = useState('전체');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+  const [params, setParams] = useState<ContestFilterParams>({
+    sort: SORT_MAP['전체'],
+    categoryIds: undefined,
+  });
+
+  // 정렬 + 카테고리 선택 시 API 요청 params 갱신
+  useEffect(() => {
+    setParams({
+      sort: SORT_MAP[activeSort],
+      categoryIds:
+        selectedCategories.length > 0
+          ? selectedCategories.map((name) => CATEGORY_MAP[name])
+          : undefined,
+    });
+  }, [activeSort, selectedCategories]);
+
+  const { data } = useFilteredContests(params, initialData);
+
+  console.log(data);
+
+  const sortOptions = ['전체', '인기순', '마감임박순'];
+  // const [activeSort, setActiveSort] = useState('전체');
+  // const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const categories = [
     { value: '기획/아이디어', label: '기획/아이디어' },
     { value: '광고/마케팅', label: '광고/마케팅' },
