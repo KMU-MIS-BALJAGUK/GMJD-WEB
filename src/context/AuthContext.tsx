@@ -2,6 +2,8 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
+const ACCESS_TOKEN_KEY = 'access_token';
+
 // 1. 타입 정의
 // 인증 상태를 나타내는 Context의 형태를 정의합니다.
 interface AuthContextType {
@@ -32,7 +34,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (typeof window !== 'undefined' && window.sessionStorage) {
       try {
         // sessionStorage에서 토큰을 확인
-        const storedToken = sessionStorage.getItem('access_token');
+        const storedToken = sessionStorage.getItem(ACCESS_TOKEN_KEY);
         if (storedToken) {
           setAccessToken(storedToken);
         }
@@ -48,7 +50,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (typeof window !== 'undefined' && window.sessionStorage) {
       try {
         // sessionStorage에 Access Token을 저장
-        sessionStorage.setItem('access_token', token);
+        sessionStorage.setItem(ACCESS_TOKEN_KEY, token);
         setAccessToken(token);
       } catch (e) {
         console.error('Failed to save token to sessionStorage:', e);
@@ -61,7 +63,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (typeof window !== 'undefined' && window.sessionStorage) {
       try {
         // sessionStorage에서 Access Token을 제거
-        sessionStorage.removeItem('access_token');
+        sessionStorage.removeItem(ACCESS_TOKEN_KEY);
         setAccessToken(null);
       } catch (e) {
         console.error('Failed to remove token from sessionStorage:', e);

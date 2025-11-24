@@ -5,9 +5,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { useAuth } from '@/context/AuthContext';
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 // 백엔드 API 주소
-const BACKEND_AUTH_BASE_API: string = 'https://dev.gmjd.site/oauth/google/callback';
-
+const BACKEND_AUTH_BASE_API: string = `${API_BASE_URL}/oauth/google/callback`;
 // 토큰 구조 정의
 interface DecodedTokenPayload {
   sub: string;
@@ -40,14 +40,10 @@ const CoreCallbackLogic: React.FC = () => {
 
     const exchangeCodeForTokens = async () => {
       try {
-        console.log('🚀 서버로 인가 코드 전송:', authCode);
-
-        // 1. 진짜 API 호출
+        // 1. API 호출
         const response = await axios.get(BACKEND_AUTH_BASE_API, {
           params: { code: authCode },
         });
-
-        console.log('✅ 서버 응답:', response);
 
         // isRegistered 값 찾기
 
@@ -56,7 +52,6 @@ const CoreCallbackLogic: React.FC = () => {
         // 1순위: Body 확인
         if (typeof response.data.isRegistered === 'boolean') {
           isRegistered = response.data.isRegistered;
-          console.log('📦 Body에서 가입 여부 확인:', isRegistered);
         }
 
         // 2순위: 헤더에서 토큰 추출 및 디코딩 확인
@@ -74,11 +69,8 @@ const CoreCallbackLogic: React.FC = () => {
               const decoded: DecodedTokenPayload = jwtDecode(accessToken);
               if (typeof decoded.isRegistered === 'boolean') {
                 isRegistered = decoded.isRegistered;
-                console.log('🔑 Token 내부에서 가입 여부 확인:', isRegistered);
               }
-            } catch (e) {
-              console.warn('토큰 디코딩 실패 (무시 가능):', e);
-            }
+            } catch (e) {}
           }
         } else {
           throw new Error('서버에서 토큰을 주지 않았습니다.');
@@ -88,7 +80,6 @@ const CoreCallbackLogic: React.FC = () => {
 
         // 값을 못 찾았으면 신규 회원으로 간주 (안전장치)
         if (isRegistered === undefined) {
-          console.warn('⚠️ 가입 여부를 알 수 없어 신규 회원으로 처리합니다.');
           isRegistered = false;
         }
 
@@ -97,20 +88,14 @@ const CoreCallbackLogic: React.FC = () => {
 
         // 페이지 이동
         if (isRegistered === true) {
-          console.log('🏠 기존 회원 -> 메인 페이지');
           router.replace('/');
         } else {
-          console.log('📝 신규 회원 -> 회원가입 페이지');
           router.replace('/signup/register');
         }
       } catch (e: unknown) {
-        console.error('❌ 에러 발생:', e);
-
         let errorMessage = '로그인 처리 중 오류가 발생했습니다.';
         if (axios.isAxiosError(e)) {
           errorMessage = e.response?.data?.message || `서버 에러: ${e.response?.status}`;
-          // 상세 에러 내용을 콘솔에 출력
-          console.log('서버 에러 상세:', e.response?.data);
         } else if (e instanceof Error) {
           errorMessage = e.message;
         }
@@ -119,9 +104,7 @@ const CoreCallbackLogic: React.FC = () => {
       }
     };
 
-    if (typeof window !== 'undefined') {
-      exchangeCodeForTokens();
-    }
+    exchangeCodeForTokens();
   }, [searchParams, router, login]);
 
   return (
