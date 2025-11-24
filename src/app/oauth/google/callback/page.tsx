@@ -4,7 +4,6 @@ import React, { useEffect, useState, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { useAuth } from '@/context/AuthContext';
-import { jwtDecode } from 'jwt-decode';
 
 // 백엔드 API 주소
 const BACKEND_AUTH_BASE_API: string = 'https://dev.gmjd.site/oauth/google/callback';
@@ -70,6 +69,8 @@ const CoreCallbackLogic: React.FC = () => {
           // 토큰이 있다면 디코딩 시도
           if (isRegistered === undefined) {
             try {
+              const { jwtDecode } = await import('jwt-decode');
+
               const decoded: DecodedTokenPayload = jwtDecode(accessToken);
               if (typeof decoded.isRegistered === 'boolean') {
                 isRegistered = decoded.isRegistered;
