@@ -1,4 +1,4 @@
-import { Contest } from '@/types/contest';
+import { Contest } from '@/types/contest-mock';
 
 interface ContestInfoProps {
   contest: Contest;

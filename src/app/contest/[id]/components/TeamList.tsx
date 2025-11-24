@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Team } from '@/types/contest';
+import { Team } from '@/types/contest-mock';
 import TeamCard from './TeamCard';
 import MakeTeamPopup from '@/components/popup/contest-detail/MakeTeamPopup';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
