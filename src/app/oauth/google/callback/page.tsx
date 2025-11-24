@@ -51,49 +51,37 @@ const CoreCallbackLogic: React.FC = () => {
           params: { code: authCode },
         });
 
+        const fullToken: string | undefined = response.headers['authorization'];
+
+        const accessToken: string | null = fullToken?.startsWith('Bearer ')
+          ? fullToken.substring(7)
+          : response.data.accessToken || null; // 헤더에 없으면 바디를 확인
+
+        if (!accessToken) {
+          throw new Error('서버에서 토큰을 주지 않았습니다.');
+        }
+        login(accessToken);
+
         // isRegistered 값 찾기
 
         let isRegistered: boolean | undefined = undefined;
 
-        // 1순위: Body 확인
-        if (typeof response.data.isRegistered === 'boolean') {
-          isRegistered = response.data.isRegistered;
-        }
+        try {
+          const { jwtDecode } = await import('jwt-decode');
 
-        // 2순위: 헤더에서 토큰 추출 및 디코딩 확인
-        const fullToken = response.headers['authorization'];
-        const accessToken: string | null = fullToken
-          ? fullToken.replace('Bearer ', '')
-          : response.data.accessToken || null;
-
-        if (accessToken) {
-          login(accessToken);
-
-          // 토큰이 있다면 디코딩 시도
-          if (isRegistered === undefined) {
-            try {
-              const { jwtDecode } = await import('jwt-decode');
-
-              const decoded: DecodedTokenPayload = jwtDecode(accessToken);
-              if (typeof decoded.isRegistered === 'boolean') {
-                isRegistered = decoded.isRegistered;
-              }
-            } catch (e) {
-              console.error('JWT 디코딩 중 오류가 발생했습니다. (isRegistered 확인 실패):', e);
-            }
+          const decoded: DecodedTokenPayload = jwtDecode(accessToken);
+          if (typeof decoded.isRegistered === 'boolean') {
+            isRegistered = decoded.isRegistered;
           }
-        } else {
-          throw new Error('서버에서 토큰을 주지 않았습니다.');
+        } catch (e) {
+          console.error('JWT 디코딩 중 오류가 발생했습니다. (isRegistered 확인 실패):', e);
         }
-
-        //분기처리
 
         // 값을 못 찾았으면 신규 회원으로 간주 (안전장치)
         if (isRegistered === undefined) {
           isRegistered = false;
         }
 
-        // 페이지 이동
         if (isRegistered === true) {
           router.replace('/');
         } else {
