@@ -91,7 +91,11 @@ const CoreCallbackLogic: React.FC = () => {
       } catch (e: unknown) {
         let errorMessage = '로그인 처리 중 오류가 발생했습니다.';
         if (axios.isAxiosError(e)) {
-          errorMessage = e.response?.data?.message || `서버 에러: ${e.response?.status}`;
+          if (e.response) {
+            errorMessage = e.response.data?.message || '서버 에러: ' + e.response.status;
+          } else {
+            errorMessage = '서버와 통신할 수 없습니다. 네트워크 연결을 확인해주세요.';
+          }
         } else if (e instanceof Error) {
           errorMessage = e.message;
         }
