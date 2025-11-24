@@ -5,7 +5,8 @@ import Image from 'next/image';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 //구글 인가 요청 시작 주소
-const GOOGLE_LOGIN_START_URL = 'https://dev.gmjd.site/oauth/google';
+const GOOGLE_LOGIN_START_URL =
+  'https://dev.gmjd.site/oauth/google?redirect_uri=http://localhost:3000/oauth/google/callback';
 
 const GOOGLE_TEXT_COLOR_CLASS = 'text-gray-600';
 
