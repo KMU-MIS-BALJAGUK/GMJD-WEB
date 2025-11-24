@@ -46,7 +46,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   // 5. 로그인 함수: 토큰 저장
-  const login = (token: string) => {
+  const login = React.useCallback((token: string) => {
     if (typeof window !== 'undefined' && window.sessionStorage) {
       try {
         // sessionStorage에 Access Token을 저장
@@ -56,10 +56,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         console.error('Failed to save token to sessionStorage:', e);
       }
     }
-  };
+  }, []);
 
   // 6. 로그아웃 함수: 토큰 제거
-  const logout = () => {
+  const logout = React.useCallback(() => {
     if (typeof window !== 'undefined' && window.sessionStorage) {
       try {
         // sessionStorage에서 Access Token을 제거
@@ -69,7 +69,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         console.error('Failed to remove token from sessionStorage:', e);
       }
     }
-  };
+  }, []);
 
   const contextValue: AuthContextType = {
     accessToken,

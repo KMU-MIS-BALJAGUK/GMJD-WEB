@@ -40,6 +40,12 @@ const CoreCallbackLogic: React.FC = () => {
 
     const exchangeCodeForTokens = async () => {
       try {
+        if (!API_BASE_URL) {
+          throw new Error(
+            'API_BASE_URL 환경 변수가 설정되지 않았습니다. 백엔드 주소를 확인해주세요.'
+          );
+        }
+
         // 1. API 호출
         const response = await axios.get(BACKEND_AUTH_BASE_API, {
           params: { code: authCode },
