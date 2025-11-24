@@ -1,4 +1,6 @@
-import { Contest, TeamListResponse } from '@/types/contest';
+// 목업
+
+import { Contest, TeamListResponse } from '@/types/contest-mock';
 import { mockContestData } from '@/lib/mock-data';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api';
@@ -36,12 +38,12 @@ export async function getContestTeams(
     // 임시 목 데이터 사용
     let teams = mockContestData.teams;
     if (params?.status) {
-      teams = teams.filter(team => team.status === params.status);
+      teams = teams.filter((team) => team.status === params.status);
     }
 
     return {
       teams,
-      totalCount: teams.length
+      totalCount: teams.length,
     };
   } catch (error) {
     console.error('Error fetching contest teams:', error);
