@@ -79,10 +79,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
   };
 
-  if (isLoading) {
-    return null;
-  }
-
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 };
 

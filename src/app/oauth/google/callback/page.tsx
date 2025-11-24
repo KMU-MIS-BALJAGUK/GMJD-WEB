@@ -61,6 +61,8 @@ const CoreCallbackLogic: React.FC = () => {
           : response.data.accessToken || null;
 
         if (accessToken) {
+          login(accessToken);
+
           // 토큰이 있다면 디코딩 시도
           if (isRegistered === undefined) {
             try {
@@ -70,7 +72,9 @@ const CoreCallbackLogic: React.FC = () => {
               if (typeof decoded.isRegistered === 'boolean') {
                 isRegistered = decoded.isRegistered;
               }
-            } catch (e) {}
+            } catch (e) {
+              console.error('JWT 디코딩 중 오류가 발생했습니다. (isRegistered 확인 실패):', e);
+            }
           }
         } else {
           throw new Error('서버에서 토큰을 주지 않았습니다.');
@@ -82,9 +86,6 @@ const CoreCallbackLogic: React.FC = () => {
         if (isRegistered === undefined) {
           isRegistered = false;
         }
-
-        // 토큰 저장
-        login(accessToken);
 
         // 페이지 이동
         if (isRegistered === true) {
