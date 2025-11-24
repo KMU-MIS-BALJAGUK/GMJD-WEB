@@ -79,7 +79,7 @@ export const contests = [
 ] as const;
 
 export default async function ContestPage() {
-  const contests = await fetchContestList({ sort: 'latest' });
+  // const contests = await fetchContestList({ sort: 'latest' });
 
-  return <ContestPageClient initialData={contests} />;
+  return <ContestPageClient />;
 }

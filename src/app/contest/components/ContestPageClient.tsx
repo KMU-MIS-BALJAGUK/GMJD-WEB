@@ -10,8 +10,8 @@ import { contests } from '../page';
 import { ContestFilterParams, ContestItemDto } from '@/types/contest';
 import { CATEGORY_MAP, SORT_MAP } from '@/constants/contest';
 import { useFilteredContests } from '@/hooks/contest/useFilteredContests';
-
-const ContestPageClient = ({ initialData }: { initialData: ContestItemDto[] }) => {
+// { initialData }: { initialData: ContestItemDto[] }
+const ContestPageClient = () => {
   const [activeSort, setActiveSort] = useState('전체');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
@@ -31,7 +31,7 @@ const ContestPageClient = ({ initialData }: { initialData: ContestItemDto[] }) =
     });
   }, [activeSort, selectedCategories]);
 
-  const { data } = useFilteredContests(params, initialData);
+  const { data } = useFilteredContests(params);
 
   console.log(data);
 
