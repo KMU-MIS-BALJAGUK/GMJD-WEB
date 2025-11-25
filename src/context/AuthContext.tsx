@@ -1,8 +1,11 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-
+import axios from 'axios';
 const ACCESS_TOKEN_KEY = 'access_token';
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
+const LOGOUT_API_URL = `${API_BASE_URL}/logout`;
 
 // 1. 타입 정의
 // 인증 상태를 나타내는 Context의 형태를 정의합니다.
@@ -59,17 +62,38 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   // 6. 로그아웃 함수: 토큰 제거
-  const logout = React.useCallback(() => {
+  const logout = async () => {
+    const token = accessToken;
+
+    if (token) {
+      try {
+        await axios.post(
+          LOGOUT_API_URL,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Access Token을 헤더에 담아 전송
+            },
+          }
+        );
+      } catch (e) {
+        console.warn(
+          'Server-side logout failed (or token already expired). Proceeding with client-side cleanup.',
+          e
+        );
+      }
+    }
+
+    // SessionStorage에서 제거
     if (typeof window !== 'undefined' && window.sessionStorage) {
       try {
-        // sessionStorage에서 Access Token을 제거
         sessionStorage.removeItem(ACCESS_TOKEN_KEY);
         setAccessToken(null);
       } catch (e) {
         console.error('Failed to remove token from sessionStorage:', e);
       }
     }
-  }, []);
+  };
 
   const contextValue: AuthContextType = {
     accessToken,
