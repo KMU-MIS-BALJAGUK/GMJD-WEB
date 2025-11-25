@@ -1,14 +1,8 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from 'react';
 
-export default function MoreMenu({
-  onEdit,
-  onDelete,
-}: {
-  onEdit?: () => void;
-  onDelete?: () => void;
-}) {
+export default function MoreMenu({ onClose }: { onClose?: () => void }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -20,37 +14,27 @@ export default function MoreMenu({
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
   return (
     <div ref={menuRef} className="relative">
       {/* 점 3개 버튼 */}
-      <button
-        onClick={() => setOpen(!open)}
-        className="p-2 hover:bg-gray-100 rounded-full"
-      >
+      <button onClick={() => setOpen(!open)} className="p-2 hover:bg-gray-100 rounded-full">
         <span className="text-lg">⋮</span>
       </button>
 
       {/* 메뉴 팝업 */}
       {open && (
-        <div className="absolute right-0 mt-2 w-28 bg-white border border-gray-200 rounded-md shadow-md z-50">
+        <div className="absolute right-0 top-7 mt-2 w-28 bg-white border border-gray-200 rounded-md shadow-md z-50">
           <button
-            onClick={onEdit}
+            onClick={onClose}
             className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100"
           >
-            수정하기
-          </button>
-
-          <button
-            onClick={onDelete}
-            className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100"
-          >
-            삭제하기
+            마감하기
           </button>
         </div>
       )}

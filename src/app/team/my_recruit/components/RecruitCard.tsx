@@ -48,10 +48,7 @@ export default function RecruitManageCard({
       <div className="p-4 relative">
         {/* 점 3개 메뉴 */}
         <div className="absolute top-3 right-3">
-          <MoreMenu
-            onEdit={() => console.log('모집 공고 수정')}
-            onDelete={() => console.log('모집 공고 삭제')}
-          />
+          <MoreMenu onClose={() => console.log('모집 마감')} />
         </div>
 
         {/* 제목 */}
