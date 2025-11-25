@@ -46,8 +46,8 @@ export function SelectBox(props: SelectBoxProps) {
         <SelectTrigger
           className={cn(
             `
-            w-full !h-12 bg-bg-02 rounded-[8px] border-none text-[15px] px-4
-            focus:ring-1 focus:ring-blue cursor-pointer
+            w-full !h-11 bg-white rounded-[8px] border text-[15px] px-4
+            focus-visible:ring-1 focus-visible:ring-blue cursor-pointer
           `,
             className
           )}
@@ -55,7 +55,7 @@ export function SelectBox(props: SelectBoxProps) {
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
 
-        <SelectContent className="rounded-[8px] shadow-md" align="start">
+        <SelectContent className="rounded-[8px] shadow-md bg-white" align="start">
           {options.map((opt) => (
             <SelectItem
               key={opt.value}
@@ -94,9 +94,9 @@ export function SelectBox(props: SelectBoxProps) {
         <SelectTrigger
           className={cn(
             `
-            w-full !h-12 bg-bg-02 rounded-[8px] border-none px-4 text-[15px]
+            w-full !h-12 bg-white rounded-[8px] border px-4 text-[15px]
             flex items-center justify-between
-            focus:ring-1 focus:ring-blue cursor-pointer
+            focus-visible:ring-1 focus-visible:ring-blue cursor-pointer
           `,
             className
           )}
@@ -104,7 +104,7 @@ export function SelectBox(props: SelectBoxProps) {
           <span className={selected.length === 0 ? 'text-gray-400' : ''}>{display}</span>
         </SelectTrigger>
 
-        <SelectContent className="rounded-[8px] shadow-md max-h-[300px]" align="start">
+        <SelectContent className="rounded-[8px] shadow-md max-h-[300px] bg-white" align="start">
           {options.map((opt) => (
             <div
               key={opt.value}
