@@ -10,7 +10,6 @@ interface UserData {
   Level: string;
   avatarUrl: string;
   intro: string;
-  born: string;
   school: string;
   major: string;
   skills: string[];

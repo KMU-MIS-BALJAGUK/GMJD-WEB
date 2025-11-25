@@ -4,11 +4,25 @@ import { Button } from '@/components/common/Button';
 import Image from 'next/image';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
+// 환경 변수 가져오기
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+const GOOGLE_REDIRECT_URI = process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI || '';
+// 구글 로그인 요청 URL 생성
+const GOOGLE_LOGIN_START_URL =
+  API_BASE_URL && GOOGLE_REDIRECT_URI
+    ? `${API_BASE_URL}/oauth/google?redirect_uri=${GOOGLE_REDIRECT_URI}`
+    : '';
+
 const GOOGLE_TEXT_COLOR_CLASS = 'text-gray-600';
 
 export default function SignupPage() {
   const handleGoogleSignIn = () => {
-    console.log('Google 로그인 버튼 클릭됨');
+    if (!GOOGLE_LOGIN_START_URL) {
+      console.error('Google login URL is not configured. Check environment variables.');
+      return;
+    }
+    //구글 로그인 시작 주소로 강제 이동
+    window.location.href = GOOGLE_LOGIN_START_URL;
   };
 
   return (
