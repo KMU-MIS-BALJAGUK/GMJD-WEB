@@ -16,6 +16,7 @@ const InfoEditPopup = ({
   type: string;
 }) => {
   // 변수 관리
+  const [intro, setIntro] = useState<string>('');
   const [univ, setUniv] = useState<string>('');
   const [major, setMajor] = useState<string>('');
   const [skill, setSkill] = useState<string>('');
@@ -56,9 +57,37 @@ const InfoEditPopup = ({
     <LayerPopup
       open={open}
       setOpen={setOpen}
-      title={`${type == 'skill' ? '스킬셋' : type === 'education' ? '학력' : '관심분야'} 수정`}
+      title={`${
+        type === 'skill'
+          ? '스킬셋'
+          : type === 'education'
+          ? '학력'
+          : type === 'intro'
+          ? '한 줄 소개'
+          : '관심분야'
+      } 수정`}
     >
-      {type === 'education' ? (
+      {type === 'intro' ? (
+        // 🔹 한 줄 소개 수정
+        <div className="flex flex-col gap-5">
+          <div>
+            <p>한 줄 소개</p>
+            <Input
+              placeholder="간단한 소개를 입력해주세요."
+              className="mt-1"
+              value={intro}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setIntro(e.target.value)}
+            />
+          </div>
+
+          <div className="pt-5">
+            <Button className="w-full" variant="primary" onClick={handleSubmit}>
+              수정 완료
+            </Button>
+          </div>
+        </div>
+      ) : type === 'education' ? (
+        // 🔹 학력 수정
         <div className="flex flex-col gap-5 ">
           <div>
             <p>학력</p>
@@ -119,7 +148,7 @@ const InfoEditPopup = ({
             )}
           </div>
 
-          {/* 학과명 입력 */}
+          {/* 학과명 */}
           <div
             className={`${isHighschool ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
           >
@@ -132,7 +161,7 @@ const InfoEditPopup = ({
             />
           </div>
 
-          {/* 인정 학력 선택 */}
+          {/* 인정 학력 */}
           <div
             className={`${isHighschool ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
           >
@@ -162,6 +191,7 @@ const InfoEditPopup = ({
           </div>
         </div>
       ) : type === 'skill' ? (
+        // 🔹 스킬셋 수정
         <div className="flex flex-col gap-5">
           <div>
             <p>스킬셋</p>
@@ -174,6 +204,7 @@ const InfoEditPopup = ({
                 <p
                   className="text-blue text-xs font-extrabold"
                   onClick={() => {
+                    if (!skill.trim()) return;
                     addSkills(skill);
                     setSkill('');
                   }}
@@ -186,19 +217,18 @@ const InfoEditPopup = ({
             {skillSet.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-2">
                 {skillSet.map((skill, index) => (
-                  <div key={index}>
-                    <Tag
-                      icon={
-                        <X
-                          size={15}
-                          className="text-text-04 cursor-pointer"
-                          onClick={() => removeSkills(index)}
-                        />
-                      }
-                    >
-                      {skill}
-                    </Tag>
-                  </div>
+                  <Tag
+                    key={index}
+                    icon={
+                      <X
+                        size={15}
+                        className="text-text-04 cursor-pointer"
+                        onClick={() => removeSkills(index)}
+                      />
+                    }
+                  >
+                    {skill}
+                  </Tag>
                 ))}
               </div>
             )}
@@ -211,6 +241,7 @@ const InfoEditPopup = ({
           </div>
         </div>
       ) : (
+        // 🔹 관심분야 수정
         <div className="flex flex-col gap-5">
           <div>
             <p>관심분야</p>

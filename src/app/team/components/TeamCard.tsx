@@ -23,10 +23,10 @@ export default function TeamCard({ title, subtitle, image, totalMembers, role }:
 
       {/* 내용 */}
       <div className="p-4 relative">
-        {/* 점 3개 메뉴 */}
+        {/* 점 3개 메뉴
         <div className="absolute top-3 right-3 cursor-pointer">
           <MoreMenu onEdit={() => console.log('팀 수정')} onDelete={() => console.log('팀 삭제')} />
-        </div>
+        </div> */}
 
         {/* 제목 */}
         <p className="font-semibold text-sm leading-tight line-clamp-2 pr-6">{title}</p>

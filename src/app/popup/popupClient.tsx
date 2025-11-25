@@ -19,6 +19,7 @@ const PopupClient = () => {
   const [open7, setOpen7] = useState(false);
   const [open8, setOpen8] = useState(false);
   const [open9, setOpen9] = useState(false);
+  const [open10, setOpen10] = useState(false);
 
   const Btn = ({ label, onClick }: { label: string; onClick: () => void }) => (
     <button
@@ -58,6 +59,7 @@ const PopupClient = () => {
           <Btn label="스킬셋 수정 팝업" onClick={() => setOpen7(true)} />
           <Btn label="학력 수정 팝업" onClick={() => setOpen8(true)} />
           <Btn label="관심분야 수정 팝업" onClick={() => setOpen9(true)} />
+          <Btn label="소개 수정 팝업" onClick={() => setOpen10(true)} />
         </div>
       </section>
 
@@ -71,6 +73,7 @@ const PopupClient = () => {
       <InfoEditPopup open={open7} setOpen={setOpen7} type="skill" />
       <InfoEditPopup open={open8} setOpen={setOpen8} type="education" />
       <InfoEditPopup open={open9} setOpen={setOpen9} type="interest" />
+      <InfoEditPopup open={open10} setOpen={setOpen10} type="intro" />
     </div>
   );
 };

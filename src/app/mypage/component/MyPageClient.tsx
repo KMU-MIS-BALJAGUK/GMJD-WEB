@@ -62,6 +62,8 @@ function ProfileFieldVertical({ label, children, onEdit }: ProfileFieldVerticalP
 }
 
 export default function MyPageClient({ user }: MyPageClientProps) {
+  // TODO: 팝업 연결
+  const handleEditIntro = () => console.log('소개 수정');
   const handleEditEducation = () => console.log('학력 수정');
   const handleEditSkills = () => console.log('스킬 수정');
   const handleEditInterest = () => console.log('관심분야 수정');
@@ -83,6 +85,14 @@ export default function MyPageClient({ user }: MyPageClientProps) {
             <div className="text-center">
               <h1 className="text-xl font-semibold text-text-01">{user.name}</h1>
               <p className="text-sm text-text-03">{user.intro}</p>
+              <Tag
+                variant="blue"
+                shape="rounded"
+                className="mt-2 mx-auto text-xs cursor-pointer"
+                onClick={handleEditIntro}
+              >
+                수정
+              </Tag>
             </div>
           </div>
 
