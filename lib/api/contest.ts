@@ -1,4 +1,4 @@
-import { Contest, Team, ContestDetailResponse, TeamListResponse } from '@/types/contest';
+import { Contest, Team, ContestDetailResponse, TeamListResponse } from '@/types/contest-mock';
 
 // API Base URL (환경변수로 관리 예정)
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api';
@@ -49,7 +49,7 @@ export async function getContestTeams(
     // if (params?.size) queryParams.append('size', params.size.toString());
     // if (params?.sort) queryParams.append('sort', params.sort);
     // if (params?.status) queryParams.append('status', params.status);
-    
+
     // const response = await fetch(
     //   `${API_BASE_URL}/contests/${contestId}/teams?${queryParams}`
     // );
@@ -61,16 +61,16 @@ export async function getContestTeams(
     // 임시 목 데이터 사용
     const response = await fetch('/mock-data/contest-detail.json');
     const data: ContestDetailResponse = await response.json();
-    
+
     // 필터링 (status가 있으면)
     let teams = data.teams;
     if (params?.status) {
-      teams = teams.filter(team => team.status === params.status);
+      teams = teams.filter((team) => team.status === params.status);
     }
 
     return {
       teams,
-      totalCount: teams.length
+      totalCount: teams.length,
     };
   } catch (error) {
     console.error('Error fetching contest teams:', error);
