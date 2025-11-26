@@ -22,6 +22,7 @@ type SingleSelectProps = {
   value?: string;
   onChange?: (value: string) => void;
   className?: string;
+  disabled?: boolean;
 };
 
 type MultipleSelectProps = {
@@ -31,18 +32,19 @@ type MultipleSelectProps = {
   value?: string[];
   onChange?: (value: string[]) => void;
   className?: string;
+  disabled?: boolean;
 };
 
 type SelectBoxProps = SingleSelectProps | MultipleSelectProps;
 
 export function SelectBox(props: SelectBoxProps) {
-  const { type, options, placeholder, className } = props;
+  const { type, options, placeholder, className, disabled } = props;
 
   if (type === 'single') {
     const { value, onChange } = props;
 
     return (
-      <Select value={value} onValueChange={onChange}>
+      <Select value={value} onValueChange={onChange} disabled={disabled}>
         <SelectTrigger
           className={cn(
             `
@@ -75,6 +77,7 @@ export function SelectBox(props: SelectBoxProps) {
     const setSelected = props.onChange || (() => {});
 
     const toggle = (value: string) => {
+      if (disabled) return;
       if (selected.includes(value)) {
         setSelected(selected.filter((v) => v !== value));
       } else {
@@ -97,9 +100,11 @@ export function SelectBox(props: SelectBoxProps) {
             w-full !h-12 bg-white rounded-[8px] border px-4 text-[15px]
             flex items-center justify-between
             focus-visible:ring-1 focus-visible:ring-blue cursor-pointer
+            ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
           `,
             className
           )}
+          disabled={disabled}
         >
           <span className={selected.length === 0 ? 'text-gray-400' : ''}>{display}</span>
         </SelectTrigger>
@@ -114,6 +119,7 @@ export function SelectBox(props: SelectBoxProps) {
               <Checkbox
                 checked={selected.includes(opt.value)}
                 className="data-[state=checked]:bg-blue data-[state=checked]:border-blue [&_svg]:text-white"
+                disabled={disabled}
               />
               <span className="text-[15px]">{opt.label}</span>
             </div>

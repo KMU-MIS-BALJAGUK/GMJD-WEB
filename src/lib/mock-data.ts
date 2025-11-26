@@ -1,4 +1,4 @@
-import { ContestDetailResponse } from '@/types/contest-mock';
+import { ContestDetailResponse } from '@/features/contest/types/contest-mock';
 
 export const mockContestData: ContestDetailResponse = {
   contest: {
