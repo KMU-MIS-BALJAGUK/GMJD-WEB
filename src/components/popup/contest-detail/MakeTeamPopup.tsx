@@ -3,10 +3,22 @@ import Button from '../../common/Button';
 import { CircleMinus, CirclePlus, CircleX } from 'lucide-react';
 import Input from '../../common/Input';
 import LayerPopup from '../../common/layerpopup/LayerPopup';
+import { useMutation } from '@tanstack/react-query';
 
-const MakeTeamPopup = ({ open, setOpen, contestId }: { open: boolean; setOpen: (value: boolean) => void; contestId?: number; }) => {
+// 팀 생성 API
+import { createTeam } from '@/lib/api/contest'; 
+// 타입 경로 수정
+import type { TeamCreateRequestDto } from  '@/features/team/types/TeamCreateRequest';
+
+interface MakeTeamPopupProps {
+  open: boolean;
+  setOpen: (value: boolean) => void;
+  contestId: number; 
+}
+
+const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
   const AIQuestion = [
-    // TODO: 나중에 API로 변경
+    // TODO: 나중에 /api/v1/teams/{contestId}/ai-question POST로 교체
     '해당 공모전에 지원한 동기가 무엇인가요?',
     '평소에 즐겨 사용하는 디자인 툴이나 개발 언어가 있나요?',
   ];
@@ -18,19 +30,31 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: { open: boolean; setOpen: (
   const [question, setQuestion] = useState<string[]>([]);
   const [questionInput, setQuestionInput] = useState<string>('');
 
+  // 팀 생성 mutation
+  const { mutate: createTeamMutate, isLoading } = useMutation({
+    mutationFn: (body: TeamCreateRequestDto) => createTeam(contestId, body),
+    onSuccess: () => {
+      // TODO: 팀 목록 refetch (React Query 쓰면 invalidateQueries 등)
+      reset();
+      setOpen(false);
+    },
+    onError: (error) => {
+      console.error('팀 생성 실패:', error);
+      // TODO: 에러 토스트 띄우기 등
+    },
+  });
+
   // 함수 관리
   const addQuestion = (q: string) => {
-    setQuestion([...question, q]);
+    if (!q.trim()) return;
+    setQuestion((prev) => [...prev, q]);
   };
 
   const removeQuestion = (index: number) => {
-    const newQuestions = [...question];
-    newQuestions.splice(index, 1);
-    setQuestion(newQuestions);
+    setQuestion((prev) => prev.filter((_, i) => i !== index));
   };
 
   const reset = () => {
-    // 초기화
     setTitle('');
     setRecruitNumber(1);
     setContent('');
@@ -40,7 +64,6 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: { open: boolean; setOpen: (
 
   const checkValidation = () => {
     if (title.trim() === '' || content.trim() === '') return true;
-
     return false;
   };
 
@@ -52,16 +75,19 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: { open: boolean; setOpen: (
   };
 
   const handleSubmit = () => {
-    console.log({
+    if (!contestId) {
+      console.error('contestId가 없습니다. 팀 생성이 불가능합니다.');
+      return;
+    }
 
-      title: title,
-      recruitNumber: recruitNumber,
-      content: content,
-      question: question,
-    });
+    const payload: TeamCreateRequestDto = {
+      title,
+      maxMember: recruitNumber,
+      introduction: content,
+      questions: question,
+    };
 
-    reset();
-    setOpen(false);
+    createTeamMutate(payload);
   };
 
   return (
@@ -89,13 +115,13 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: { open: boolean; setOpen: (
               <CircleMinus
                 className="inline-block text-white fill-gray-600 cursor-pointer"
                 size={20}
-                onClick={() => setRecruitNumber(Math.max(1, recruitNumber - 1))}
+                onClick={() => setRecruitNumber((prev) => Math.max(1, prev - 1))}
               />
               <span className="px-4 py-2 rounded-[8px] bg-bg-02">{recruitNumber}</span>
               <CirclePlus
                 className="inline-block text-white fill-gray-600 cursor-pointer"
                 size={20}
-                onClick={() => setRecruitNumber(recruitNumber + 1)}
+                onClick={() => setRecruitNumber((prev) => prev + 1)}
               />
             </div>
           </div>
@@ -108,7 +134,9 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: { open: boolean; setOpen: (
               placeholder="내용을 입력하세요. ex) 팀 소개, 모집 역할, 필요 스킬"
               variant="textArea"
               value={content}
-              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setContent(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                setContent(e.target.value)
+              }
             />
           </div>
 
@@ -163,10 +191,10 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: { open: boolean; setOpen: (
           <Button
             onClick={handleSubmit}
             className="w-full"
-            variant={checkValidation() ? 'disabled' : 'primary'}
-            disabled={checkValidation()}
+            variant={checkValidation() || isLoading ? 'disabled' : 'primary'}
+            disabled={checkValidation() || isLoading}
           >
-            팀 만들기
+            {isLoading ? '생성 중...' : '팀 만들기'}
           </Button>
         </div>
       </div>

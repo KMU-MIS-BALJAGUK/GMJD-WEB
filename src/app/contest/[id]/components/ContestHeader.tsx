@@ -1,24 +1,21 @@
 'use client';
 
 import Button from '@/components/common/Button';
-import { Contest } from '@/types/contest-mock';
+import type { ContestDetailDto } from '@/types/contest';
 import Image from 'next/image';
 import Link from 'next/link';
 
 interface ContestHeaderProps {
-  contest: Contest;
+  contest: ContestDetailDto;
 }
 
 export default function ContestHeader({ contest }: ContestHeaderProps) {
-  const formatDate = (dateString: string) => {
-    return dateString.replace(/-/g, '.');
-  };
-
   return (
     <div className="w-full md:max-w-[660px] lg:w-[432px] flex flex-col max-sm:flex-col-reverse gap-5 sm:gap-10">
-      {contest.homepageUrl && (
+      {/* 모바일에서만 보이는 홈페이지 지원 버튼 */}
+      {contest.siteUrl && (
         <Link
-          href={contest.homepageUrl}
+          href={contest.siteUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="sm:hidden"
@@ -38,29 +35,34 @@ export default function ContestHeader({ contest }: ContestHeaderProps) {
               기업형태
             </span>
             <span className="text-[15px] font-medium text-[#1D1D1D] whitespace-nowrap">
-              {contest.organizer}
+              {contest.companyType}
             </span>
           </div>
+
           <div className="flex items-center gap-3.5">
             <span className="text-[15px] font-normal text-[#888888] w-[52px] flex-shrink-0">
               시상규모
             </span>
             <span className="text-[15px] font-medium text-[#1D1D1D] whitespace-nowrap">
-              {contest.prize.split(',')[0]}
+              {contest.awardScale}
             </span>
           </div>
+
           <div className="flex items-center gap-3.5">
             <span className="text-[15px] font-normal text-[#888888] w-[52px] flex-shrink-0">
               참여대상
             </span>
-            <span className="text-[15px] font-medium text-[#1D1D1D] whitespace-nowrap">대학생</span>
+            <span className="text-[15px] font-medium text-[#1D1D1D] whitespace-nowrap">
+              {contest.targetParticipants}
+            </span>
           </div>
+
           <div className="flex items-center gap-3.5">
             <span className="text-[15px] font-normal text-[#888888] w-[52px] flex-shrink-0">
               추가혜택
             </span>
             <span className="text-[15px] font-normal text-[#1D1D1D] whitespace-nowrap">
-              상패수여
+              {contest.additionalBenefits}
             </span>
           </div>
         </div>
@@ -72,24 +74,26 @@ export default function ContestHeader({ contest }: ContestHeaderProps) {
               활동혜택
             </span>
             <span className="text-[15px] font-normal text-[#1D1D1D] whitespace-nowrap">
-              입사시 가산점
+              {contest.benefits}
             </span>
           </div>
+
           <div className="flex items-center gap-3.5">
             <span className="text-[15px] font-normal text-[#888888] w-[52px] flex-shrink-0">
               접수기간
             </span>
             <span className="text-[15px] font-medium text-[#1D1D1D] whitespace-nowrap">
-              {formatDate(contest.startDate)} ~ {formatDate(contest.endDate)}
+              {contest.duration}
             </span>
           </div>
-          {contest.homepageUrl && (
+
+          {contest.siteUrl && (
             <div className="flex items-center gap-3.5">
               <span className="text-[15px] font-normal text-[#888888] w-[52px] flex-shrink-0">
                 홈페이지
               </span>
               <a
-                href={contest.homepageUrl}
+                href={contest.siteUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[15px] text-[#1487F9] underline hover:text-blue-700 whitespace-nowrap"
@@ -98,12 +102,13 @@ export default function ContestHeader({ contest }: ContestHeaderProps) {
               </a>
             </div>
           )}
+
           <div className="flex items-center gap-3.5">
             <span className="text-[15px] font-normal text-[#888888] w-[52px] flex-shrink-0">
               공모분야
             </span>
             <span className="inline-flex items-center px-3 py-1.5 border border-[#E4E4E4] rounded-full text-[13px] font-medium text-[#555555] whitespace-nowrap">
-              {contest.category}
+              {contest.categories}
             </span>
           </div>
         </div>
@@ -112,8 +117,8 @@ export default function ContestHeader({ contest }: ContestHeaderProps) {
       {/* 포스터 이미지 */}
       <div className="w-full aspect-[2/3] lg:h-[611px] bg-gray-100 rounded-lg overflow-hidden relative">
         <Image
-          src={contest.posterUrl}
-          alt={contest.title}
+          src={contest.imageUrl}
+          alt={contest.name}
           fill
           className="max-lg:object-contain lg:object-cover"
           priority
