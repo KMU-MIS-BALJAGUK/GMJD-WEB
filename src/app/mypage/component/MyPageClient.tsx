@@ -1,23 +1,16 @@
 'use client';
-
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { Tag } from '@/components/common/Tag';
 import { PencilLine } from 'lucide-react';
 
-interface UserData {
-  name: string;
-  email: string;
-  Level: string;
-  avatarUrl: string;
-  intro: string;
-  school: string;
-  major: string;
-  skills: string[];
-  interest: string;
-}
+import { useUserProfile } from '@/hooks/mypage/useUserProfile';
+import { useUserProfileMutations } from '@/hooks/mypage/useUserProfileMutations';
+import { UserProfileDataDto } from '@/features/mypage/types/my-profile-response';
+import InfoEditPopup from '@/components/popup/profile/InfoEditPopup';
 
 interface MyPageClientProps {
-  user: UserData;
+  initialUser: UserProfileDataDto;
 }
 
 interface ProfileFieldProps {
@@ -61,12 +54,32 @@ function ProfileFieldVertical({ label, children, onEdit }: ProfileFieldVerticalP
   );
 }
 
-export default function MyPageClient({ user }: MyPageClientProps) {
-  // TODO: 팝업 연결
-  const handleEditIntro = () => console.log('소개 수정');
-  const handleEditEducation = () => console.log('학력 수정');
-  const handleEditSkills = () => console.log('스킬 수정');
-  const handleEditInterest = () => console.log('관심분야 수정');
+export default function MyPageClient({ initialUser }: MyPageClientProps) {
+  // 1.  데이터 조회 (React Query)
+  const { data: user, isLoading, isError } = useUserProfile();
+
+  // 2. Mutation Hooks 가져오기
+  const mutations = useUserProfileMutations();
+
+  // 3. 팝업 상태 관리
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [popupType, setPopupType] = useState<'intro' | 'education' | 'skill' | 'interest'>('intro');
+
+  // 4.  팝업 열기 함수
+  const openPopup = (type: typeof popupType) => {
+    setPopupType(type);
+    setIsPopupOpen(true);
+  };
+  const handleEditIntro = () => openPopup('intro');
+  const handleEditEducation = () => openPopup('education');
+  const handleEditSkills = () => openPopup('skill');
+  const handleEditInterest = () => openPopup('interest');
+
+  // API 로딩/에러 처리
+  const displayUser = user || initialUser;
+
+  if (isLoading && !user) return <div>프로필을 로딩 중입니다...</div>;
+  if (isError || !displayUser) return <div>프로필 정보를 불러오는 데 실패했습니다.</div>;
 
   return (
     <div className="h-[calc(100vh-68px-80px)] bg-white flex justify-center items-center py-16">
@@ -76,15 +89,15 @@ export default function MyPageClient({ user }: MyPageClientProps) {
         <div className="bg-white border border-border-2 rounded-[8px] p-6 shadow-sm space-y-6">
           <div className="flex flex-col items-center gap-2">
             <Image
-              src={user.avatarUrl}
+              src={displayUser.profileImageUrl}
               alt="프로필 이미지"
               width={100}
               height={100}
               className="rounded-full border border-border-2"
             />
             <div className="text-center">
-              <h1 className="text-xl font-semibold text-text-01">{user.name}</h1>
-              <p className="text-sm text-text-03">{user.intro}</p>
+              <h1 className="text-xl font-semibold text-text-01">{displayUser.name}</h1>
+              <p className="text-sm text-text-03">{displayUser.introduction}</p>
               <Tag
                 variant="blue"
                 shape="rounded"
@@ -100,12 +113,12 @@ export default function MyPageClient({ user }: MyPageClientProps) {
             <div>
               <ProfileField label="추천레벨">
                 <Tag variant="blue" shape="rounded">
-                  {user.Level}
+                  {`LV.${displayUser.level}`}
                 </Tag>
               </ProfileField>
 
               <ProfileField label="이메일">
-                <p className="text-[15px]">{user.email}</p>
+                <p className="text-[15px]">{displayUser.email}</p>
               </ProfileField>
             </div>
 
@@ -113,19 +126,19 @@ export default function MyPageClient({ user }: MyPageClientProps) {
 
             <ProfileFieldVertical label="학력" onEdit={handleEditEducation}>
               <div className="flex items-center space-x-2 text-[15px]">
-                <p>{user.school}</p>
+                <p>{displayUser.universityName}</p>
                 <p className="text-border-01">|</p>
-                <p>{user.major}</p>
+                <p>{displayUser.major}</p>
               </div>
             </ProfileFieldVertical>
 
             <ProfileFieldVertical label="관심분야" onEdit={handleEditInterest}>
-              <p className="text-[15px]">{user.interest}</p>
+              <p className="text-[15px]">{displayUser.categoryList.join(', ')}</p>
             </ProfileFieldVertical>
 
             <ProfileFieldVertical label="스킬셋" onEdit={handleEditSkills}>
               <div className="flex flex-wrap gap-2">
-                {user.skills.map((skill) => (
+                {displayUser.skillList.map((skill) => (
                   <Tag key={skill} variant="default" shape="rounded" className="text-text-02">
                     {skill}
                   </Tag>
@@ -135,6 +148,14 @@ export default function MyPageClient({ user }: MyPageClientProps) {
           </div>
         </div>
       </section>
+      {/* 6. InfoEditPopup 렌더링 및 props 전달 */}
+      <InfoEditPopup
+        open={isPopupOpen}
+        setOpen={setIsPopupOpen}
+        type={popupType}
+        initialData={displayUser}
+        mutations={mutations}
+      />
     </div>
   );
 }

@@ -7,6 +7,8 @@ export interface UserProfileDataDto {
   email: string;
   universityName: string;
   major: string;
+  education: string;
+  recognizedDegree: string;
   skillList: string[];
   categoryList: string[];
 }
