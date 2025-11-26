@@ -1,10 +1,21 @@
 'use client';
-
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { Tag } from '@/components/common/Tag';
 import { PencilLine } from 'lucide-react';
 import { useUserProfile } from '@/hooks/mypage/useUserProfile';
 import { UserProfileDataDto } from '@/features/mypage/types/my-profile-response';
+import InfoEditPopup from '@/components/popup/profile/InfoEditPopup';
+
+import { useUserProfileMutations } from '@/hooks/mypage/useUserProfileMutations';
+import {
+  IntroductionRequestDto,
+  EducationInfoRequestDto,
+  SkillsRequestDto,
+  CategoryRequestDto,
+} from '@/features/mypage/types/my-profile-request';
+
+type PopupType = 'intro' | 'education' | 'skill' | 'interest';
 
 interface ProfileFieldProps {
   label: string;
@@ -48,12 +59,37 @@ function ProfileFieldVertical({ label, children, onEdit }: ProfileFieldVerticalP
 }
 
 export default function MyPageClient() {
+  // 팝업 상태 관리
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [popupType, setPopupType] = useState<PopupType>('intro');
+
+  // 데이터 Query Hook
   const { data: userProfile, isLoading, isError } = useUserProfile();
-  // TODO: 팝업 연결
-  const handleEditIntro = () => console.log('소개 수정');
-  const handleEditEducation = () => console.log('학력 수정');
-  const handleEditSkills = () => console.log('스킬 수정');
-  const handleEditInterest = () => console.log('관심분야 수정');
+
+  // 💡 [수정] Mutation 훅 호출 및 구조 분해 할당
+  const {
+    updateIntroMutation,
+    updateEducationMutation,
+    updateSkillsMutation,
+    updateCategoriesMutation,
+  } = useUserProfileMutations();
+
+  // InfoEditPopup Props 이름에 맞게 Mutation 변수 이름 재할당
+  const updateIntro = updateIntroMutation;
+  const updateEducation = updateEducationMutation;
+  const updateSkills = updateSkillsMutation;
+  const updateCategories = updateCategoriesMutation;
+
+  // 수정 버튼 클릭 핸들러: 팝업 열기 및 타입 설정
+  const handleOpenPopup = (type: PopupType) => {
+    setPopupType(type);
+    setIsPopupOpen(true);
+  };
+
+  const handleEditIntro = () => handleOpenPopup('intro');
+  const handleEditEducation = () => handleOpenPopup('education');
+  const handleEditSkills = () => handleOpenPopup('skill');
+  const handleEditInterest = () => handleOpenPopup('interest');
 
   // 2. 로딩 및 에러 처리 (스켈레톤 UI로 나중에 변경, 임시로 텍스트 처리)
   if (isLoading) {
@@ -67,6 +103,15 @@ export default function MyPageClient() {
   }
 
   const user: UserProfileDataDto = userProfile;
+
+  // 팝업에 전달할 초기 데이터 준비
+  const initialData = {
+    introduction: user.introduction,
+    universityName: user.universityName,
+    major: user.major,
+    skillList: user.skillList,
+    categoryList: user.categoryList,
+  };
 
   return (
     <div className="h-[calc(100vh-68px-80px)] bg-white flex justify-center items-center py-16">
@@ -135,6 +180,18 @@ export default function MyPageClient() {
           </div>
         </div>
       </section>
+      {/* InfoEditPopup 렌더링 및 Props 전달 */}
+      <InfoEditPopup
+        open={isPopupOpen}
+        setOpen={setIsPopupOpen}
+        type={popupType}
+        initialData={initialData}
+        // Mutation 훅 전달
+        updateIntro={updateIntro}
+        updateEducation={updateEducation}
+        updateSkills={updateSkills}
+        updateCategories={updateCategories}
+      />
     </div>
   );
 }

@@ -11,6 +11,7 @@ import {
   SkillsRequestDto,
   EducationInfoRequestDto,
   CategoryRequestDto,
+  IntroductionRequestDto,
 } from '@/features/mypage/types/my-profile-request';
 import { CATEGORY_MAP } from '@/constants/contest';
 
@@ -29,7 +30,7 @@ interface InfoEditPopupProps {
     categoryList?: string[];
   };
 
-  updateIntro?: MutationType<{ introduction: string }>;
+  updateIntro?: MutationType<IntroductionRequestDto>;
   updateSkills?: MutationType<SkillsRequestDto>;
   updateEducation?: MutationType<EducationInfoRequestDto>;
   updateCategories?: MutationType<CategoryRequestDto>;
@@ -48,13 +49,12 @@ const InfoEditPopup = ({
   // 💡 Mutation 상태 (isPending)를 통합하여 로딩 처리
   const isPending =
     updateIntro?.isPending ||
-    false ||
     updateEducation?.isPending ||
-    false ||
     updateSkills?.isPending ||
-    false ||
     updateCategories?.isPending ||
-    false; // 변수 관리 (initialData를 사용하여 초기값 설정)
+    false;
+
+  // 변수 관리 (initialData를 사용하여 초기값 설정)
 
   const [intro, setIntro] = useState<string>(initialData.introduction || '');
   const [univ, setUniv] = useState<string>(initialData.universityName || '');
@@ -115,10 +115,8 @@ const InfoEditPopup = ({
     };
 
     if (type === 'intro' && updateIntro) {
-      updateIntro.mutate(
-        { introduction: intro },
-        { onSuccess: handleSuccess, onError: handleError }
-      );
+      const body: IntroductionRequestDto = { introduction: intro };
+      updateIntro.mutate(body, { onSuccess: handleSuccess, onError: handleError });
     } else if (type === 'education' && updateEducation) {
       // 클라이언트 선택 값을 백엔드 ENUM으로 매핑
       const educationEnum = EDUCATION_MAP[selectedEducation as keyof typeof EDUCATION_MAP];

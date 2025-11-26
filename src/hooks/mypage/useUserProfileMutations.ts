@@ -1,11 +1,17 @@
 // src/hooks/mypage/useUserProfileMutations.ts
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateSkills, updateEducationInfo, updateCategories } from '@/lib/api/mypage/mypage';
+import {
+  updateSkills,
+  updateEducationInfo,
+  updateCategories,
+  updateIntroduction,
+} from '@/lib/api/mypage/mypage';
 import {
   SkillsRequestDto,
   EducationInfoRequestDto,
   CategoryRequestDto,
+  IntroductionRequestDto,
 } from '@/features/mypage/types/my-profile-request';
 
 // 쿼리 키 정의
@@ -19,6 +25,12 @@ export const useUserProfileMutations = () => {
   const onSuccess = () => {
     queryClient.invalidateQueries({ queryKey: USER_PROFILE_QUERY_KEY });
   };
+
+  //  한 줄 소개 수정 Mutation
+  const updateIntroMutation = useMutation({
+    mutationFn: (body: IntroductionRequestDto) => updateIntroduction(body),
+    onSuccess,
+  });
 
   // 1. 스킬 수정 Mutation
   const updateSkillsMutation = useMutation({
@@ -39,6 +51,7 @@ export const useUserProfileMutations = () => {
   });
 
   return {
+    updateIntroMutation,
     updateSkillsMutation,
     updateEducationMutation,
     updateCategoriesMutation,

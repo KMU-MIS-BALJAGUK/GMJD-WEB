@@ -1,0 +1,249 @@
+[33mcommit 93a7702a973e0361a352de68b1924bca8fe1d18b[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/mypage-api[m[33m, [m[1;31morigin/feature/mypage-api[m[33m)[m
+Author: 황재빈 <hwnagjaebinh@gmail.com>
+Date:   Wed Nov 26 19:27:30 2025 +0900
+
+    feat: 마이프로필 API 구현
+
+[33mcommit 918cdac525d296c7e1b4760dbe544181ed9b5d21[m[33m ([m[1;31morigin/develop[m[33m, [m[1;32mdevelop[m[33m)[m
+Merge: 25419f3 7df95e1
+Author: yuwon.dev <dumpling1011@gmail.com>
+Date:   Tue Nov 25 23:39:23 2025 +0900
+
+    Merge pull request #67 from KMU-MIS-BALJAGUK/feat/contest-api
+    
+    feat: UI 수정사항 반영
+
+[33mcommit 7df95e1d9d7f9426315a622f75e658cb966babd1[m
+Author: xuuwon <dumpling1011@gmail.com>
+Date:   Tue Nov 25 23:37:07 2025 +0900
+
+    feat: UI 수정사항 반영
+
+[33mcommit 25419f3e9dd669da0ab0c49026ac383647513627[m
+Merge: 62277f1 3fda25b
+Author: yuwon.dev <dumpling1011@gmail.com>
+Date:   Tue Nov 25 11:19:33 2025 +0900
+
+    Merge pull request #64 from KMU-MIS-BALJAGUK/feat/contest-api
+    
+    Feat/contest api
+
+[33mcommit 3fda25b03ba9b30555b3ec6e814c62e542059176[m
+Merge: d9e71bc 62277f1
+Author: yuwon.dev <dumpling1011@gmail.com>
+Date:   Tue Nov 25 10:08:04 2025 +0900
+
+    Merge branch 'develop' into feat/contest-api
+
+[33mcommit d9e71bcbb85d6d57c4797f8d175b5d81f28543e8[m
+Merge: f4dc93a a070178
+Author: yuwon.dev <dumpling1011@gmail.com>
+Date:   Tue Nov 25 10:05:31 2025 +0900
+
+    Merge pull request #66 from KMU-MIS-BALJAGUK/fix/contest-appi
+    
+    chore: axios 버전 다시 업그레이드
+
+[33mcommit a07017817706d3ef1358b12b5d9febbcbe003372[m
+Author: yuwon.dev <dumpling1011@gmail.com>
+Date:   Tue Nov 25 10:05:03 2025 +0900
+
+    chore: axios 버전 다시 업그레이드
+
+[33mcommit f4dc93ad518e6a2eb702f7ed1105cf07fc363ae4[m
+Author: yuwon.dev <dumpling1011@gmail.com>
+Date:   Tue Nov 25 09:55:24 2025 +0900
+
+    chore: pnpm-workspace.yaml 삭제
+
+[33mcommit 1e54d28da374e7758c788bc64f34115f7b0e3a3c[m
+Author: yuwon.dev <dumpling1011@gmail.com>
+Date:   Tue Nov 25 09:54:26 2025 +0900
+
+    Remove pnpm-workspace.yaml file
+
+[33mcommit 7ad2fcea46b752e9c99be467b10d0f54e955143c[m
+Author: yuwon.dev <dumpling1011@gmail.com>
+Date:   Tue Nov 25 09:54:00 2025 +0900
+
+    Remove onlyBuiltDependencies section
+    
+    Remove onlyBuiltDependencies from pnpm workspace configuration
+
+[33mcommit ba210c650249d5e1ebd9cf6b552145cb9a9cfaf8[m
+Author: yuwon.dev <dumpling1011@gmail.com>
+Date:   Tue Nov 25 09:48:26 2025 +0900
+
+    Remove pnpm cache from CI workflow
+    
+    Removed cache configuration for pnpm in CI workflow.
+
+[33mcommit 98c4fa40d66395feb9068dc78e2b92addba68bf1[m
+Merge: 7d07cb1 f99a0b4
+Author: yuwon.dev <dumpling1011@gmail.com>
+Date:   Tue Nov 25 09:46:15 2025 +0900
+
+    Merge pull request #65 from KMU-MIS-BALJAGUK/fix/ci
+    
+    chore: ci 파일 이름 변경
+
+[33mcommit f99a0b436be4d29128e2396811aec4618945606c[m
+Author: yuwon.dev <dumpling1011@gmail.com>
+Date:   Tue Nov 25 09:45:43 2025 +0900
+
+    chore: ci 파일 이름 변경
+
+[33mcommit 7d07cb1db94ad8680eae675478e4754653b7043f[m
+Author: yuwon.dev <dumpling1011@gmail.com>
+Date:   Tue Nov 25 09:41:54 2025 +0900
+
+    Add workflow to update lockfile manually
+
+[33mcommit 62277f12fe29fe2a8c7e8a743bcac1707c73d25d[m
+Merge: ed19945 e36838c
+Author: yuwon.dev <dumpling1011@gmail.com>
+Date:   Tue Nov 25 09:30:57 2025 +0900
+
+    Merge pull request #56 from KMU-MIS-BALJAGUK/feature/mypage
+    
+    refactor: 오류 메시지 사용자경험 향상을 위해 개선2
+
+[33mcommit 39ae90a9d29f95d3cff2c860db1e7675305ed1e4[m
+Author: yuwon.dev <dumpling1011@gmail.com>
+Date:   Tue Nov 25 09:29:05 2025 +0900
+
+    chore: axios 버전 다운그레이드
+    
+    Co-authored-by: gemini-code-assist[bot] <176961590+gemini-code-assist[bot]@users.noreply.github.com>
+
+[33mcommit 129dbee7c60dabfa9959a8b541072a3e4bb09180[m
+Author: xuuwon <dumpling1011@gmail.com>
+Date:   Tue Nov 25 03:09:16 2025 +0900
+
+    fix: initial data 제거로 배포 오류 해결 (서버 컴포넌트에서 api 호출 제거)
+
+[33mcommit e36838ca684526ec94a06f5bf5eefb16f023c664[m
+Author: 황재빈 <hwnagjaebinh@gmail.com>
+Date:   Tue Nov 25 02:26:47 2025 +0900
+
+    refactor: 오류 메시지 사용자경험 향상을 위해 개선2
+
+[33mcommit 49d1e6cf73942e8566588dd600f64dc0d232fdb6[m
+Author: 황재빈 <hwnagjaebinh@gmail.com>
+Date:   Tue Nov 25 02:18:42 2025 +0900
+
+    refactor: 오류 메시지 사용자경험 향상을 위해 개선
+
+[33mcommit 4314a6c07efa755ed4064630cfae516cb6a242a1[m
+Author: 황재빈 <hwnagjaebinh@gmail.com>
+Date:   Tue Nov 25 02:08:16 2025 +0900
+
+    refactor: 찐찐찐 최종
+
+[33mcommit 7d45d1c0abb15d44d3a136e697f765c4772f156c[m
+Author: xuuwon <dumpling1011@gmail.com>
+Date:   Tue Nov 25 02:06:38 2025 +0900
+
+    refactor: 파일 이동에 따른 import 경로 수정
+
+[33mcommit ed7c293b35062d9ad429c34ad63dd46aa3cd531e[m
+Author: xuuwon <dumpling1011@gmail.com>
+Date:   Tue Nov 25 02:05:21 2025 +0900
+
+    feat: 공모전 필터 포함 조회 api 연동 (수정 필요)
+
+[33mcommit 400f86dd355930b09900279c673eb3aac391b029[m
+Author: xuuwon <dumpling1011@gmail.com>
+Date:   Tue Nov 25 02:03:39 2025 +0900
+
+    chore: 전역 레이아웃에 React Query Provider 적용하여 상태 관리 구성
+
+[33mcommit 368c89fb95fe33902f2a6277c1008a86cd9a41e5[m
+Author: xuuwon <dumpling1011@gmail.com>
+Date:   Tue Nov 25 02:02:38 2025 +0900
+
+    feat: 공모전 정렬 및 카테고리 매핑 상수 추가
+
+[33mcommit 3887e8a5148cbc7fd1c73575867ce79e13b766d8[m
+Author: xuuwon <dumpling1011@gmail.com>
+Date:   Tue Nov 25 02:01:42 2025 +0900
+
+    feat: 공모전 리스트 조회 훅(useFilteredContests) 추가
+
+[33mcommit 9a8753dec1819ffbb12fb511c572a8d9f640c4c0[m
+Author: 황재빈 <hwnagjaebinh@gmail.com>
+Date:   Tue Nov 25 02:01:12 2025 +0900
+
+    refactor: 찐찐 최종
+
+[33mcommit 234cb093d58f834f5b804768b5c7e379c5adb905[m
+Author: xuuwon <dumpling1011@gmail.com>
+Date:   Tue Nov 25 01:59:41 2025 +0900
+
+    feat: 공모전 리스트 조회 API 함수(fetchContestList) 추가
+
+[33mcommit 0e663e3dfa7cff09f8dc0aaeaf006e6ae1e2ce07[m
+Author: xuuwon <dumpling1011@gmail.com>
+Date:   Tue Nov 25 01:56:57 2025 +0900
+
+    feat: 공모전 관련 DTO 타입 정의 추가
+
+[33mcommit b1ab383cb2cff1949cf8e7476261143650a74447[m
+Author: xuuwon <dumpling1011@gmail.com>
+Date:   Tue Nov 25 01:56:01 2025 +0900
+
+    feat: axios 인스턴스 및 요청/응답 인터셉터 구성
+
+[33mcommit e33807ddeb795fbb8a2492235102f984ec4e9589[m
+Author: xuuwon <dumpling1011@gmail.com>
+Date:   Tue Nov 25 01:55:38 2025 +0900
+
+    feat: React Query 설정을 위한 QueryClientProvider 추가
+
+[33mcommit dbe66104d84bb766a19f8effa5d06ac06903d214[m
+Author: xuuwon <dumpling1011@gmail.com>
+Date:   Tue Nov 25 01:51:46 2025 +0900
+
+    chore: react query, zustand, axios 설치
+
+[33mcommit 1be2bcbfcf1b1daecc9453323688299940eaa79d[m
+Author: 황재빈 <hwnagjaebinh@gmail.com>
+Date:   Tue Nov 25 01:42:58 2025 +0900
+
+    refactor: 찐최종..
+
+[33mcommit 23c1e91d07c3d88849c5246e7874b3501149248c[m
+Author: 황재빈 <hwnagjaebinh@gmail.com>
+Date:   Tue Nov 25 01:21:39 2025 +0900
+
+    refactor: 최종..
+
+[33mcommit cbfc0237413aca96f339f83234f90dd754dc510a[m
+Author: 황재빈 <hwnagjaebinh@gmail.com>
+Date:   Tue Nov 25 00:56:44 2025 +0900
+
+    refactor: 코드리뷰 봇이 피드백해준대로 수정
+
+[33mcommit 9e80dcf066f1d86fad5c3be4bac2929abbd95cbc[m
+Author: 황재빈 <hwnagjaebinh@gmail.com>
+Date:   Tue Nov 25 00:14:31 2025 +0900
+
+    fix: any타입 삭제
+
+[33mcommit 89f9b85f244e19e649ca8e2d355b66912fa6da88[m
+Author: 황재빈 <hwnagjaebinh@gmail.com>
+Date:   Mon Nov 24 23:14:58 2025 +0900
+
+    fix: 버셀배포오류 해결(useEffect 전체를 window로 감싸기)
+
+[33mcommit 17f7dc43effa3956b0604f54599d1bf48d2f80a9[m
+Author: 황재빈 <hwnagjaebinh@gmail.com>
+Date:   Mon Nov 24 23:06:28 2025 +0900
+
+    fix: 버셀 배포 오류 해결(jwt-decode를 브라우저 환경에서만 로드하고 실행되도록 보장)
+
+[33mcommit db95dfb3a114d8f74ea258debad7cc378b8d5184[m
+Author: 황재빈 <hwnagjaebinh@gmail.com>
+Date:   Mon Nov 24 22:55:48 2025 +0900
+
+    refactor: AuthContext.ts 코드 세션 스토리지에 

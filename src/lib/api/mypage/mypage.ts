@@ -7,6 +7,7 @@ import {
   SkillsRequestDto,
   EducationInfoRequestDto,
   CategoryRequestDto,
+  IntroductionRequestDto,
 } from '@/features/mypage/types/my-profile-request';
 
 // 1. 마이프로필 조회 API 호출 함수
@@ -32,4 +33,9 @@ export async function updateEducationInfo(body: EducationInfoRequestDto): Promis
 // 4. 관심분야 수정 API 호출 함수
 export async function updateCategories(body: CategoryRequestDto): Promise<void> {
   await api.patch('/api/v1/users/categories', body);
+}
+
+// 5. 한 줄 소개 수정 API 호출 함수
+export async function updateIntroduction(body: IntroductionRequestDto): Promise<void> {
+  await api.patch('/api/v1/users/introduction', body);
 }

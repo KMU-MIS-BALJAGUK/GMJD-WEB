@@ -17,3 +17,8 @@ export interface EducationInfoRequestDto {
 export interface CategoryRequestDto {
   categoryIds: number[];
 }
+
+// 4. 한 줄 소개 수정 요청 DTO
+export interface IntroductionRequestDto {
+  introduction: string;
+}
