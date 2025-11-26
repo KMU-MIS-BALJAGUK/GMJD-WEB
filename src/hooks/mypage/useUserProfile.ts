@@ -14,5 +14,5 @@ export const useUserProfile = () => {
 
 export const invalidateUserProfileCache = () => {
   const queryClient = useQueryClient();
-  queryClient.invalidateQueries({ queryKey: USER_PROFILE_QUERY_KEY });
+  queryClient.invalidateQueries({ queryKey: USER_PROFILE_QUERY_KEY, exact: false });
 };

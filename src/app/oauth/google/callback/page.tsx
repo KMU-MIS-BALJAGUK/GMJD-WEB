@@ -4,6 +4,8 @@ import React, { useEffect, useState, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { useAuth } from '@/context/AuthContext';
+import { useQueryClient } from '@tanstack/react-query';
+import { fetchUserProfile } from '@/lib/api/mypage/mypage';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 // 백엔드 API 주소
@@ -20,6 +22,7 @@ const CoreCallbackLogic: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { login } = useAuth();
+  const queryClient = useQueryClient();
 
   // 중복 요청 방지
   const isRequestSent = useRef<boolean>(false);
@@ -59,6 +62,12 @@ const CoreCallbackLogic: React.FC = () => {
           throw new Error('서버에서 토큰을 주지 않았습니다.');
         }
         login(accessToken);
+
+        // 토큰 저장 직후 프로필 데이터를 미리 가져와 캐시에 저장합니다.
+        await queryClient.prefetchQuery({
+          queryKey: ['userProfile'],
+          queryFn: fetchUserProfile,
+        });
 
         // isRegistered 값 찾기
 
@@ -103,7 +112,7 @@ const CoreCallbackLogic: React.FC = () => {
     };
 
     exchangeCodeForTokens();
-  }, [searchParams, router, login]);
+  }, [searchParams, router, login, queryClient]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[50vh] p-4 text-center">

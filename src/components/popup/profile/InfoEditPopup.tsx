@@ -15,6 +15,12 @@ import {
   CategoryRequestDto,
 } from '@/features/mypage/types/my-profile-request';
 import { EDUCATION_MAP, DEGREE_MAP, EducationLevel, RecognizedDegree } from '@/constants/register';
+import { CATEGORY_MAP } from '@/constants/contest';
+
+const CATEGORY_OPTIONS = Object.keys(CATEGORY_MAP).map((name) => ({
+  value: name,
+  label: name,
+}));
 
 //ENUM <=> 한글 역매핑 상수 정의 (초기값 설정을 위해 ENUM -> 한글 변환)
 const REVERSE_EDUCATION_MAP: Record<string, string> = Object.entries(EDUCATION_MAP).reduce(
@@ -125,7 +131,14 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
       }
       case 'interest': {
         // 관심분야는 SelectBox의 'value'를 사용하므로, 실제 백엔드 요청 DTO에 맞게 categoryIds를 구성해야 함.
-        const body: CategoryRequestDto = { categoryIds: [1] };
+        const selectedId = CATEGORY_MAP[interest];
+        if (!selectedId) {
+          // 관심분야가 선택되지 않았거나 유효하지 않은 경우 (초기값 미설정 등)
+          alert('관심분야를 선택해주세요.');
+          return;
+        }
+
+        const body: CategoryRequestDto = { categoryIds: [selectedId] };
         mutations.updateCategoriesMutation.mutate(body);
         break;
       }
@@ -348,12 +361,7 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
               placeholder="선택해주세요"
               value={interest}
               onChange={(value) => setInterest(value)}
-              options={[
-                { value: '사진/영상/UCC', label: '사진/영상/UCC' },
-                { value: '광고/마케팅', label: '광고/마케팅' },
-                { value: '디자인/순수미술/공예', label: '디자인/순수미술/공예' },
-                { value: '네이밍/슬로건', label: '네이밍/슬로건' },
-              ]}
+              options={CATEGORY_OPTIONS}
               className="mt-1"
             />
           </div>

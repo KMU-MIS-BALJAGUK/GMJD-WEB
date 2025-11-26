@@ -54,6 +54,27 @@ function ProfileFieldVertical({ label, children, onEdit }: ProfileFieldVerticalP
   );
 }
 
+//  학력 정보 표시를 위한 헬퍼 컴포넌트
+const EducationDisplay: React.FC<{ user: UserProfileDataDto }> = ({ user }) => {
+  // education 필드에 따른 분기 처리 (ENUM 값은 백엔드 명세에 맞게 조정 필요)
+  if (user.education === 'HIGH_SCHOOL') {
+    return <p>고등학교</p>;
+  }
+
+  // 대학교, 전문대, 대학원 등 universityName과 major 필드를 사용하는 경우
+  if (user.universityName || user.major) {
+    return (
+      <div className="flex items-center space-x-2 text-[15px]">
+        <p>{user.universityName}</p>
+        {user.universityName && user.major && <p className="text-border-01">|</p>}
+        <p>{user.major}</p>
+      </div>
+    );
+  }
+
+  return <p className="text-text-03">학력 정보 미등록</p>;
+};
+
 export default function MyPageClient({ initialUser }: MyPageClientProps) {
   // 1.  데이터 조회 (React Query)
   const { data: user, isLoading, isError } = useUserProfile();
@@ -125,15 +146,13 @@ export default function MyPageClient({ initialUser }: MyPageClientProps) {
             <hr className="border-border-1 mb-6" />
 
             <ProfileFieldVertical label="학력" onEdit={handleEditEducation}>
-              <div className="flex items-center space-x-2 text-[15px]">
-                <p>{displayUser.universityName}</p>
-                <p className="text-border-01">|</p>
-                <p>{displayUser.major}</p>
-              </div>
+              <EducationDisplay user={displayUser} />
             </ProfileFieldVertical>
 
             <ProfileFieldVertical label="관심분야" onEdit={handleEditInterest}>
-              <p className="text-[15px]">{displayUser.categoryList.join(', ')}</p>
+              <p className="text-[15px]">
+                {(displayUser.categoryList || []).join(', ') || '관심분야 미등록'}
+              </p>
             </ProfileFieldVertical>
 
             <ProfileFieldVertical label="스킬셋" onEdit={handleEditSkills}>
