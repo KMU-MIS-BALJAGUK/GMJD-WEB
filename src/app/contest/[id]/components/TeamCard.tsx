@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Team } from '@/types/contest-mock';
+import { Team } from '@/features/contest/types/contest-mock';
 import RequestPopup from '@/components/popup/contest-detail/RequestPopup';
 import { UsersRound } from 'lucide-react';
 import Button from '@/components/common/Button';

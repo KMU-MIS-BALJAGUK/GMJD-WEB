@@ -1,6 +1,6 @@
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 import { signUpUser } from '@/lib/api/register/register';
-import { UserProfileDto, UserSignUpResponseDto } from '@/types/register';
+import { UserProfileDto, UserSignUpResponseDto } from '@/features/register/types/register';
 
 export const useSignUp = (
   options?: Omit<UseMutationOptions<UserSignUpResponseDto, Error, UserProfileDto>, 'mutationFn'>

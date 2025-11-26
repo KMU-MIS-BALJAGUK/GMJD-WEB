@@ -1,6 +1,6 @@
 // 목업
 
-import { Contest, TeamListResponse } from '@/types/contest-mock';
+import { Contest, TeamListResponse } from '@/features/contest/types/contest-mock';
 import { mockContestData } from '@/lib/mock-data';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api';

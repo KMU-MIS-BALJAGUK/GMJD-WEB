@@ -1,5 +1,5 @@
 import api from '@/lib/axios';
-import { ContestListResponseDto, ContestFilterParams } from '@/types/contest';
+import { ContestListResponseDto, ContestFilterParams } from '@/features/contest/types/contest';
 
 // 필터링 및 정렬된 공모전 조회 API
 export async function fetchContestList(params: ContestFilterParams) {

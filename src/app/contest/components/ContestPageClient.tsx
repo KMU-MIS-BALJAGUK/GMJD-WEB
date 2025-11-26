@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import SortButton from './SortButton';
 import { SelectBox } from '@/components/common/SelectBox';
 import { contests } from '../page';
-import { ContestFilterParams, ContestItemDto } from '@/types/contest';
+import { ContestFilterParams, ContestItemDto } from '@/features/contest/types/contest';
 import { CATEGORY_MAP, SORT_MAP } from '@/constants/contest';
 import { useFilteredContests } from '@/hooks/contest/useFilteredContests';
 // { initialData }: { initialData: ContestItemDto[] }

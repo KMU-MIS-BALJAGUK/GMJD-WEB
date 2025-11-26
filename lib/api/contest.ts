@@ -1,4 +1,9 @@
-import { Contest, Team, ContestDetailResponse, TeamListResponse } from '@/types/contest-mock';
+import {
+  Contest,
+  Team,
+  ContestDetailResponse,
+  TeamListResponse,
+} from '@/features/contest/types/contest-mock';
 
 // API Base URL (환경변수로 관리 예정)
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api';

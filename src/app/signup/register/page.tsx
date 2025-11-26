@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 
 import { useSignUp } from '@/hooks/register/useSignup';
-import { UserProfileDto } from '@/types/register';
+import { UserProfileDto } from '@/features/register/types/register';
 import { EDUCATION_MAP, DEGREE_MAP, CATEGORY_MAP } from '@/constants/register';
 
 interface FormFieldProps {
