@@ -1,29 +1,51 @@
-import React, { useState, useEffect } from 'react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+
 import Button from '../../common/Button';
 import { CalendarDays, UsersRound, X } from 'lucide-react';
 import Input from '../../common/Input';
 import LayerPopup from '../../common/layerpopup/LayerPopup';
 import Tag from '../../common/Tag';
-import { useMutation } from '@tanstack/react-query';
 
-// API (팀 신청)
-import { applyTeam } from '@/lib/api/team'; 
-
-// 타입
+import { fetchTeamDetail, applyTeam } from '@/lib/api/team';
 import type { TeamApplyRequestDto } from '@/features/team/types/TeamApplyRequest';
 import type { TeamDetailDto } from '@/features/team/types/TeamDetailResponse';
 
 interface RequestPopupProps {
   open: boolean;
   setOpen: (value: boolean) => void;
-  /** 신청할 팀 ID (필수) */
+  /** 신청할 팀 ID (없으면 null) */
   teamId: number | null;
-  /** 팀 상세 정보 (TeamInfoPopup 등에서 fetchTeamDetail로 받아온 데이터) */
-  team?: TeamDetailDto | null;
 }
 
-const RequestPopup = ({ open, setOpen, teamId, team }: RequestPopupProps) => {
-  // 기본 텍스트들 (team 없을 때 fallback)
+export default function RequestPopup({
+  open,
+  setOpen,
+  teamId,
+}: RequestPopupProps) {
+  // =========================
+  // 1. 팀 상세 조회 (TeamDetailDto)
+  // =========================
+  const {
+    data: team,
+    isLoading: isTeamLoading,
+    error: teamError,
+  } = useQuery<TeamDetailDto>({
+    queryKey: ['teamDetail', teamId],
+    queryFn: () => {
+      if (!teamId) {
+        throw new Error('teamId가 없습니다.');
+      }
+      return fetchTeamDetail(teamId);
+    },
+    enabled: !!teamId && open, // 팝업 열릴 때 + teamId 있을 때만 호출
+  });
+
+  // =========================
+  // 2. 화면에 쓸 기본 정보 (fallback 포함)
+  // =========================
   const title = team?.title ?? '팀 이름 미정';
   const author = team?.leaderName ?? '팀장 미정';
   const date = team?.createdAt ?? '';
@@ -33,28 +55,31 @@ const RequestPopup = ({ open, setOpen, teamId, team }: RequestPopupProps) => {
   const content =
     team?.introduction ?? '팀 소개가 아직 등록되지 않았습니다.';
 
-  // 질문 리스트: 백엔드에서 내려주는 questionList 사용
+  // 질문 리스트
   const questions =
     team?.questionList && team.questionList.length > 0
       ? team.questionList
       : [
-          // fallback 질문 (혹시 questionList가 비어있는 경우)
           '해당 공모전에 지원한 동기가 무엇인가요?',
           '평소에 즐겨 사용하는 디자인 툴이나 개발 언어가 있나요?',
         ];
 
-  // 상태 관리
+  // =========================
+  // 3. 상태 관리
+  // =========================
   const [skills, setSkills] = useState<string[]>([]);
   const [skillInput, setSkillInput] = useState<string>('');
   const [answers, setAnswers] = useState<string[]>([]);
 
-  // 질문 개수가 바뀔 때마다 answer 배열 길이 재설정
+  // 질문 개수/팝업 open이 바뀔 때 answer 배열 길이 맞춰주기
   useEffect(() => {
     setAnswers(Array(questions.length).fill(''));
-  }, [questions, open]); 
+  }, [questions.length, open]);
 
-  // 팀 신청 mutation
-  const { mutate: applyTeamMutate, isLoading } = useMutation({
+  // =========================
+  // 4. 팀 신청 mutation
+  // =========================
+  const { mutate: applyTeamMutate, isLoading: isApplyLoading } = useMutation({
     mutationFn: (body: TeamApplyRequestDto) => {
       if (!teamId) {
         throw new Error('teamId가 없습니다. 팀 신청이 불가능합니다.');
@@ -64,15 +89,17 @@ const RequestPopup = ({ open, setOpen, teamId, team }: RequestPopupProps) => {
     onSuccess: () => {
       reset();
       setOpen(false);
-      // TODO: 신청 완료 토스트 띄우기 등
+      // TODO: 토스트 등 성공 알람
     },
     onError: (error) => {
       console.error('팀 신청 실패:', error);
-      // TODO: 에러 토스트 띄우기 등
+      // TODO: 에러 토스트
     },
   });
 
-  // 함수 관리
+  // =========================
+  // 5. 헬퍼 함수들
+  // =========================
   const addSkills = (q: string) => {
     if (q.trim() !== '') {
       setSkills((prev) => [...prev, q]);
@@ -113,7 +140,7 @@ const RequestPopup = ({ open, setOpen, teamId, team }: RequestPopupProps) => {
 
   const handleSubmit = () => {
     if (!teamId) {
-      console.error('팀 ID가 없습니다. teamId props를 확인하세요.');
+      console.error('teamId가 없습니다. teamId props를 확인하세요.');
       return;
     }
 
@@ -125,13 +152,22 @@ const RequestPopup = ({ open, setOpen, teamId, team }: RequestPopupProps) => {
     applyTeamMutate(payload);
   };
 
+  // =========================
+  // 6. 렌더링
+  // =========================
+  const isFormDisabled =
+    isTeamLoading || !!teamError || isApplyLoading || !teamId;
+
   return (
     <LayerPopup open={open} setOpen={handleOpenChange} title="신청하기">
       <div>
         <div className="flex flex-col px-2 h-auto pb-1 max-h-[600px] overflow-y-auto scrollbar">
+          {/* 상단 정보 */}
           <div className="flex flex-col gap-5 pb-5 border-b">
             <div>
-              <p className="text-text-01 font-semibold text-xl mb-1">{title}</p>
+              <p className="text-text-01 font-semibold text-xl mb-1">
+                {title}
+              </p>
               <p className="text-text-03 text-[13px]">
                 {author} {date && `${date} 작성`}
               </p>
@@ -149,14 +185,24 @@ const RequestPopup = ({ open, setOpen, teamId, team }: RequestPopupProps) => {
             </div>
           </div>
 
+          {/* 팀 소개 */}
           <div className="py-10 border-b">
-            <p className="text-text-01 text-[15px] whitespace-pre-line">
-              {content}
-            </p>
+            {isTeamLoading ? (
+              <p className="text-text-03 text-[14px]">팀 정보를 불러오는 중입니다...</p>
+            ) : teamError ? (
+              <p className="text-red-500 text-[14px]">
+                팀 정보를 불러오는 데 실패했습니다. 잠시 후 다시 시도해주세요.
+              </p>
+            ) : (
+              <p className="text-text-01 text-[15px] whitespace-pre-line">
+                {content}
+              </p>
+            )}
           </div>
 
+          {/* 신청 폼 */}
           <div className="flex flex-col gap-5 pt-5 text-text-01">
-            {/* 스킬셋 입력 */}
+            {/* 스킬셋 */}
             <div className="flex flex-col gap-1">
               <p>
                 스킬셋<span className="text-red-500 ml-[1px]">*</span>
@@ -172,6 +218,7 @@ const RequestPopup = ({ open, setOpen, teamId, team }: RequestPopupProps) => {
                   addSkills(skillInput);
                   setSkillInput('');
                 }}
+                disabled={isFormDisabled}
               />
 
               {skills.length > 0 && (
@@ -206,6 +253,7 @@ const RequestPopup = ({ open, setOpen, teamId, team }: RequestPopupProps) => {
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       handleAnswerChange(index, e.target.value)
                     }
+                    disabled={isFormDisabled}
                   />
                 </div>
               ))}
@@ -213,19 +261,18 @@ const RequestPopup = ({ open, setOpen, teamId, team }: RequestPopupProps) => {
           </div>
         </div>
 
+        {/* 제출 버튼 */}
         <div className="pt-5">
           <Button
             onClick={handleSubmit}
             className="w-full"
-            variant={checkValidation() || isLoading ? 'disabled' : 'primary'}
-            disabled={checkValidation() || isLoading}
+            variant={checkValidation() || isApplyLoading ? 'disabled' : 'primary'}
+            disabled={checkValidation() || isApplyLoading}
           >
-            {isLoading ? '신청 중...' : '신청하기'}
+            {isApplyLoading ? '신청 중...' : '신청하기'}
           </Button>
         </div>
       </div>
     </LayerPopup>
   );
-};
-
-export default RequestPopup;
+}

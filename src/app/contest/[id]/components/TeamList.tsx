@@ -1,14 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+
 import TeamCard from './TeamCard';
 import MakeTeamPopup from '@/components/popup/contest-detail/MakeTeamPopup';
 import RequestPopup from '@/components/popup/contest-detail/RequestPopup';
-import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 
-import { fetchTeamDetail } from '@/lib/api/team';
 import type { ContestTeamItemDto } from '@/features/contest/types/ContestTeamListResponse';
-import type { TeamDetailDto } from '@/features/team/types/TeamDetailResponse';
 
 interface TeamListProps {
   teams: ContestTeamItemDto[];
@@ -16,7 +15,9 @@ interface TeamListProps {
 }
 
 export default function TeamList({ teams, contestId }: TeamListProps) {
-  const [isMakeTeamModalOpen, setIsMakeTeamModalOpen] = useState(false);
+  const [isMakeTeamOpen, setIsMakeTeamOpen] = useState(false);
+  const [isRequestOpen, setIsRequestOpen] = useState(false);
+  const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   const teamsPerPage = 3;
@@ -25,27 +26,9 @@ export default function TeamList({ teams, contestId }: TeamListProps) {
   const startIndex = (currentPage - 1) * teamsPerPage;
   const currentTeams = teams.slice(startIndex, startIndex + teamsPerPage);
 
-  // 팀 신청 팝업 상태
-  const [isRequestOpen, setIsRequestOpen] = useState(false);
-  const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
-  const [selectedTeam, setSelectedTeam] = useState<TeamDetailDto | null>(null);
-  const [loadingTeam, setLoadingTeam] = useState(false);
-
-  const handleClickApply = async (teamId: number) => {
-    try {
-      setLoadingTeam(true);
-      setSelectedTeamId(teamId);
-      setSelectedTeam(null);
-
-      const detail = await fetchTeamDetail(teamId);
-      setSelectedTeam(detail);
-      setIsRequestOpen(true);
-    } catch (error) {
-      console.error('팀 상세 조회 실패:', error);
-      alert('팀 정보를 불러오는 중 오류가 발생했습니다.');
-    } finally {
-      setLoadingTeam(false);
-    }
+  const handleOpenRequest = (teamId: number) => {
+    setSelectedTeamId(teamId);
+    setIsRequestOpen(true);
   };
 
   return (
@@ -79,11 +62,11 @@ export default function TeamList({ teams, contestId }: TeamListProps) {
           </div>
         </div>
 
-        {/* 팀 카드 목록 (1열) */}
+        {/* 팀 카드 목록 */}
         <div className="flex flex-col gap-3">
           {/* 팀 만들기 버튼 */}
           <button
-            onClick={() => setIsMakeTeamModalOpen(true)}
+            onClick={() => setIsMakeTeamOpen(true)}
             className="w-full h-[137px] bg-white border border-dashed border-[#BBBBBB] rounded-[10px] flex flex-col items-center justify-center gap-2.5 hover:bg-gray-50 transition-colors cursor-pointer"
           >
             <div className="w-6 h-6 bg-bg-01 rounded-full flex items-center justify-center">
@@ -100,39 +83,35 @@ export default function TeamList({ teams, contestId }: TeamListProps) {
           </button>
 
           {/* 팀 카드들 */}
-          {currentTeams.length === 0 ? (
-            <p className="text-sm text-text-03 mt-2">
-              등록된 팀이 없습니다. 가장 먼저 팀을 만들어보세요!
-            </p>
-          ) : (
-            currentTeams.map((team) => (
-              <TeamCard
-                key={team.teamId}
-                team={team}
-                onClickApply={() => handleClickApply(team.teamId)}
-              />
-            ))
-          )}
+          {currentTeams.map((team) => (
+            <TeamCard
+              key={team.teamId}
+              team={team}
+              onClickApply={() => handleOpenRequest(team.teamId)}
+            />
+          ))}
 
-          {loadingTeam && (
-            <p className="text-xs text-text-03 mt-1">팀 정보를 불러오는 중...</p>
+          {/* 팀이 하나도 없을 때 */}
+          {teams.length === 0 && (
+            <p className="mt-4 text-sm text-[#888888] text-center">
+              아직 등록된 팀이 없어요. 가장 먼저 팀을 만들어보세요!
+            </p>
           )}
         </div>
       </div>
 
       {/* 팀 만들기 모달 */}
       <MakeTeamPopup
-        open={isMakeTeamModalOpen}
-        setOpen={setIsMakeTeamModalOpen}
+        open={isMakeTeamOpen}
+        setOpen={setIsMakeTeamOpen}
         contestId={contestId}
       />
 
-      {/* 팀 신청 모달 */}
+      {/* 팀 신청 모달 (팀 상세 + 신청) */}
       <RequestPopup
         open={isRequestOpen}
         setOpen={setIsRequestOpen}
         teamId={selectedTeamId}
-        team={selectedTeam}
       />
     </>
   );
