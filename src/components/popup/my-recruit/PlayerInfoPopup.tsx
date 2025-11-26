@@ -74,9 +74,12 @@ const PlayerInfoPopup = ({
           ))}
         </div>
 
-        <div className="pt-5">
-          <Button onClick={() => setOpen(false)} className="w-full" variant="primary">
-            확인
+        <div className="flex gap-2 pt-5">
+          <Button onClick={() => setOpen(false)} className="w-1/2" variant="red">
+            거절
+          </Button>
+          <Button onClick={() => setOpen(false)} className="w-1/2" variant="primary">
+            수락
           </Button>
         </div>
       </div>
