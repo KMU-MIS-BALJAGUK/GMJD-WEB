@@ -2,10 +2,11 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import axios from 'axios';
+import api from '@/lib/axios';
 const ACCESS_TOKEN_KEY = 'accessToken';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
-const LOGOUT_API_URL = `${API_BASE_URL}/logout`;
+const LOGOUT_API_URL = '/logout';
 
 // 1. 타입 정의
 // 인증 상태를 나타내는 Context의 형태를 정의합니다.
@@ -63,19 +64,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // 6. 로그아웃 함수: 토큰 제거
   const logout = React.useCallback(async () => {
-    const token = accessToken;
-
-    if (token) {
+    if (accessToken) {
       try {
-        await axios.post(
-          LOGOUT_API_URL,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`, // Access Token을 헤더에 담아 전송
-            },
-          }
-        );
+        await api.post(LOGOUT_API_URL, {});
       } catch (e) {
         console.warn(
           'Server-side logout failed (or token already expired). Proceeding with client-side cleanup.',
