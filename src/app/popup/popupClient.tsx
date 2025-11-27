@@ -8,6 +8,39 @@ import PlayerInfoPopup from '@/components/popup/my-recruit/PlayerInfoPopup';
 import RemovePlayerPopup from '@/components/popup/my-team/RemovePlayerPopup';
 import RequestPopup from '@/components/popup/contest-detail/RequestPopup';
 import TeamInfoPopup from '@/components/popup/my-team/TeamInfoPopup';
+import { UserProfileDataDto } from '@/features/mypage/types/my-profile-response';
+import { useUserProfileMutations } from '@/hooks/mypage/useUserProfileMutations';
+
+const DUMMY_INITIAL_DATA: UserProfileDataDto = {
+  profileImageUrl: '/images/default-avatar.png',
+  name: '더미 사용자',
+  introduction: '테스트용 소개입니다.',
+  level: 5,
+  email: 'test@gongmoja.com',
+  universityName: '테스트 대학교',
+  major: '컴퓨터공학과',
+  education: 'UNIVERSITY',
+  recognizedDegree: 'BACHELOR',
+  skillList: ['React', 'TypeScript'],
+  categoryList: ['사진/영상/UCC'],
+};
+
+const DUMMY_MUTATIONS: ReturnType<typeof useUserProfileMutations> = {
+  // 모든 Mutation에 대해 더미 객체를 생성
+  updateIntroMutation: { mutate: () => console.log('Dummy intro mutate'), isPending: false } as any,
+  updateEducationMutation: {
+    mutate: () => console.log('Dummy education mutate'),
+    isPending: false,
+  } as any,
+  updateSkillsMutation: {
+    mutate: () => console.log('Dummy skill mutate'),
+    isPending: false,
+  } as any,
+  updateCategoriesMutation: {
+    mutate: () => console.log('Dummy category mutate'),
+    isPending: false,
+  } as any,
+};
 
 const PopupClient = () => {
   const [open1, setOpen1] = useState(false);
@@ -70,10 +103,34 @@ const PopupClient = () => {
       <RemovePlayerPopup open={open4} setOpen={setOpen4} playerName="홍길동" />
       <MyRecruitPopup open={open5} setOpen={setOpen5} />
       <PlayerInfoPopup open={open6} setOpen={setOpen6} />
-      <InfoEditPopup open={open7} setOpen={setOpen7} type="skill" />
-      <InfoEditPopup open={open8} setOpen={setOpen8} type="education" />
-      <InfoEditPopup open={open9} setOpen={setOpen9} type="interest" />
-      <InfoEditPopup open={open10} setOpen={setOpen10} type="intro" />
+      <InfoEditPopup
+        open={open7}
+        setOpen={setOpen7}
+        type="skill"
+        initialData={DUMMY_INITIAL_DATA}
+        mutations={DUMMY_MUTATIONS}
+      />
+      <InfoEditPopup
+        open={open8}
+        setOpen={setOpen8}
+        type="education"
+        initialData={DUMMY_INITIAL_DATA}
+        mutations={DUMMY_MUTATIONS}
+      />
+      <InfoEditPopup
+        open={open9}
+        setOpen={setOpen9}
+        type="interest"
+        initialData={DUMMY_INITIAL_DATA}
+        mutations={DUMMY_MUTATIONS}
+      />
+      <InfoEditPopup
+        open={open10}
+        setOpen={setOpen10}
+        type="intro"
+        initialData={DUMMY_INITIAL_DATA}
+        mutations={DUMMY_MUTATIONS}
+      />
     </div>
   );
 };
