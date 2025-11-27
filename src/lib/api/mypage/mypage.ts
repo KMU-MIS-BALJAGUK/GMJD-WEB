@@ -9,6 +9,8 @@ import {
   CategoryRequestDto,
   IntroductionRequestDto,
 } from '@/features/mypage/types/my-profile-request';
+import { MyAppliedListResponse } from '@/features/mypage/types/MyAppliedListResponse';
+import { MyApplyCancelRequest } from '@/features/mypage/types/MyApplyCancelRequest';
 
 // 1. 마이프로필 조회 API 호출 함수
 export async function fetchUserProfile(): Promise<UserProfileDataDto> {
@@ -38,4 +40,16 @@ export async function updateCategories(body: CategoryRequestDto): Promise<void> 
 // 5. 한 줄 소개 수정 API 호출 함수
 export async function updateIntroduction(body: IntroductionRequestDto): Promise<void> {
   await api.patch('/api/v1/users/introduction', body);
+}
+
+// 나의 지원 목록 조회 API
+export async function fetchMyAppliedList() {
+  const response = await api.get<MyAppliedListResponse>('/api/v1/teams/my-applies');
+  return response.data.data.myApplyList;
+}
+
+// 신청 취소 API
+export async function cancelApplication(teamId: number, data: MyApplyCancelRequest) {
+  const response = await api.post(`/api/v1/teams/apply/${teamId}/cancel`, data);
+  return response.data;
 }
