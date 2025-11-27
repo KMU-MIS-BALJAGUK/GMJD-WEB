@@ -107,7 +107,11 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
     switch (type) {
       case 'intro': {
         const body: IntroductionRequestDto = { introduction: intro };
-        mutations.updateIntroMutation.mutate(body);
+        mutations.updateIntroMutation.mutate(body, {
+          onSuccess: () => {
+            setOpen(false);
+          },
+        });
         break;
       }
       case 'education': {
@@ -121,12 +125,20 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
           education: EDUCATION_MAP[selectedEducation] || DEFAULT_EDUCATION,
           recognizedDegree: DEGREE_MAP[selectedMajorType] || DEFAULT_EDUCATION,
         };
-        mutations.updateEducationMutation.mutate(body);
+        mutations.updateEducationMutation.mutate(body, {
+          onSuccess: () => {
+            setOpen(false);
+          },
+        });
         break;
       }
       case 'skill': {
         const body: SkillsRequestDto = { skills: skillSet };
-        mutations.updateSkillsMutation.mutate(body);
+        mutations.updateSkillsMutation.mutate(body, {
+          onSuccess: () => {
+            setOpen(false);
+          },
+        });
         break;
       }
       case 'interest': {
@@ -139,14 +151,16 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
         }
 
         const body: CategoryRequestDto = { categoryIds: [selectedId] };
-        mutations.updateCategoriesMutation.mutate(body);
+        mutations.updateCategoriesMutation.mutate(body, {
+          onSuccess: () => {
+            setOpen(false);
+          },
+        });
         break;
       }
       default:
         break;
     }
-
-    setOpen(false);
   };
 
   return (

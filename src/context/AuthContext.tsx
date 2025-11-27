@@ -62,7 +62,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   // 6. 로그아웃 함수: 토큰 제거
-  const logout = async () => {
+  const logout = React.useCallback(async () => {
     const token = accessToken;
 
     if (token) {
@@ -93,7 +93,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         console.error('Failed to remove token from sessionStorage:', e);
       }
     }
-  };
+  }, [accessToken]);
 
   const contextValue: AuthContextType = {
     accessToken,

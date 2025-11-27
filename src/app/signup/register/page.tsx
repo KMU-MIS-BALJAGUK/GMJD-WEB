@@ -23,7 +23,7 @@ const FormField = ({ label, children, disabled }: FormFieldProps) => (
     <label
       className={cn(
         'text-base font-bold text-[#1D1D1D] block',
-        disabled && 'opacity-50  transition-opacity duration-300'
+        disabled && 'opacity-50 transition-opacity duration-300'
       )}
     >
       {label}
@@ -141,9 +141,9 @@ export default function RegisterPage() {
 
     // HighSchool 여부에 따라 DTO 데이터 변경
     const highschoolData = {
-      universityName: 'N/A',
-      recognizedDegree: 'N/A',
-      major: 'N/A',
+      universityName: null,
+      recognizedDegree: null,
+      major: null,
     };
 
     const universityData = {
@@ -220,7 +220,7 @@ export default function RegisterPage() {
               <div
                 className={`relative w-full ${
                   isHighschool
-                    ? 'opacity-50 cursor-not-allowed pointer-events-none  transition-opacity duration-300'
+                    ? 'opacity-50 cursor-not-allowed pointer-events-none transition-opacity duration-300'
                     : ''
                 }`}
               >
@@ -252,7 +252,7 @@ export default function RegisterPage() {
               <div
                 className={`flex gap-2 w-full ${
                   isHighschool
-                    ? 'opacity-50 cursor-not-allowed pointer-events-none  transition-opacity duration-300'
+                    ? 'opacity-50 cursor-not-allowed pointer-events-none transition-opacity duration-300'
                     : ''
                 }`}
               >
