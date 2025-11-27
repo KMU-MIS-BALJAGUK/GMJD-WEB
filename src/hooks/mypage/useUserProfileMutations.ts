@@ -1,6 +1,6 @@
 // src/hooks/mypage/useUserProfileMutations.ts
 
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import {
   updateSkills,
   updateEducationInfo,
@@ -13,17 +13,16 @@ import {
   CategoryRequestDto,
   IntroductionRequestDto,
 } from '@/features/mypage/types/my-profile-request';
-
-// 쿼리 키 정의
-const USER_PROFILE_QUERY_KEY = ['userProfile'];
+import { useinvalidateUserProfileCache } from './useUserProfile';
 
 // 마이프로필 정보 수정을 위한 React Query Mutation
 export const useUserProfileMutations = () => {
-  const queryClient = useQueryClient();
-
   // 모든 수정 작업 성공 시 호출되어 캐시를 무효화하는 공통 함수
+
+  const invalidateProfileCache = useinvalidateUserProfileCache();
+
   const onSuccess = (message: string) => {
-    queryClient.invalidateQueries({ queryKey: USER_PROFILE_QUERY_KEY });
+    invalidateProfileCache();
     alert(message);
   };
   //모든 수정 작업 실패 시 호출되는 공통 에러 핸들러

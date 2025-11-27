@@ -12,7 +12,7 @@ export const useUserProfile = () => {
   });
 };
 
-export const invalidateUserProfileCache = () => {
+export const useinvalidateUserProfileCache = () => {
   const queryClient = useQueryClient();
-  queryClient.invalidateQueries({ queryKey: USER_PROFILE_QUERY_KEY, exact: false });
+  return () => queryClient.invalidateQueries({ queryKey: USER_PROFILE_QUERY_KEY, exact: false });
 };
