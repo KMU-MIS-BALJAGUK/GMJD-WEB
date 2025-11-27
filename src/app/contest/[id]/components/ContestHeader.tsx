@@ -1,7 +1,7 @@
 'use client';
 
 import Button from '@/components/common/Button';
-import { Contest } from '@/types/contest-mock';
+import { Contest } from '@/features/contest/types/contest-mock';
 import Image from 'next/image';
 import Link from 'next/link';
 

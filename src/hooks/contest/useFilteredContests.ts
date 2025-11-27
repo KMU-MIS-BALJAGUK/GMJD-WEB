@@ -1,5 +1,5 @@
 import { fetchContestList } from '@/lib/api/contest/contest';
-import { ContestFilterParams, ContestItemDto } from '@/types/contest';
+import { ContestFilterParams, ContestItemDto } from '@/features/contest/types/contest';
 import { useQuery } from '@tanstack/react-query';
 
 export const useFilteredContests = (

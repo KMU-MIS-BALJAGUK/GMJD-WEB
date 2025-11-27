@@ -1,4 +1,4 @@
-import { ContestFilterParams } from '@/types/contest';
+import { ContestFilterParams } from '@/features/contest/types/contest';
 
 // 정렬 매핑
 export const SORT_MAP: Record<string, ContestFilterParams['sort']> = {
