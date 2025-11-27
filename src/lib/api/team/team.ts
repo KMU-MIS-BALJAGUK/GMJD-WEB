@@ -2,9 +2,10 @@
 // 팀 관련 API 호출 함수
 
 import api from '@/lib/axios';
-import { MyTeamListResponse } from '@/features/mypage/types/MyTeamListResponse';
+import { MyTeamListResponse } from '@/features/team/types/MyTeamListResponse';
 import { TeamDetailResponse, TeamDetailDto } from '@/features/team/types/TeamDetailResponse';
 import { TeamMemoUpdateRequest } from '@/features/team/types/TeamMemoUpdateRequest';
+import { TeamMemoUpdateResponse } from '@/features/team/types/TeamMemoUpdateResponse';
 import { TeamKickMemberRequest } from '@/features/team/types/TeamKickMemberRequest';
 import { TeamKickMemberResponse } from '@/features/team/types/TeamKickMemberResponse';
 
@@ -21,13 +22,13 @@ export async function fetchTeamDetail(teamId: number): Promise<TeamDetailDto> {
 }
 
 // 팀 메모 수정 API
-export async function updateTeamMemo(teamId: number, data: TeamMemoUpdateRequest) {
-  const response = await api.patch(`/api/v1/teams/my-teams/${teamId}/memo`, data);
+export async function updateTeamMemo(teamId: number, data: TeamMemoUpdateRequest): Promise<TeamMemoUpdateResponse> {
+  const response = await api.patch<TeamMemoUpdateResponse>(`/api/v1/teams/my-teams/${teamId}/memo`, data);
   return response.data;
 }
 
 // 팀원 내보내기 API
-export async function kickTeamMember(teamId: number, memberId: number) {
+export async function kickTeamMember(teamId: number, memberId: number): Promise<TeamKickMemberResponse> {
   const response = await api.delete<TeamKickMemberResponse>(`/api/v1/teams/${teamId}/members/${memberId}`);
   return response.data;
 }

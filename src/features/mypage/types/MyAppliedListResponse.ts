@@ -1,6 +1,8 @@
 // src/features/mypage/types/MyAppliedListResponse.ts
 // 나의 지원 목록 조회 API 응답 DTO
 
+import { ApiResponse } from '@/types/api';
+
 export interface MyApplicationItemDto {
   teamId: number;
   contestImageUrl: string;
@@ -15,8 +17,4 @@ export interface MyApplicationListDataDto {
     myApplyList: MyApplicationItemDto[];
 }
 
-export interface MyAppliedListResponse {
-  code: number;
-  msg: string;
-  data: MyApplicationListDataDto;
-}
+export type MyAppliedListResponse = ApiResponse<MyApplicationListDataDto>;
