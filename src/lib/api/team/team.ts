@@ -10,24 +10,24 @@ import { TeamKickMemberResponse } from '@/features/team/types/TeamKickMemberResp
 
 // 나의 팀 목록 조회 API
 export async function fetchMyTeamList() {
-  const response = await api.get<MyTeamListResponse>('/my/teams');
+  const response = await api.get<MyTeamListResponse>('/api/v1/teams/my-teams');
   return response.data.data.teams;
 }
 
 // 팀 상세 조회 API
 export async function fetchTeamDetail(teamId: number): Promise<TeamDetailDto> {
-  const response = await api.get<TeamDetailResponse>(`/teams/${teamId}`);
+  const response = await api.get<TeamDetailResponse>(`/api/v1/teams/my-teams/${teamId}`);
   return response.data.data;
 }
 
 // 팀 메모 수정 API
 export async function updateTeamMemo(teamId: number, data: TeamMemoUpdateRequest) {
-  const response = await api.patch(`/teams/${teamId}/memo`, data);
+  const response = await api.patch(`/api/v1/teams/my-teams/${teamId}/memo`, data);
   return response.data;
 }
 
 // 팀원 내보내기 API
-export async function kickTeamMember(teamId: number, data: TeamKickMemberRequest) {
-  const response = await api.post<TeamKickMemberResponse>(`/teams/${teamId}/kick`, data);
+export async function kickTeamMember(teamId: number, memberId: number) {
+  const response = await api.delete<TeamKickMemberResponse>(`/api/v1/teams/${teamId}/members/${memberId}`);
   return response.data;
 }

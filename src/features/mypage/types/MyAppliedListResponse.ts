@@ -8,7 +8,7 @@ export interface MyApplicationItemDto {
   teamTitle: string;
   maxMember: number;
   memberCount: number;
-  status: string; // "PENDING", "ACCEPTED", "REJECTED" 등
+  status: 'PENDING' | 'ACCEPTED' | 'REJECTED'; // "PENDING", "ACCEPTED", "REJECTED" 등
 }
 
 export interface MyApplicationListDataDto {

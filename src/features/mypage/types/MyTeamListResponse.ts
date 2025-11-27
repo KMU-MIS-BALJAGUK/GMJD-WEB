@@ -8,7 +8,7 @@ export interface MyTeamItemDto {
   contestOrganizationName: string;
   maxMember: number;
   memberCount: number;
-  type: string;
+  type: 'PROJECT' | 'STUDY';
 }
 
 export interface MyTeamListDataDto {
