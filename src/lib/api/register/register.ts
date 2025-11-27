@@ -2,8 +2,6 @@ import api from '@/lib/axios';
 import { UserProfileDto, UserSignUpResponseDto } from '@/features/register/types/register';
 import axios from 'axios';
 
-const ACCESS_TOKEN_KEY = 'accessToken';
-
 export const signUpUser = async (data: UserProfileDto): Promise<UserSignUpResponseDto> => {
   try {
     // api 인스턴스를 사용하여 요청 전송

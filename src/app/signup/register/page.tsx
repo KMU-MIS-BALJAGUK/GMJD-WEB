@@ -32,6 +32,15 @@ const FormField = ({ label, children, disabled }: FormFieldProps) => (
   </div>
 );
 
+const univList = [
+  '서울대학교',
+  '연세대학교',
+  '고려대학교',
+  '성균관대학교',
+  '한양대학교',
+  '경희대학교',
+];
+
 export default function RegisterPage() {
   const router = useRouter();
 
@@ -66,7 +75,6 @@ export default function RegisterPage() {
   const [selectedEducation, setSelectedEducation] = useState('대학교'); // '고등학교' | '대학교'
   const [selectedMajorType, setSelectedMajorType] = useState('대학교 (4년제)'); // '대학교 (2, 3년제)' | '대학교 (4년제)'
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
-  const [univ, setUniv] = useState<string>('');
   const isHighschool = selectedEducation === '고등학교';
 
   //  3. 새로 추가된 스킬 목록 상태 (배열)
@@ -81,6 +89,10 @@ export default function RegisterPage() {
       ...prev,
       [name]: value,
     }));
+    // 학교명 입력 시 드롭다운 다시 표시
+    if (name === 'school') {
+      setShowDropdown(true);
+    }
   };
 
   // SelectBox 전용 핸들러 (SelectBox는 'value'를 직접 전달함)
@@ -170,6 +182,10 @@ export default function RegisterPage() {
   const FORM_MAX_WIDTH = 'max-w-3xl';
   const HEADING_CLASS = 'text-lg font-bold text-[#1D1D1D]';
 
+  const filteredUnivList = univList.filter((name) =>
+    name.toLowerCase().includes(formData.school.toLowerCase())
+  );
+
   return (
     <div className="min-h-screen bg-white">
       <div className={`mx-auto px-4 ${FORM_MAX_WIDTH} pt-10`}>
@@ -235,14 +251,29 @@ export default function RegisterPage() {
                     <Search
                       size={20}
                       className="text-text-02 cursor-pointer"
-                      onClick={() => setShowDropdown(true)}
+                      onClick={() => setShowDropdown((prev) => !prev)}
+                      onFocus={() => setShowDropdown(true)}
+                      onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
                     />
                   }
                 />
 
-                {/* dropdown도 pointer-events-none 상태라 자동 비활성화됨 */}
-                {formData.school.length > 0 && showDropdown && (
-                  <ul className="absolute ...">...</ul>
+                {/* 💡 드롭다운 UI 렌더링 */}
+                {showDropdown && !isHighschool && filteredUnivList.length > 0 && (
+                  <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto">
+                    {filteredUnivList.map((name, index) => (
+                      <li
+                        key={index}
+                        className="px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+                        onClick={() => {
+                          setFormData((prev) => ({ ...prev, school: name }));
+                          setShowDropdown(false);
+                        }}
+                      >
+                        {name}
+                      </li>
+                    ))}
+                  </ul>
                 )}
               </div>
             </FormField>

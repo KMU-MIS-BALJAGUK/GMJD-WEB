@@ -123,7 +123,7 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
           major: major,
           // 한글 -> ENUM 변환하여 전송 (EDUCATION_MAP, DEGREE_MAP 사용)
           education: EDUCATION_MAP[selectedEducation] || DEFAULT_EDUCATION,
-          recognizedDegree: DEGREE_MAP[selectedMajorType] || DEFAULT_EDUCATION,
+          recognizedDegree: DEGREE_MAP[selectedMajorType] || DEFAULT_DEGREE,
         };
         mutations.updateEducationMutation.mutate(body, {
           onSuccess: () => {
