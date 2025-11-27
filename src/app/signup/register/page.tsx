@@ -20,6 +20,7 @@ interface FormFieldProps {
 }
 const FormField = ({ label, children, disabled }: FormFieldProps) => (
   <div className="space-y-2 flex flex-col">
+    ``
     <label
       className={cn(
         'text-base font-bold text-[#1D1D1D] block',
@@ -258,7 +259,7 @@ export default function RegisterPage() {
                   }
                 />
 
-                {/* 💡 드롭다운 UI 렌더링 */}
+                {/* 드롭다운 UI 렌더링 */}
                 {showDropdown && !isHighschool && filteredUnivList.length > 0 && (
                   <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto">
                     {filteredUnivList.map((name, index) => (
