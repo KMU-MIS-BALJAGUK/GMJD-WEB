@@ -64,15 +64,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // 6. 로그아웃 함수: 토큰 제거
   const logout = React.useCallback(async () => {
-    if (accessToken) {
-      try {
-        await api.post(LOGOUT_API_URL, {});
-      } catch (e) {
-        console.warn(
-          'Server-side logout failed (or token already expired). Proceeding with client-side cleanup.',
-          e
-        );
-      }
+    try {
+      await api.post(LOGOUT_API_URL, {});
+    } catch (e) {
+      console.warn(
+        'Server-side logout failed (or token already expired). Proceeding with client-side cleanup.',
+        e
+      );
     }
 
     // SessionStorage에서 제거
@@ -84,7 +82,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         console.error('Failed to remove token from sessionStorage:', e);
       }
     }
-  }, [accessToken]);
+  }, []);
 
   const contextValue: AuthContextType = {
     accessToken,
