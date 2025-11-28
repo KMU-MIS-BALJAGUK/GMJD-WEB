@@ -18,10 +18,7 @@ export interface ContestListResponseDto {
   code: number;
   msg: string;
   data: ContestListDataDto;
-}
-
-export interface ContestFilterParams {
-  // 공모전 리스트 필터 파라미터 DTO
-  sort: 'latest' | 'popular' | 'deadline';
-  categoryIds?: number[];
+  currentPage: number;
+  totalPages: number;
+  totalElements: number;
 }

@@ -10,7 +10,7 @@ export default function HeroContestCard({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="relative w-full aspect-[200/300] rounded-[14px] overflow-hidden">
+    <div className="relative w-full aspect-200/300 rounded-[14px] overflow-hidden">
       {/* 배경 이미지 */}
       <Image src={src} alt="Contest Background" fill className="object-cover" priority />
 

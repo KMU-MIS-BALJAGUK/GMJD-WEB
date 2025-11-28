@@ -15,6 +15,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'lh3.googleusercontent.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'gmjd-contest.s3.ap-northeast-2.amazonaws.com',
+      },
     ],
   },
 };
