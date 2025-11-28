@@ -1,5 +1,5 @@
-export interface ContestFilterParams {
-  // 공모전 리스트 필터 파라미터 DTO
+export interface ContestsParams {
+  // 공모전 리스트 파라미터 DTO
   sortType: 'latest' | 'popular' | 'deadline';
   categoryIds?: number[];
   page?: number;
@@ -8,5 +8,5 @@ export interface ContestFilterParams {
 
 export interface ContestSearchKeywordDto {
   // 공모전 검색 바디 DTO
-  keyword: string;
+  keyword: string | null;
 }

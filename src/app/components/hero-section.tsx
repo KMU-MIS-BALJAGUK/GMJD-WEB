@@ -6,7 +6,8 @@ import { Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import React, { useState } from 'react';
-import { useFilteredContests } from '@/hooks/contest/useFilteredContests';
+import { useRouter } from 'next/navigation';
+import { useContests } from '@/hooks/contest/useContests';
 
 const HeroSection = () => {
   const [imageIndex, setImageIndex] = useState(0);
@@ -17,9 +18,18 @@ const HeroSection = () => {
     size: 5,
   };
 
-  const { data: recommendData, isLoading } = useFilteredContests(params);
+  const { data: recommendData, isLoading } = useContests({ params });
   const list = recommendData ?? [];
   const safeIndex = list.length > 0 ? imageIndex % list.length : 0;
+
+  const router = useRouter();
+  const [keyword, setKeyword] = useState('');
+
+  const onSearch = () => {
+    if (!keyword.trim()) return;
+    router.push(`/contest?keyword=${encodeURIComponent(keyword)}`);
+    setKeyword('');
+  };
 
   return (
     <div className="relative w-full h-[430px] max-md:h-[600px]">
@@ -50,7 +60,12 @@ const HeroSection = () => {
           <Input
             placeholder="공모전 정보를 검색하세요"
             variant="heroInput"
-            icon={<Search size={20} className="text-text-02" />}
+            value={keyword}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setKeyword(e.target.value)}
+            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+              if (e.key === 'Enter') onSearch();
+            }}
+            icon={<Search size={20} className="text-text-02" onClick={onSearch} />}
           />
         </div>
 

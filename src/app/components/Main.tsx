@@ -2,9 +2,10 @@
 
 import React from 'react';
 import ContestCard from '@/components/common/ContestCard';
-import { useFilteredContests } from '@/hooks/contest/useFilteredContests';
 import { useUserProfile } from '@/hooks/mypage/useUserProfile';
 import { CATEGORY_MAP } from '@/constants/contest';
+import { useContests } from '@/hooks/contest/useContests';
+import { ContestItemDto } from '@/features/contest/types/contest-response';
 
 const Main = () => {
   const { data: user, isLoading: userLoading } = useUserProfile();
@@ -29,10 +30,12 @@ const Main = () => {
     size: 4,
   };
 
-  const { data: recommendContestsData, isLoading: recommendLoading } =
-    useFilteredContests(recommendContestsParams);
-  const { data: upcomingDeadlineContestsData, isLoading: upcomingDeadlineLoading } =
-    useFilteredContests(upcomingDeadlineContestsParams);
+  const { data: recommendContestsData, isLoading: recommendLoading } = useContests({
+    params: recommendContestsParams,
+  });
+  const { data: upcomingDeadlineContestsData, isLoading: upcomingDeadlineLoading } = useContests({
+    params: upcomingDeadlineContestsParams,
+  });
 
   return (
     <div className="w-full px-4 md:px-8">
@@ -43,7 +46,7 @@ const Main = () => {
             이것만 한 게 없어요!
           </p>
           <div className="grid-cols-2 xl:grid-cols-4 grid gap-x-6 gap-y-6">
-            {recommendContestsData?.map((contest) => {
+            {recommendContestsData?.map((contest: ContestItemDto) => {
               return <ContestCard contest={contest} key={contest.id} />;
             })}
           </div>
@@ -55,7 +58,7 @@ const Main = () => {
             다가오는 공모전이에요
           </p>
           <div className="grid-cols-2 xl:grid-cols-4 grid gap-x-6 gap-y-6">
-            {upcomingDeadlineContestsData?.map((contest) => {
+            {upcomingDeadlineContestsData?.map((contest: ContestItemDto) => {
               return <ContestCard contest={contest} key={contest.id} />;
             })}
           </div>

@@ -4,8 +4,8 @@ import { cn } from '@/lib/utils';
 import { Menu, X, Search, UserRound } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import React, { useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 import Input from './common/Input';
 import { useUserProfile } from '@/hooks/mypage/useUserProfile';
 
@@ -18,10 +18,15 @@ const Header = () => {
   const router = useRouter();
   const [keyword, setKeyword] = useState('');
 
+  useEffect(() => {
+    if (pathname !== '/contest') {
+      setKeyword('');
+    }
+  }, [pathname]);
+
   const onSearch = () => {
     if (!keyword.trim()) return;
     router.push(`/contest?keyword=${encodeURIComponent(keyword)}`);
-    setOpen(false);
   };
 
   return (

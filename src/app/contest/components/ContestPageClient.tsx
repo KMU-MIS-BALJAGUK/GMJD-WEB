@@ -3,74 +3,40 @@
 import Button from '@/components/common/Button';
 import ContestCard from '@/components/common/ContestCard';
 import { ChevronDown } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import SortButton from './SortButton';
 import { SelectBox } from '@/components/common/SelectBox';
 
-import { ContestFilterParams } from '@/features/contest/types/contest-request';
 import { CATEGORY_MAP, SORT_MAP } from '@/constants/contest';
-
-import { useFilteredContests } from '@/hooks/contest/useFilteredContests';
-import { useSearchContests } from '@/hooks/contest/useSearchContests';
 import { useSearchParams } from 'next/navigation';
+import { useContests } from '@/hooks/contest/useContests';
+import { ContestItemDto } from '@/features/contest/types/contest-response';
 
 const ContestPageClient = () => {
   const searchParams = useSearchParams();
 
-  /** URL Params */
   const keyword = searchParams.get('keyword') ?? '';
   const page = Number(searchParams.get('page') ?? 0);
   const size = Number(searchParams.get('size') ?? 30);
 
-  /** 정렬/카테고리 상태 */
   const [activeSort, setActiveSort] = useState('전체');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-  /** GET/POST 공용 params (body 제외) */
-  const [params, setParams] = useState<ContestFilterParams>({
-    sortType: SORT_MAP['전체'],
-    categoryIds: undefined,
+  const params = {
+    sortType: SORT_MAP[activeSort],
+    categoryIds:
+      selectedCategories.length > 0
+        ? selectedCategories.map((name) => CATEGORY_MAP[name])
+        : undefined,
     page,
     size,
+  };
+
+  const { data: contests, isLoading } = useContests({
+    params,
+    keyword,
   });
 
-  /** 정렬/카테고리/페이지 변경 시 params 업데이트 */
-  useEffect(() => {
-    setParams({
-      sortType: SORT_MAP[activeSort],
-      categoryIds:
-        selectedCategories.length > 0
-          ? selectedCategories.map((name) => CATEGORY_MAP[name])
-          : undefined,
-      page,
-      size,
-    });
-  }, [activeSort, selectedCategories, page, size]);
-
-  /** 검색 여부 */
-  const isSearching = keyword.length > 0;
-
-  /** 검색 (POST + body) */
-  const { data: searchData, isLoading: searchLoading } = useSearchContests(
-    {
-      params,
-      body: { keyword },
-    },
-    {
-      enabled: keyword.length > 0,
-    }
-  );
-
-  /** 일반 목록 (GET + params) */
-  const { data: listData, isLoading: listLoading } = useFilteredContests(params, {
-    enabled: !isSearching, // 검색 중이 아닐 때만 GET 실행
-  });
-
-  /** 최종 데이터 */
-  const contests = isSearching ? searchData : listData;
-  const isLoading = isSearching ? searchLoading : listLoading;
-
-  /** 리스트/정렬/카테고리 UI */
   const sortOptions = ['전체', '인기순', '마감임박순'];
 
   const categories = [
@@ -86,11 +52,10 @@ const ContestPageClient = () => {
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[904px]">
       <h1 className="text-2xl font-bold mb-5 max-md:hidden mt-10">
-        {isSearching ? `"${keyword}" 검색 결과` : '공모전'}
+        {keyword ? `"${keyword}" 검색 결과` : '공모전'}
       </h1>
 
       <div className="flex justify-between items-center mb-4 max-sm:mt-7">
-        {/* 카테고리 */}
         <SelectBox
           type="multiple"
           options={categories}
@@ -100,7 +65,6 @@ const ContestPageClient = () => {
           className="w-52 max-sm:w-42 max-sm:mb-2 max-sm:self-start max-sm:text-sm! max-sm:h-10!"
         />
 
-        {/* 정렬 */}
         <div className="flex items-center gap-3 text-sm">
           {sortOptions.map((option) => (
             <SortButton
@@ -114,12 +78,10 @@ const ContestPageClient = () => {
         </div>
       </div>
 
-      {/* 리스트 */}
       <div className="flex justify-center">
         <div className="grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid gap-x-6 gap-y-6">
           {isLoading && <p>로딩중…</p>}
-
-          {contests?.map((contest) => (
+          {contests?.map((contest: ContestItemDto) => (
             <ContestCard contest={contest} key={contest.id} />
           ))}
         </div>
