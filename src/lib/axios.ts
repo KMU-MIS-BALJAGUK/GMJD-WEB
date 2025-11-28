@@ -20,7 +20,7 @@ let failedQueue: {
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   withCredentials: true, // 쿠키 포함 요청 허용
-  timeout: 5000,
+  timeout: 50000,
 });
 
 // 큐에 쌓인 요청을 처리하는 헬퍼 함수
