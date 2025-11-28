@@ -5,7 +5,7 @@ import axios from 'axios';
 export const signUpUser = async (data: UserProfileDto): Promise<UserSignUpResponseDto> => {
   try {
     // api 인스턴스를 사용하여 요청 전송
-    const response = await api.post<UserSignUpResponseDto>('/api/v1/users', data);
+    const response = await api.patch<UserSignUpResponseDto>('/api/v1/users', data);
     return response.data;
   } catch (error) {
     // 에러 처리
