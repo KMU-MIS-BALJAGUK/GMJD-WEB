@@ -18,4 +18,7 @@ export interface ContestListResponseDto {
   code: number;
   msg: string;
   data: ContestListDataDto;
+  currentPage: number;
+  totalPages: number;
+  totalElements: number;
 }

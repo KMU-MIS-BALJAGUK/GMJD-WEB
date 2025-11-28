@@ -12,5 +12,9 @@ export async function fetchContestsList(params: ContestsParams, body: ContestSea
     paramsSerializer: (params) => qs.stringify(params, { arrayFormat: 'repeat' }),
   });
 
-  return response.data.data.contests;
+  return {
+    contests: response.data.data.contests,
+    totalElements: response.data.data.totalElements,
+    totalPages: response.data.data.totalPages,
+  };
 }

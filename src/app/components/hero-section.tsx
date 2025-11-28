@@ -18,8 +18,9 @@ const HeroSection = () => {
     size: 5,
   };
 
-  const { data: recommendData, isLoading } = useContests({ params });
-  const list = recommendData ?? [];
+  const { data, isLoading } = useContests({ params });
+  const contests = data?.contests;
+  const list = contests ?? [];
   const safeIndex = list.length > 0 ? imageIndex % list.length : 0;
 
   const router = useRouter();

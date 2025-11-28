@@ -46,7 +46,7 @@ const Main = () => {
             이것만 한 게 없어요!
           </p>
           <div className="grid-cols-2 xl:grid-cols-4 grid gap-x-6 gap-y-6">
-            {recommendContestsData?.map((contest: ContestItemDto) => {
+            {recommendContestsData?.contests?.map((contest: ContestItemDto) => {
               return <ContestCard contest={contest} key={contest.id} />;
             })}
           </div>
@@ -58,7 +58,7 @@ const Main = () => {
             다가오는 공모전이에요
           </p>
           <div className="grid-cols-2 xl:grid-cols-4 grid gap-x-6 gap-y-6">
-            {upcomingDeadlineContestsData?.map((contest: ContestItemDto) => {
+            {upcomingDeadlineContestsData?.contests?.map((contest: ContestItemDto) => {
               return <ContestCard contest={contest} key={contest.id} />;
             })}
           </div>

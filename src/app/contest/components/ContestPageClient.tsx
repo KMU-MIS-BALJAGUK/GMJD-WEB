@@ -2,10 +2,17 @@
 
 import Button from '@/components/common/Button';
 import ContestCard from '@/components/common/ContestCard';
-import { ChevronDown } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SortButton from './SortButton';
 import { SelectBox } from '@/components/common/SelectBox';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 
 import { CATEGORY_MAP, SORT_MAP } from '@/constants/contest';
 import { useSearchParams } from 'next/navigation';
@@ -16,8 +23,12 @@ const ContestPageClient = () => {
   const searchParams = useSearchParams();
 
   const keyword = searchParams.get('keyword') ?? '';
-  const page = Number(searchParams.get('page') ?? 0);
-  const size = Number(searchParams.get('size') ?? 30);
+  const size = 30;
+
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const [contestList, setContestList] = useState<ContestItemDto[]>([]);
 
   const [activeSort, setActiveSort] = useState('전체');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -32,10 +43,31 @@ const ContestPageClient = () => {
     size,
   };
 
-  const { data: contests, isLoading } = useContests({
+  const { data, isLoading } = useContests({
     params,
     keyword,
   });
+
+  const contests = data?.contests;
+  const totalElements = data?.totalElements || 0;
+
+  /** 1) page 변경될 때 data replace */
+  useEffect(() => {
+    if (!contests) return;
+    setContestList(contests);
+
+    // totalPages 계산
+    if (totalElements > 0) {
+      setTotalPages(Math.ceil(totalElements / size));
+    }
+  }, [contests, totalElements, size]);
+
+  /** 2) 정렬/카테고리/검색어 변경되면 초기화 */
+  useEffect(() => {
+    setPage(0);
+    setTotalPages(1);
+    setContestList([]);
+  }, [activeSort, selectedCategories, keyword]);
 
   const sortOptions = ['전체', '인기순', '마감임박순'];
 
@@ -49,13 +81,47 @@ const ContestPageClient = () => {
     { value: '건축/건설/인테리어', label: '건축/건설/인테리어' },
   ];
 
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const renderPageNumbers = () => {
+    const pages = [];
+    const maxPagesToShow = 5;
+    let startPage = Math.max(0, page - 2);
+    let endPage = Math.min(totalPages - 1, startPage + maxPagesToShow - 1);
+
+    if (endPage - startPage < maxPagesToShow - 1) {
+      startPage = Math.max(0, endPage - maxPagesToShow + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(
+        <PaginationItem key={i}>
+          <PaginationLink
+            onClick={() => handlePageChange(i)}
+            isActive={page === i}
+            className="cursor-pointer"
+          >
+            {i + 1}
+          </PaginationLink>
+        </PaginationItem>
+      );
+    }
+
+    return pages;
+  };
+
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[904px]">
-      <h1 className="text-2xl font-bold mb-5 max-md:hidden mt-10">
-        {keyword ? `"${keyword}" 검색 결과` : '공모전'}
-      </h1>
+      <h1 className="text-2xl font-bold mb-2 max-md:hidden mt-10">공모전</h1>
 
-      <div className="flex justify-between items-center mb-4 max-sm:mt-7">
+      {keyword && (
+        <p className="text-md text-text-03 mb-5 max-md:mb-6 max-md:mt-7">{`🔎 "${keyword}"에 대한 검색 결과입니다.`}</p>
+      )}
+
+      <div className="flex justify-between items-center mb-4 max-md:mt-7">
         <SelectBox
           type="multiple"
           options={categories}
@@ -81,17 +147,34 @@ const ContestPageClient = () => {
       <div className="flex justify-center">
         <div className="grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid gap-x-6 gap-y-6">
           {isLoading && <p>로딩중…</p>}
-          {contests?.map((contest: ContestItemDto) => (
+          {contestList?.map((contest: ContestItemDto) => (
             <ContestCard contest={contest} key={contest.id} />
           ))}
         </div>
       </div>
 
-      <div className="mt-10 text-center">
-        <Button variant="ghost" className="w-full max-w-[400px] mx-auto mb-5">
-          더보기
-          <ChevronDown size={20} className="ml-2" />
-        </Button>
+      <div className="mt-10 flex justify-center mb-7">
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => handlePageChange(Math.max(0, page - 1))}
+                className={page === 0 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+              />
+            </PaginationItem>
+
+            {renderPageNumbers()}
+
+            <PaginationItem>
+              <PaginationNext
+                onClick={() => handlePageChange(Math.min(totalPages - 1, page + 1))}
+                className={
+                  page === totalPages - 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'
+                }
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
     </div>
   );
