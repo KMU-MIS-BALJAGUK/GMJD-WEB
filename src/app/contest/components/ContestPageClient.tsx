@@ -43,15 +43,20 @@ const ContestPageClient = () => {
     size,
   };
 
+  console.log('🔍 params 변경됨:', params);
+  console.log('🔍 activeSort:', activeSort);
+
   const { data, isLoading } = useContests({
     params,
     keyword,
   });
 
+  console.log('🔍 useContests data:', data);
+
   const contests = data?.contests;
   const totalElements = data?.totalElements || 0;
 
-  /** 1) page 변경될 때 data replace */
+  /** 🔥 1) page 변경될 때 data replace */
   useEffect(() => {
     if (!contests) return;
     setContestList(contests);
@@ -62,7 +67,7 @@ const ContestPageClient = () => {
     }
   }, [contests, totalElements, size]);
 
-  /** 2) 정렬/카테고리/검색어 변경되면 초기화 */
+  /** 🔥 2) 정렬/카테고리/검색어 변경되면 초기화 */
   useEffect(() => {
     setPage(0);
     setTotalPages(1);
@@ -115,13 +120,11 @@ const ContestPageClient = () => {
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[904px]">
-      <h1 className="text-2xl font-bold mb-2 max-md:hidden mt-10">공모전</h1>
+      <h1 className="text-2xl font-bold mb-5 max-md:hidden mt-10">
+        {keyword ? `"${keyword}" 검색 결과` : '공모전'}
+      </h1>
 
-      {keyword && (
-        <p className="text-md text-text-03 mb-5 max-md:mb-6 max-md:mt-7">{`🔎 "${keyword}"에 대한 검색 결과입니다.`}</p>
-      )}
-
-      <div className="flex justify-between items-center mb-4 max-md:mt-7">
+      <div className="flex justify-between items-center mb-4 max-sm:mt-7">
         <SelectBox
           type="multiple"
           options={categories}
@@ -153,7 +156,7 @@ const ContestPageClient = () => {
         </div>
       </div>
 
-      <div className="mt-10 flex justify-center mb-7">
+      <div className="mt-10 flex justify-center">
         <Pagination>
           <PaginationContent>
             <PaginationItem>
