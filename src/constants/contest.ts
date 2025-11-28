@@ -1,7 +1,7 @@
-import { ContestFilterParams } from '@/features/contest/types/contest';
+import { ContestFilterParams } from '@/features/contest/types/contest-request';
 
 // 정렬 매핑
-export const SORT_MAP: Record<string, ContestFilterParams['sort']> = {
+export const SORT_MAP: Record<string, ContestFilterParams['sortType']> = {
   전체: 'latest',
   인기순: 'popular',
   마감임박순: 'deadline',
