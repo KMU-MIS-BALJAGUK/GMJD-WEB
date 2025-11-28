@@ -4,27 +4,38 @@ import Button from '@/components/common/Button';
 import Tag from '@/components/common/Tag';
 import { UsersRound } from 'lucide-react';
 import Image from 'next/image';
+import { useCancelApplication } from '@/hooks/mypage/useCancelApplication';
 
 export interface MyApplyCardProps {
-  id: number;
+  teamId: number;
+  applicationId: number; // Added for cancel functionality
   title: string;
   subtitle: string;
   image: string;
   totalMembers: number;
-  applicants: number;
-  status: string;
+  status: string; // 'open', 'closed'
 }
 
 export default function MyApplyCard({
+  teamId,
+  applicationId,
   title,
   subtitle,
   image,
   totalMembers,
-  applicants,
   status,
 }: MyApplyCardProps) {
+  const { mutate: cancelApplicationMutation, isPending } = useCancelApplication();
+
   const isOpen = status === 'open';
-  const isClosed = status === 'closed';
+  const isClosed = status === 'closed'; // Status for UI, e.g., 'open' or 'closed'
+
+  const handleCancelApplication = () => {
+    cancelApplicationMutation({
+      teamId: teamId,
+      data: { applicationId: applicationId },
+    });
+  };
 
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md bg-white hover:scale-105 transition duration-300">
@@ -56,21 +67,20 @@ export default function MyApplyCard({
 
         {/* 모집 / 지원 */}
         <p className="flex items-center gap-1 text-sm mt-2">
-          <UsersRound size={15} /> 모집 인원 {totalMembers}명{' '}
-          <span className="text-blue-500 font-semibold ml-1">/ {applicants}명 영입</span>
+          <UsersRound size={15} /> 모집 인원 {totalMembers}명
         </p>
 
         {/* 버튼 */}
         <div className="mt-4">
-          {isOpen ? (
-            <Button variant="red" className="w-full">
-              신청 취소
-            </Button>
-          ) : (
-            <Button variant="gray" className="w-full">
-              삭제
-            </Button>
-          )}
+          {/* Change button variant based on status, but enable/disable based on isPending */}
+          <Button
+            variant={isOpen ? 'red' : 'gray'}
+            className="w-full"
+            onClick={isOpen ? handleCancelApplication : undefined} // Only allow cancel if open
+            disabled={isPending || !isOpen}
+          >
+            {isPending ? '취소 중...' : (isOpen ? '신청 취소' : '삭제')}
+          </Button>
         </div>
       </div>
     </div>

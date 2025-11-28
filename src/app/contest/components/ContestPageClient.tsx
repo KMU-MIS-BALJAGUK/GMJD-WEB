@@ -6,15 +6,13 @@ import { ChevronDown } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import SortButton from './SortButton';
 import { SelectBox } from '@/components/common/SelectBox';
-import { contests } from '../page';
-import { ContestFilterParams, ContestItemDto } from '@/features/contest/types/contest';
+import { ContestFilterParams } from '@/features/contest/types/contest';
 import { CATEGORY_MAP, SORT_MAP } from '@/constants/contest';
 import { useFilteredContests } from '@/hooks/contest/useFilteredContests';
-// { initialData }: { initialData: ContestItemDto[] }
+
 const ContestPageClient = () => {
   const [activeSort, setActiveSort] = useState('전체');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-
   const [params, setParams] = useState<ContestFilterParams>({
     sort: SORT_MAP['전체'],
     categoryIds: undefined,
@@ -31,13 +29,9 @@ const ContestPageClient = () => {
     });
   }, [activeSort, selectedCategories]);
 
-  const { data } = useFilteredContests(params);
-
-  console.log(data);
+  const { data: contests, isLoading, isError } = useFilteredContests(params);
 
   const sortOptions = ['전체', '인기순', '마감임박순'];
-  // const [activeSort, setActiveSort] = useState('전체');
-  // const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const categories = [
     { value: '기획/아이디어', label: '기획/아이디어' },
     { value: '광고/마케팅', label: '광고/마케팅' },
@@ -76,10 +70,22 @@ const ContestPageClient = () => {
         </div>
       </div>
 
+      {isLoading && <p>공모전 목록을 불러오는 중...</p>}
+      {isError && <p>오류가 발생했습니다. 다시 시도해주세요.</p>}
+      
       <div className="flex justify-center">
         <div className="grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid gap-x-6 gap-y-6">
-          {contests.map((contest) => {
-            return <ContestCard contest={contest} key={contest.id} />;
+          {contests?.map((contest) => {
+            const adaptedContest = {
+              id: contest.id,
+              thumbnailUrl: contest.imageUrl,
+              dDay: contest.remainingDays,
+              teams: contest.openTeamCount,
+              title: contest.name,
+              organizer: contest.organizationName,
+              status: 'recruiting', // 'status' is missing from API, providing a default
+            };
+            return <ContestCard contest={adaptedContest} key={contest.id} />;
           })}
         </div>
       </div>

@@ -4,6 +4,7 @@
 import { ApiResponse } from '@/types/api';
 
 export interface MyApplicationItemDto {
+  applicationId: number;
   teamId: number;
   contestImageUrl: string;
   contestName: string;
