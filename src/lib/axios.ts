@@ -60,7 +60,7 @@ api.interceptors.response.use(
 
     // 401 처리 — 토큰 만료 같은 경우
     if (status === 401 && originalRequest && !originalRequest._retry) {
-      // 2. 동시 요청 방지를 위한 큐 처리
+      // 동시 요청 방지를 위한 큐 처리
       if (isRefreshing) {
         // 갱신 중이라면 현재 요청을 큐에 넣고 대기
         return new Promise((resolve, reject) => {
@@ -73,7 +73,7 @@ api.interceptors.response.use(
       console.warn('401 Unauthorized. Access Token 갱신 시도...');
 
       try {
-        // 3. Refresh API 호출: RT는 쿠키에 담겨 자동 전송됩니다.
+        // Refresh API 호출: RT는 쿠키에 담겨 자동 전송됩니다.
         const refreshResponse = await axios.post(`${API_BASE_URL}${REFRESH_API_URL}`, null, {
           withCredentials: true,
         });
@@ -85,24 +85,24 @@ api.interceptors.response.use(
 
         if (!newAccessToken) {
           throw new Error('서버에서 새로운 Access Token을 받지 못했습니다. 재로그인 필요.');
-        } // 4. 새 AT를 sessionStorage에 저장
+        }
 
-        sessionStorage.setItem(ACCESS_TOKEN_KEY, newAccessToken); // 5. 기본 헤더 및 실패한 요청의 헤더 업데이트
+        sessionStorage.setItem(ACCESS_TOKEN_KEY, newAccessToken); //  기본 헤더 및 실패한 요청의 헤더 업데이트
 
         api.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
         if (originalRequest.headers) {
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-        } // 6. 큐 처리 및 원래 요청 재시도
+        } // 큐 처리 및 원래 요청 재시도
 
         processQueue(null, newAccessToken);
         return api(originalRequest);
       } catch (refreshError) {
-        // 7. Refresh 실패 (RT 만료/오류) 시 강제 로그아웃
+        // Refresh 실패 (RT 만료/오류) 시 강제 로그아웃
         console.error('Token refresh failed. Logging out.', refreshError);
         processQueue(refreshError as AxiosError);
         sessionStorage.removeItem(ACCESS_TOKEN_KEY);
         alert('인증이 만료되었습니다. 다시 로그인해주세요.');
-        // 로그인 페이지로 리다이렉트 (Next.js 환경을 고려하여 window.location 사용)
+        // 로그인 페이지로 리다이렉트
         window.location.href = '/signup';
         return Promise.reject(refreshError);
       } finally {
