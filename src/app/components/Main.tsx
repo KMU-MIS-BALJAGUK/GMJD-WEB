@@ -11,7 +11,7 @@ const Main = () => {
   const { data: user, isLoading: userLoading } = useUserProfile();
   console.log(user);
   const isLoggedIn = !!user;
-  const recommendContestsParams = isLoggedIn
+  const recommendContestsParams = isLoggedIn && user.categoryList?.length > 0
     ? {
         sortType: 'popular' as const,
         page: 0,
