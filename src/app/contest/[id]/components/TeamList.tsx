@@ -84,11 +84,13 @@ export default function TeamList({ teams, contestId }: TeamListProps) {
       <MakeTeamPopup open={isMakeTeamModalOpen} setOpen={setIsMakeTeamModalOpen} contestId={contestId} />
       
       {/* 팀 상세 정보 모달 */}
-      <TeamDetailPopup 
-        teamId={detailTeamId} 
-        open={!!detailTeamId} 
-        setOpen={() => setDetailTeamId(null)} 
-      />
+      {detailTeamId && (
+        <TeamDetailPopup 
+          teamId={detailTeamId} 
+          open={!!detailTeamId} 
+          setOpen={() => setDetailTeamId(null)} 
+        />
+      )}
     </>
   );
 }

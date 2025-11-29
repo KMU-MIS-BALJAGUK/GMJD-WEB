@@ -47,7 +47,7 @@ const RemovePlayerPopup = ({
         <CircleAlert className="text-red-400" /> 내보낸 팀원은 복구할 수 없습니다.
       </div>
 
-      <Button variant="ghost" onClick={handleKick} disabled={isPending}>
+      <Button variant="ghost" onClick={handleKick} disabled={isPending || !teamId || !memberId}>
         {isPending ? '내보내는 중...' : '내보내기'}
       </Button>
     </LayerPopup>

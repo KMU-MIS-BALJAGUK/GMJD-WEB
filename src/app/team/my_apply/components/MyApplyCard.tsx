@@ -72,15 +72,16 @@ export default function MyApplyCard({
 
         {/* 버튼 */}
         <div className="mt-4">
-          {/* Change button variant based on status, but enable/disable based on isPending */}
-          <Button
-            variant={isOpen ? 'red' : 'gray'}
-            className="w-full"
-            onClick={isOpen ? handleCancelApplication : undefined} // Only allow cancel if open
-            disabled={isPending || !isOpen}
-          >
-            {isPending ? '취소 중...' : (isOpen ? '신청 취소' : '삭제')}
-          </Button>
+          {isOpen && (
+            <Button
+              variant="red"
+              className="w-full"
+              onClick={handleCancelApplication}
+              disabled={isPending}
+            >
+              {isPending ? '취소 중...' : '신청 취소'}
+            </Button>
+          )}
         </div>
       </div>
     </div>
