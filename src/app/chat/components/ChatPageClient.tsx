@@ -61,7 +61,6 @@ export default function ChatPageClient({ initialRoomId }: { initialRoomId: numbe
         setSelectedRoom={handleSelectRoom}
         showChatRoom={showChatRoom}
         setShowChatRoom={setShowChatRoom}
-        roomList={roomList}
       />
 
       {/* 채팅룸 */}
