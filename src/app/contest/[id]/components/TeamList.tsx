@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Team } from '@/features/contest/types/contest-mock';
 import TeamCard from './TeamCard';
 import MakeTeamPopup from '@/components/popup/contest-detail/MakeTeamPopup';
+import TeamDetailPopup from '@/components/popup/team-detail/TeamDetailPopup'; // Import the new popup
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 
 interface TeamListProps {
@@ -12,7 +13,8 @@ interface TeamListProps {
 }
 
 export default function TeamList({ teams, contestId }: TeamListProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMakeTeamModalOpen, setIsMakeTeamModalOpen] = useState(false);
+  const [detailTeamId, setDetailTeamId] = useState<number | null>(null); // State for detail view
   const [currentPage, setCurrentPage] = useState(1);
   const teamsPerPage = 3;
 
@@ -53,7 +55,7 @@ export default function TeamList({ teams, contestId }: TeamListProps) {
         <div className="flex flex-col gap-3">
           {/* 팀 만들기 버튼 */}
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => setIsMakeTeamModalOpen(true)}
             className="w-full h-[137px] bg-white border border-dashed border-[#BBBBBB] rounded-[10px] flex flex-col items-center justify-center gap-2.5 hover:bg-gray-50 transition-colors cursor-pointer"
           >
             <div className="w-6 h-6 bg-bg-01 rounded-full flex items-center justify-center">
@@ -69,13 +71,26 @@ export default function TeamList({ teams, contestId }: TeamListProps) {
 
           {/* 팀 카드들 */}
           {currentTeams.map((team) => (
-            <TeamCard key={team.id} team={team} />
+            <TeamCard
+              key={team.id}
+              team={team}
+              onDetailView={() => setDetailTeamId(team.id)}
+            />
           ))}
         </div>
       </div>
 
       {/* 팀 만들기 모달 */}
-      <MakeTeamPopup open={isModalOpen} setOpen={setIsModalOpen} contestId={contestId} />
+      <MakeTeamPopup open={isMakeTeamModalOpen} setOpen={setIsMakeTeamModalOpen} contestId={contestId} />
+      
+      {/* 팀 상세 정보 모달 */}
+      {detailTeamId && (
+        <TeamDetailPopup 
+          teamId={detailTeamId} 
+          open={!!detailTeamId} 
+          setOpen={() => setDetailTeamId(null)} 
+        />
+      )}
     </>
   );
 }
