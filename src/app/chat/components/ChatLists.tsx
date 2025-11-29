@@ -3,6 +3,7 @@ import React from 'react';
 import { useChatRoomList } from '@/hooks/chat/useChatRoomLists';
 import Image from 'next/image';
 import { Inbox } from 'lucide-react'; // ← 아이콘 추가
+import Loading from '@/components/common/Loading';
 
 const ChatLists = ({
   selectedRoom,
@@ -31,9 +32,7 @@ const ChatLists = ({
 
       <div className="w-full h-full border border-border-01 rounded-2xl overflow-y-auto flex flex-col">
         {/* 로딩 */}
-        {isLoading && (
-          <div className="flex items-center justify-center h-full text-text-03">불러오는 중...</div>
-        )}
+        {isLoading && <Loading className="h-full" message="채팅방 목록을 불러오는 중..." />}
 
         {/* 채팅방 없을 때 */}
         {!isLoading && rooms.length === 0 && (

@@ -5,6 +5,7 @@ import React from 'react';
 import MyApplyCard from './MyApplyCard';
 import { useMyAppliedList } from '@/hooks/mypage/useMyAppliedList';
 import { ClipboardList } from 'lucide-react';
+import Loading from '@/components/common/Loading';
 
 const MyApplyPageClient = () => {
   const { data: myAppliedList, isLoading, isError } = useMyAppliedList();
@@ -13,7 +14,7 @@ const MyApplyPageClient = () => {
     return (
       <div className="max-w-[1200px] mx-auto py-10 px-4 md:px-6 lg:px-8">
         <h1 className="text-2xl font-bold mb-6">팀 관리</h1>
-        <p>Loading...</p>
+        <Loading message="지원한 팀 정보를 불러오는 중..." />
       </div>
     );
   }

@@ -8,6 +8,8 @@ import { useUserProfile } from '@/hooks/mypage/useUserProfile';
 import { useUserProfileMutations } from '@/hooks/mypage/useUserProfileMutations';
 import { UserProfileDataDto } from '@/features/mypage/types/my-profile-response';
 import InfoEditPopup from '@/components/popup/profile/InfoEditPopup';
+import Loading from '@/components/common/Loading';
+import Error from '@/components/common/Error';
 
 interface MyPageClientProps {
   initialUser: UserProfileDataDto;
@@ -99,8 +101,9 @@ export default function MyPageClient({ initialUser }: MyPageClientProps) {
   // API 로딩/에러 처리
   const displayUser = user || initialUser;
 
-  if (isLoading && !user) return <div>프로필을 로딩 중입니다...</div>;
-  if (isError || !displayUser) return <div>프로필 정보를 불러오는 데 실패했습니다.</div>;
+  if (isLoading && !user) return <Loading message="프로필 정보를 불러오는 중..." />;
+  if (isError || !displayUser)
+    return <Error message="프로필 정보를 불러오는 중 오류가 발생했습니다." />;
 
   return (
     <div className="h-[calc(100vh-68px-80px)] bg-white flex justify-center items-center py-16">

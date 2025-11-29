@@ -2,12 +2,22 @@
 
 import Input from '@/components/common/Input';
 import Tag from '@/components/common/Tag';
-import { Search } from 'lucide-react';
+import { Inbox, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useContests } from '@/hooks/contest/useContests';
+import Loading from '@/components/common/Loading';
+
+function EmptyState({ message = '데이터가 없습니다.' }: { message?: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center h-full text-white/70 gap-2">
+      <Inbox size={28} className="text-white/60" />
+      <p className="text-sm">{message}</p>
+    </div>
+  );
+}
 
 const HeroSection = () => {
   const [imageIndex, setImageIndex] = useState(0);
@@ -100,7 +110,7 @@ const HeroSection = () => {
                     {/* 로딩/빈 상태 */}
                     {list.length === 0 ? (
                       <div className="flex items-center justify-center h-full bg-black/40 text-white/60 text-sm">
-                        {isLoading ? '로딩 중...' : '데이터 없음'}
+                        {isLoading ? <Loading /> : <EmptyState />}
                       </div>
                     ) : (
                       <>

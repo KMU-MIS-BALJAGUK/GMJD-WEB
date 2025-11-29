@@ -4,6 +4,7 @@ import TeamCard from '@/app/team/components/TeamCard';
 import Link from 'next/link';
 import { useMyTeams } from '@/hooks/team/useMyTeams';
 import { UsersRound } from 'lucide-react';
+import Loading from '@/components/common/Loading';
 
 export default function MyTeamPageClient() {
   const { data: myTeams, isLoading, isError } = useMyTeams();
@@ -12,7 +13,7 @@ export default function MyTeamPageClient() {
     return (
       <div className="max-w-[1200px] mx-auto max-md:py-7 py-10 px-4 md:px-6 lg:px-8">
         <h1 className="max-md:text-xl text-2xl font-bold mb-6">팀 관리</h1>
-        <p>Loading...</p>
+        <Loading message="팀 정보를 불러오는 중..." />
       </div>
     );
   }

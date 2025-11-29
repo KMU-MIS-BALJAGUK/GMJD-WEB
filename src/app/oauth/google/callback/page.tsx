@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useAuthStore } from '@/store/authStore';
 import { useQueryClient } from '@tanstack/react-query';
 import { fetchUserProfile } from '@/lib/api/mypage/mypage';
+import Loading from '@/components/common/Loading';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 const BACKEND_AUTH_BASE_API = `${API_BASE_URL}/oauth/google/callback`;
@@ -104,10 +105,7 @@ const CoreCallbackLogic: React.FC = () => {
         </div>
       ) : (
         <div className="flex flex-col items-center">
-          <div className="animate-spin rounded-full h-10 w-10 border-4 border-t-4 border-blue-500 border-opacity-25"></div>
-          <p className="mt-4 text-lg font-semibold text-gray-700">
-            {loading ? '로그인 중입니다...' : '이동 중...'}
-          </p>
+          {loading ? <Loading message="로그인 중입니다..." /> : <Loading message="이동 중..." />}
         </div>
       )}
     </div>
