@@ -100,7 +100,7 @@ const PopupClient = () => {
       <MakeTeamPopup open={open1} setOpen={setOpen1} />
       <RequestPopup open={open2} setOpen={setOpen2} />
       <TeamInfoPopup open={open3} setOpen={setOpen3} teamId={1} />
-      <RemovePlayerPopup open={open4} setOpen={setOpen4} playerName="홍길동" />
+      <RemovePlayerPopup open={open4} setOpen={setOpen4} playerName="홍길동" teamId={1} memberId={2} />
       <MyRecruitPopup open={open5} setOpen={setOpen5} />
       <PlayerInfoPopup open={open6} setOpen={setOpen6} />
       <InfoEditPopup
