@@ -20,7 +20,6 @@ interface FormFieldProps {
 }
 const FormField = ({ label, children, disabled }: FormFieldProps) => (
   <div className="space-y-2 flex flex-col">
-    ``
     <label
       className={cn(
         'text-base font-bold text-[#1D1D1D] block',

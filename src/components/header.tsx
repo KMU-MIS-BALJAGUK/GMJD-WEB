@@ -4,14 +4,30 @@ import { cn } from '@/lib/utils';
 import { Menu, X, Search, UserRound } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
-import React, { useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 import Input from './common/Input';
+import { useUserProfile } from '@/hooks/mypage/useUserProfile';
 
 const Header = () => {
-  const isLogin = true; // TODO: 로그인 상태 관리
+  const { data: user } = useUserProfile();
+  const isLoggedIn = !!user;
+
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const [keyword, setKeyword] = useState('');
+
+  useEffect(() => {
+    if (pathname !== '/contest') {
+      setKeyword('');
+    }
+  }, [pathname]);
+
+  const onSearch = () => {
+    if (!keyword.trim()) return;
+    router.push(`/contest?keyword=${encodeURIComponent(keyword)}`);
+  };
 
   return (
     <header className="w-full h-[68px] border-b border-border-01">
@@ -21,12 +37,19 @@ const Header = () => {
             <Image src={'/logo.png'} alt="logo" width={70} height={40} className="cursor-pointer" />
           </Link>
 
-          {pathname === '/' && (
+          {pathname !== '/' && (
             <div className="hidden md:block w-full max-w-[500px] mr-7">
               <Input
                 placeholder="공모전 정보를 검색해 보세요"
                 variant="rounded"
-                icon={<Search size={18} className="text-text-02" />}
+                icon={
+                  <Search size={18} className="text-text-02 cursor-pointer" onClick={onSearch} />
+                }
+                value={keyword}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setKeyword(e.target.value)}
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                  if (e.key === 'Enter') onSearch();
+                }}
               />
             </div>
           )}
@@ -62,7 +85,7 @@ const Header = () => {
 
           <div className="text-border-02">|</div>
 
-          {isLogin ? (
+          {isLoggedIn ? (
             <Link
               href="/mypage"
               className={cn(
@@ -72,7 +95,7 @@ const Header = () => {
             >
               <UserRound size={20} className="mb-0.5" />
               <div className="flex gap-0.5 items-center">
-                <p>김주미</p>
+                <p>{user?.name}</p>
                 <p>님</p>
               </div>
             </Link>
@@ -161,7 +184,7 @@ const Header = () => {
             onClick={() => setOpen(false)}
           >
             <UserRound size={20} />
-            <p>김주미 님</p>
+            <p>{user?.name} 님</p>
           </Link>
         </div>
       </div>
