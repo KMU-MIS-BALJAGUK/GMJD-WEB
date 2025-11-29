@@ -1,75 +1,21 @@
-import TeamCard from '@/app/team/components/TeamCard';
-import Link from 'next/link';
+'use client';
 
-// 임시 데이터 (나의 팀 전용)
-const mockCards = [
-  {
-    id: 1,
-    title: 'NH농협카드 플레이토&스터디 디자인 콘테스트',
-    subtitle: 'NH농협카드',
-    image: '/contest.png',
-    totalMembers: 2,
-    role: '팀장',
-  },
-  {
-    id: 2,
-    title: '기흥중진 사회 청년희망 프로그램 영상 공모전',
-    subtitle: '기흥중진',
-    image: '/contest2.png',
-    totalMembers: 2,
-    role: '팀원',
-  },
-  {
-    id: 3,
-    title: '서울시 2024 대학 광고동아리 광고제',
-    subtitle: '서울특별시',
-    image: '/contest3.png',
-    totalMembers: 2,
-    role: '팀원',
-  },
-  {
-    id: 4,
-    title: '한국방송통신대학교 상징물 캐릭터 공모전',
-    subtitle: '한국방송통신대학교',
-    image: '/contest4.png',
-    totalMembers: 2,
-    role: '팀장',
-  },
-  {
-    id: 5,
-    title: 'NH농협카드 플레이토&스터디 디자인 콘테스트',
-    subtitle: 'NH농협카드',
-    image: '/contest.png',
-    totalMembers: 2,
-    role: '팀장',
-  },
-  {
-    id: 6,
-    title: '기흥중진 사회 청년희망 프로그램 영상 공모전',
-    subtitle: '기흥중진',
-    image: '/contest2.png',
-    totalMembers: 2,
-    role: '팀원',
-  },
-  {
-    id: 7,
-    title: '서울시 2024 대학 광고동아리 광고제',
-    subtitle: '서울특별시',
-    image: '/contest3.png',
-    totalMembers: 2,
-    role: '팀원',
-  },
-  {
-    id: 8,
-    title: '한국방송통신대학교 상징물 캐릭터 공모전',
-    subtitle: '한국방송통신대학교',
-    image: '/contest4.png',
-    totalMembers: 2,
-    role: '팀장',
-  },
-];
+import Link from 'next/link';
+import TeamCard from '@/app/team/components/TeamCard';
+import { useQuery } from '@tanstack/react-query';
+import { fetchMyTeamList } from '@/lib/api/team/team';
 
 export default function TeamManagementPage() {
+  const {
+    data: teams,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['myTeams'],
+    queryFn: fetchMyTeamList,
+    staleTime: 1000 * 60 * 5,
+  });
+
   return (
     <div className="max-w-[1200px] mx-auto max-md:py-7 py-10 px-4 md:px-6 lg:px-8">
       {/* 제목 */}
@@ -90,10 +36,29 @@ export default function TeamManagementPage() {
         </Link>
       </nav>
 
-      {/* 카드 리스트 */}
+      {/* 로딩 */}
+      {isLoading && <p>로딩 중...</p>}
+
+      {/* 에러 */}
+      {error && <p>데이터를 불러오는 중 오류가 발생했습니다.</p>}
+
+      {/* 빈 목록 처리 */}
+      {!isLoading && !error && teams?.length === 0 && (
+        <p className="text-gray-500">나의 팀이 존재하지 않습니다.</p>
+      )}
+
+      {/* 실제 카드 리스트 */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {mockCards.map((card) => (
-          <TeamCard key={card.id} {...card} />
+        {teams?.map((team) => (
+          <TeamCard
+            key={team.id}
+            id={team.id}
+            title={team.contestTitle}
+            subtitle={team.organizationName}
+            image={team.imageUrl}
+            totalMembers={team.totalMembers}
+            role={team.role === 'LEADER' ? '팀장' : '팀원'}
+          />
         ))}
       </div>
     </div>
