@@ -46,7 +46,7 @@ const ContestPageClient = () => {
   console.log('🔍 params 변경됨:', params);
   console.log('🔍 activeSort:', activeSort);
 
-  const { data, isLoading } = useContests({
+  const { data, isLoading, isError } = useContests({
     params,
     keyword,
   });
@@ -146,6 +146,9 @@ const ContestPageClient = () => {
         </div>
       </div>
 
+      {isLoading && <p>공모전 목록을 불러오는 중...</p>}
+      {isError && <p>오류가 발생했습니다. 다시 시도해주세요.</p>}
+      
       <div className="flex justify-center">
         <div className="grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid gap-x-6 gap-y-6">
           {isLoading && <p>로딩중…</p>} {/* TODO: 로딩 컴포넌트 추가 */}

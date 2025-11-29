@@ -1,6 +1,4 @@
-//src/features/team/types/MyRecruitResponse.ts
-
-export interface MyRecruitTeamItemDto {
+export interface MyRecruitItemDto {
   teamId: number;
   contestImageUrl: string;
   contestName: string;
@@ -8,15 +6,15 @@ export interface MyRecruitTeamItemDto {
   maxMember: number;
   memberCount: number;
   requestedCount: number;
-  status: string;
+  status: 'OPEN' | 'CLOSED';
 }
 
-export interface MyRecruitListData {
-  recruitList: MyRecruitTeamItemDto[];
+export interface MyRecruitListDataDto {
+  recruitList: MyRecruitItemDto[];
 }
 
-export interface MyRecruitResponse {
+export interface MyRecruitListResponse {
   code: number;
   msg: string;
-  data: MyRecruitListData;
+  data: MyRecruitListDataDto;
 }

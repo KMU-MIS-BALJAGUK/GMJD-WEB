@@ -1,3 +1,5 @@
+//src/app/team/my_recruit/components/RecruitCard.tsx
+
 'use client';
 
 import Image from 'next/image';

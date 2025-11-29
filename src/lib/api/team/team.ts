@@ -42,4 +42,3 @@ export async function fetchMyRecruitList() {
   const response = await api.get('/api/v1/teams/my-recruit');
   return response.data.data.recruitList;
 }
-
