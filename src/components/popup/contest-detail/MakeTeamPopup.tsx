@@ -6,7 +6,7 @@ import LayerPopup from '../../common/layerpopup/LayerPopup';
 import { useMutation } from '@tanstack/react-query';
 
 // 팀 생성 API
-import { createTeam } from '@/lib/api/contest'; 
+import { createTeam } from '@/lib/api/team'; 
 // 타입 경로 수정
 import type { TeamCreateRequestDto } from  '@/features/team/types/TeamCreateRequest';
 
