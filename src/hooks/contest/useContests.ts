@@ -13,8 +13,16 @@ export function useContests({ params, keyword }: UseContestsProps) {
   };
 
   return useQuery({
-    queryKey: ['contests', params, body],
+    queryKey: [
+      'contests',
+      params.sortType,
+      params.page,
+      params.size,
+      JSON.stringify(params.categoryIds),
+      body.keyword,
+    ],
     queryFn: () => fetchContestsList(params, body),
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 2, // 2분간 신선한 데이터로 취급
+    gcTime: 1000 * 60 * 10, // 10분간 캐시 유지
   });
 }
