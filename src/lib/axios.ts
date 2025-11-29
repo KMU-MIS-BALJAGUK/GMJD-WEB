@@ -1,20 +1,19 @@
 import axios from 'axios';
+import { useAuthStore } from '@/store/authStore';
 
-// Axios 인스턴스 생성
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-  withCredentials: true, // 쿠키 포함 요청 허용
+  withCredentials: true,
   timeout: 50000,
 });
 
 // 요청 인터셉터
 api.interceptors.request.use(
   (config) => {
-    const accessToken =
-      typeof window !== 'undefined' ? sessionStorage.getItem('accessToken') : null;
+    const token = useAuthStore.getState().accessToken; // Zustand에서 직접 가져오기
 
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
 
     return config;
@@ -25,14 +24,12 @@ api.interceptors.request.use(
 // 응답 인터셉터
 api.interceptors.response.use(
   (response) => response,
-  async (error) => {
-    console.error('API ERROR:', error);
-
+  (error) => {
     const status = error.response?.status;
 
-    // 401 처리 — 토큰 만료 같은 경우
     if (status === 401) {
-      console.warn('401 Unauthorized - 로그인 필요함');
+      console.warn('401 Unauthorized → 자동 로그아웃 처리');
+      useAuthStore.getState().logout(); // Zustand logout 호출
     }
 
     return Promise.reject(error);
