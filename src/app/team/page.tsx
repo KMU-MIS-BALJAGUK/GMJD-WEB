@@ -1,20 +1,38 @@
+//src/app/team/page.tsx
+//메인 팀 관리 페이지
+
 'use client';
 
 import Link from 'next/link';
 import TeamCard from '@/app/team/components/TeamCard';
 import { useQuery } from '@tanstack/react-query';
-import { fetchMyTeamList } from '@/lib/api/team/team';
+import { fetchMyTeamList, fetchMyRecruitList } from '@/lib/api/team/team';
 
 export default function TeamManagementPage() {
+  // 내가 참여 중인 팀 목록
   const {
     data: teams,
-    isLoading,
-    error,
+    isLoading: isTeamsLoading,
+    error: teamsError,
   } = useQuery({
     queryKey: ['myTeams'],
     queryFn: fetchMyTeamList,
     staleTime: 1000 * 60 * 5,
   });
+
+  // 내가 팀장인 팀 목록
+  const {
+    data: recruitTeams,
+    isLoading: isRecruitLoading,
+    error: recruitError,
+  } = useQuery({
+    queryKey: ['myRecruitTeams'],
+    queryFn: fetchMyRecruitList,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  // 팀장인 팀들의 teamId Set 생성
+  const leaderTeamIds = new Set(recruitTeams?.map((t) => t.teamId) ?? []);
 
   return (
     <div className="max-w-[1200px] mx-auto max-md:py-7 py-10 px-4 md:px-6 lg:px-8">
@@ -37,29 +55,35 @@ export default function TeamManagementPage() {
       </nav>
 
       {/* 로딩 */}
-      {isLoading && <p>로딩 중...</p>}
+      {(isTeamsLoading || isRecruitLoading) && <p>로딩 중...</p>}
 
       {/* 에러 */}
-      {error && <p>데이터를 불러오는 중 오류가 발생했습니다.</p>}
+      {(teamsError || recruitError) && (
+        <p>데이터를 불러오는 중 오류가 발생했습니다.</p>
+      )}
 
       {/* 빈 목록 처리 */}
-      {!isLoading && !error && teams?.length === 0 && (
+      {!isTeamsLoading && !teamsError && teams?.length === 0 && (
         <p className="text-gray-500">나의 팀이 존재하지 않습니다.</p>
       )}
 
       {/* 실제 카드 리스트 */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {teams?.map((team) => (
-          <TeamCard
-            key={team.id}
-            id={team.id}
-            title={team.contestTitle}
-            subtitle={team.organizationName}
-            image={team.imageUrl}
-            totalMembers={team.totalMembers}
-            role={team.role === 'LEADER' ? '팀장' : '팀원'}
-          />
-        ))}
+        {teams?.map((team) => {
+          const isLeader = leaderTeamIds.has(team.teamId);
+
+          return (
+            <TeamCard
+              key={team.teamId}
+              id={team.teamId}
+              title={team.contestName}
+              subtitle={team.contestOrganizationName}
+              image={team.contestImageUrl}
+              totalMembers={team.memberCount}
+              role={isLeader ? '팀장' : '팀원'}
+            />
+          );
+        })}
       </div>
     </div>
   );
