@@ -46,7 +46,7 @@ const ContestPageClient = () => {
   console.log('🔍 params 변경됨:', params);
   console.log('🔍 activeSort:', activeSort);
 
-  const { data, isLoading } = useContests({
+  const { data, isLoading, isError } = useContests({
     params,
     keyword,
   });
@@ -56,7 +56,7 @@ const ContestPageClient = () => {
   const contests = data?.contests;
   const totalElements = data?.totalElements || 0;
 
-  /** 🔥 1) page 변경될 때 data replace */
+  /** 1) 새로운 데이터가 올 때마다 업데이트 */
   useEffect(() => {
     if (!contests) return;
     setContestList(contests);
@@ -64,14 +64,14 @@ const ContestPageClient = () => {
     // totalPages 계산
     if (totalElements > 0) {
       setTotalPages(Math.ceil(totalElements / size));
+    } else {
+      setTotalPages(1);
     }
   }, [contests, totalElements, size]);
 
-  /** 🔥 2) 정렬/카테고리/검색어 변경되면 초기화 */
+  /** 2) 정렬/카테고리/검색어 변경되면 페이지 초기화 */
   useEffect(() => {
     setPage(0);
-    setTotalPages(1);
-    setContestList([]);
   }, [activeSort, selectedCategories, keyword]);
 
   const sortOptions = ['전체', '인기순', '마감임박순'];
@@ -120,11 +120,10 @@ const ContestPageClient = () => {
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[904px]">
-      <h1 className="text-2xl font-bold mb-5 max-md:hidden mt-10">
-        {keyword ? `"${keyword}" 검색 결과` : '공모전'}
-      </h1>
+      <h1 className="text-2xl font-bold mb-5 max-md:hidden mt-10">공모전</h1>
+      {keyword && <p className="mb-5 text-text-02">{`🔎 "${keyword}"에 대한 검색 결과입니다.`}</p>}
 
-      <div className="flex justify-between items-center mb-4 max-sm:mt-7">
+      <div className="flex justify-between items-center mb-5 max-md:mt-7">
         <SelectBox
           type="multiple"
           options={categories}
@@ -147,16 +146,19 @@ const ContestPageClient = () => {
         </div>
       </div>
 
+      {isLoading && <p>공모전 목록을 불러오는 중...</p>}
+      {isError && <p>오류가 발생했습니다. 다시 시도해주세요.</p>}
+      
       <div className="flex justify-center">
         <div className="grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid gap-x-6 gap-y-6">
-          {isLoading && <p>로딩중…</p>}
+          {isLoading && <p>로딩중…</p>} {/* TODO: 로딩 컴포넌트 추가 */}
           {contestList?.map((contest: ContestItemDto) => (
             <ContestCard contest={contest} key={contest.id} />
           ))}
         </div>
       </div>
 
-      <div className="mt-10 flex justify-center">
+      <div className="mt-10 mb-5 flex justify-center">
         <Pagination>
           <PaginationContent>
             <PaginationItem>
