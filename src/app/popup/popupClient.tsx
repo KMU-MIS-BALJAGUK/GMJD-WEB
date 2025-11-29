@@ -99,7 +99,7 @@ const PopupClient = () => {
       {/* === 팝업 컴포넌트 === */}
       <MakeTeamPopup open={open1} setOpen={setOpen1} />
       <RequestPopup open={open2} setOpen={setOpen2} />
-      <TeamInfoPopup open={open3} setOpen={setOpen3} />
+      <TeamInfoPopup open={open3} setOpen={setOpen3} teamId={1} />
       <RemovePlayerPopup open={open4} setOpen={setOpen4} playerName="홍길동" />
       <MyRecruitPopup open={open5} setOpen={setOpen5} />
       <PlayerInfoPopup open={open6} setOpen={setOpen6} />
