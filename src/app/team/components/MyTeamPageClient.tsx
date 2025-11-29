@@ -3,6 +3,7 @@
 import TeamCard from '@/app/team/components/TeamCard';
 import Link from 'next/link';
 import { useMyTeams } from '@/hooks/team/useMyTeams';
+import { UsersRound } from 'lucide-react';
 
 export default function MyTeamPageClient() {
   const { data: myTeams, isLoading, isError } = useMyTeams();
@@ -45,10 +46,21 @@ export default function MyTeamPageClient() {
         </Link>
       </nav>
 
+      {/* 데이터가 없을 때 */}
+      {(!myTeams || myTeams.length === 0) && (
+        <div className="flex flex-col items-center justify-center h-[300px] text-center">
+          <div className="p-4 bg-gray-100 rounded-full mb-3">
+            <UsersRound className="w-10 h-10 text-gray-400" />
+          </div>
+          <p className="text-gray-700 font-medium text-sm">아직 참여한 팀이 없어요</p>
+          <p className="text-gray-500 text-xs mt-1">새로운 팀을 만들어 협업을 시작해보세요!</p>
+        </div>
+      )}
+
       {/* 카드 리스트 */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {myTeams &&
-          myTeams.map((team) => (
+      {myTeams && myTeams.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {myTeams.map((team) => (
             <TeamCard
               key={team.teamId}
               id={team.teamId}
@@ -56,10 +68,11 @@ export default function MyTeamPageClient() {
               subtitle={team.contestOrganizationName}
               image={team.contestImageUrl}
               totalMembers={team.memberCount}
-              role={team.type} // Using team type as a placeholder for role
+              role={team.type}
             />
           ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

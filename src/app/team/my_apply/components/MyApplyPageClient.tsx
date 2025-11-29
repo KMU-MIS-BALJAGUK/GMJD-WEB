@@ -4,6 +4,7 @@ import Link from 'next/link';
 import React from 'react';
 import MyApplyCard from './MyApplyCard';
 import { useMyAppliedList } from '@/hooks/mypage/useMyAppliedList';
+import { ClipboardList } from 'lucide-react';
 
 const MyApplyPageClient = () => {
   const { data: myAppliedList, isLoading, isError } = useMyAppliedList();
@@ -43,21 +44,34 @@ const MyApplyPageClient = () => {
         </span>
       </nav>
 
+      {/* 데이터 없음 Empty UI */}
+      {(!myAppliedList || myAppliedList.length === 0) && (
+        <div className="flex flex-col items-center justify-center h-[300px] text-center">
+          <div className="p-4 bg-gray-100 rounded-full mb-3">
+            <ClipboardList className="w-10 h-10 text-gray-400" />
+          </div>
+          <p className="text-gray-700 font-medium text-sm">지원한 팀이 아직 없어요</p>
+          <p className="text-gray-500 text-xs mt-1">새로운 팀에 지원해 협업을 시작해보세요!</p>
+        </div>
+      )}
+
       {/* 카드 리스트 */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {myAppliedList && myAppliedList.map((application) => (
-          <MyApplyCard
-            key={application.applicationId} // Use applicationId as key for uniqueness
-            teamId={application.teamId}
-            applicationId={application.applicationId}
-            title={application.contestName}
-            subtitle={application.teamTitle}
-            image={application.contestImageUrl}
-            totalMembers={application.memberCount}
-            status={application.status === 'REJECTED' ? 'closed' : 'open'}
-          />
-        ))}
-      </div>
+      {myAppliedList && myAppliedList.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {myAppliedList.map((application) => (
+            <MyApplyCard
+              key={application.applicationId}
+              teamId={application.teamId}
+              applicationId={application.applicationId}
+              title={application.contestName}
+              subtitle={application.teamTitle}
+              image={application.contestImageUrl}
+              totalMembers={application.memberCount}
+              status={application.status === 'REJECTED' ? 'closed' : 'open'}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
