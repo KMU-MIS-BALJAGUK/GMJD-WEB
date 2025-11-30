@@ -1,6 +1,5 @@
 'use client';
 
-import Button from '@/components/common/Button';
 import ContestCard from '@/components/common/contest/ContestCard';
 import React, { useEffect, useState } from 'react';
 import SortButton from './SortButton';
