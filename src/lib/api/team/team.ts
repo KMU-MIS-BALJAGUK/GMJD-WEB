@@ -6,13 +6,9 @@ import { MyApplyItemDto, MyApplyListResponse } from '@/features/team/types/MyApp
 import { MyRecruitItemDto, MyRecruitListResponse } from '@/features/team/types/MyRecruitResponse';
 import { MyTeamItemDto, MyTeamListResponse } from '@/features/team/types/MyTeamListResponse';
 import { TeamDetailResponseDto, TeamDetailDto } from '@/features/team/types/TeamDetailResponse';
-import { TeamDetailDto, TeamDetailResponse } from '@/features/team/types/TeamDetailResponse';
-import { TeamKickMemberRequest } from '@/features/team/types/TeamKickMemberRequest';
 import { TeamKickMemberResponse } from '@/features/team/types/TeamKickMemberResponse';
 import { TeamMemoUpdateRequest } from '@/features/team/types/TeamMemoUpdateRequest';
 import { TeamMemoUpdateResponse } from '@/features/team/types/TeamMemoUpdateResponse';
-import { TeamKickMemberRequest } from '@/features/team/types/TeamKickMemberRequest';
-import { TeamKickMemberResponse } from '@/features/team/types/TeamKickMemberResponse';
 
 import type { TeamApplyRequestDto } from '@/features/team/types/TeamApplyRequest';
 import type { TeamApplyResponseDto } from '@/features/team/types/TeamApplyResponse';
