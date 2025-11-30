@@ -9,7 +9,8 @@ import Input from '../../common/Input';
 import LayerPopup from '../../common/layerpopup/LayerPopup';
 import Tag from '../../common/Tag';
 
-import { fetchTeamDetail, applyTeam } from '@/lib/api/team/team';
+import { fetchTeamDetailPublic, applyTeam } from '@/lib/api/team/team';
+
 import type { TeamApplyRequestDto } from '@/features/team/types/TeamApplyRequest';
 import type { TeamDetailDto } from '@/features/team/types/TeamDetailResponse';
 
@@ -38,10 +39,13 @@ export default function RequestPopup({
       if (!teamId) {
         throw new Error('teamId가 없습니다.');
       }
-      return fetchTeamDetail(teamId);
+      // 공개 팀 상세 조회 API 사용
+      return fetchTeamDetailPublic(teamId);
     },
-    enabled: !!teamId && open, // 팝업 열릴 때 + teamId 있을 때만 호출
+    enabled: !!teamId && open,
   });
+
+
 
   // =========================
   // 2. 화면에 쓸 기본 정보 (fallback 포함)

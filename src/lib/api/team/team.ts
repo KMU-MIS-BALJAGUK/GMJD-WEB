@@ -16,6 +16,7 @@ import type { TeamCreateResponseDto } from '@/features/team/types/TeamCreateResp
 import type { AiQuestionRecommendResponseDto } from '@/features/team/types/AiQuestionRecommendResponse';
 
 
+
 // 나의 팀 목록 조회 API
 export async function fetchMyTeamList(): Promise<MyTeamItemDto[]> {
   const response = await api.get<MyTeamListResponse>('/api/v1/teams/my-teams');
@@ -26,6 +27,13 @@ export async function fetchMyTeamList(): Promise<MyTeamItemDto[]> {
 export async function fetchTeamDetail(teamId: number): Promise<TeamDetailDto> {
   const response = await api.get<TeamDetailResponseDto>(`/api/v1/teams/${teamId}/detail`);
   return response.data.data;
+}
+
+// 공개 팀 상세 조회 (팀 신청용 상세 페이지)
+// GET /api/v1/teams/{teamId}/detail
+export async function fetchTeamDetailPublic(teamId: number): Promise<TeamDetailDto> {
+  const res = await api.get<TeamDetailResponseDto>(`/api/v1/teams/${teamId}/detail`);
+  return res.data.data;
 }
 
 // 팀 메모 수정 API

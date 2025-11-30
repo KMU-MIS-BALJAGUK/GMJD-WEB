@@ -14,6 +14,25 @@ interface ContestDetailPageClientProps {
   contestId: number;
 }
 
+// 종료일 & D-day 계산
+const extractEndDateFromDuration = (duration: string | undefined): string | null => {
+    if (!duration) return null;
+    const parts = duration.split('~');
+    if (parts.length < 2) return null;
+    return parts[1].trim();
+  };
+
+  const calculateDday = (endDateStr: string) => {
+    const today = new Date();
+    const end = new Date(endDateStr);
+    if (Number.isNaN(end.getTime())) return '마감일 미정';
+
+    const diff = Math.ceil(
+      (end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+    );
+    return diff > 0 ? `D-${diff}` : '마감';
+  };
+
 export default function ContestDetailPageClient({
   contestId,
 }: ContestDetailPageClientProps) {
@@ -40,24 +59,7 @@ export default function ContestDetailPageClient({
   const isLoading = isContestLoading;
   const isError = isContestError || !contest;
 
-  // 종료일 & D-day 계산
-  const extractEndDateFromDuration = (duration: string | undefined): string | null => {
-    if (!duration) return null;
-    const parts = duration.split('~');
-    if (parts.length < 2) return null;
-    return parts[1].trim();
-  };
-
-  const calculateDday = (endDateStr: string) => {
-    const today = new Date();
-    const end = new Date(endDateStr);
-    if (Number.isNaN(end.getTime())) return '마감일 미정';
-
-    const diff = Math.ceil(
-      (end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
-    );
-    return diff > 0 ? `D-${diff}` : '마감';
-  };
+  
 
   // 로딩 상태
   if (isLoading) {

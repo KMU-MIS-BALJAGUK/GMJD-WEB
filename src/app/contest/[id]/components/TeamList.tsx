@@ -22,41 +22,13 @@ export default function TeamList({
   isLoading,
   isError,
 }: TeamListProps) {
+  // 💡 모든 훅은 컴포넌트 최상단에서, 조건문 밖에서만 호출
   const [isMakeTeamOpen, setIsMakeTeamOpen] = useState(false);
   const [isRequestOpen, setIsRequestOpen] = useState(false);
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
-
-  // 🔹 로딩 상태
-  if (isLoading) {
-    return (
-      <div className="w-full bg-bg-02 border-b border-border-01 p-4 py-10 rounded-b-lg">
-        <div className="animate-pulse flex flex-col gap-3">
-          <div className="h-6 w-32 bg-gray-200 rounded" />
-          <div className="h-[137px] bg-gray-100 rounded" />
-          <div className="h-[137px] bg-gray-100 rounded" />
-          <div className="h-[137px] bg-gray-100 rounded" />
-        </div>
-      </div>
-    );
-  }
-
-  // 🔹 에러 상태
-  if (isError) {
-    return (
-      <div className="w-full bg-bg-02 border-b border-border-01 p-4 py-10 rounded-b-lg">
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-xl font-semibold text-text-01">팀원 모집</h2>
-        </div>
-        <p className="text-sm text-red-500">
-          팀 목록을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.
-        </p>
-      </div>
-    );
-  }
-
-  // 🔹 정상 데이터 기준 페이지네이션
-  const safeTeams = teams ?? [];
   const [currentPage, setCurrentPage] = useState(1);
+
+  const safeTeams = teams ?? [];
   const teamsPerPage = 3;
 
   const totalPages = Math.max(1, Math.ceil(safeTeams.length / teamsPerPage));
@@ -66,6 +38,45 @@ export default function TeamList({
   const handleOpenRequest = (teamId: number) => {
     setSelectedTeamId(teamId);
     setIsRequestOpen(true);
+  };
+
+  // 로딩/에러/정상 데이터를 JSX 안에서 분기
+  const renderTeamListBody = () => {
+    if (isLoading) {
+      return (
+        <p className="mt-4 text-sm text-[#888888] text-center">
+          팀 목록을 불러오는 중입니다...
+        </p>
+      );
+    }
+
+    if (isError) {
+      return (
+        <p className="mt-4 text-sm text-red-500 text-center">
+          팀 목록을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.
+        </p>
+      );
+    }
+
+    return (
+      <>
+        {/* 팀 카드들 */}
+        {currentTeams.map((team) => (
+          <TeamCard
+            key={team.teamId}
+            team={team}
+            onClickApply={() => handleOpenRequest(team.teamId)}
+          />
+        ))}
+
+        {/* 팀이 하나도 없을 때 */}
+        {safeTeams.length === 0 && (
+          <p className="mt-4 text-sm text-[#888888] text-center">
+            아직 등록된 팀이 없어요. 가장 먼저 팀을 만들어보세요!
+          </p>
+        )}
+      </>
+    );
   };
 
   return (
@@ -119,21 +130,8 @@ export default function TeamList({
             </div>
           </button>
 
-          {/* 팀 카드들 */}
-          {currentTeams.map((team) => (
-            <TeamCard
-              key={team.teamId}
-              team={team}
-              onClickApply={() => handleOpenRequest(team.teamId)}
-            />
-          ))}
-
-          {/* 팀이 하나도 없을 때 */}
-          {safeTeams.length === 0 && (
-            <p className="mt-4 text-sm text-[#888888] text-center">
-              아직 등록된 팀이 없어요. 가장 먼저 팀을 만들어보세요!
-            </p>
-          )}
+          {/* 실제 내용 */}
+          {renderTeamListBody()}
         </div>
       </div>
 
@@ -144,7 +142,7 @@ export default function TeamList({
         contestId={contestId}
       />
 
-      {/* 팀 신청 모달 */}
+      {/* 팀 신청 모달 (팀 상세 + 신청) */}
       <RequestPopup
         open={isRequestOpen}
         setOpen={setIsRequestOpen}
