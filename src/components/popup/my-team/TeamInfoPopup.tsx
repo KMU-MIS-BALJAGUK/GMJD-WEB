@@ -111,7 +111,7 @@ const TeamInfoPopup = ({
               <div className="flex flex-col gap-4 text-[14px]">
                 <p className="text-base">팀원 관리</p>
 
-                {data.members.map((player) => (
+                {(data?.members ?? []).map((player) => (
                   <div key={player.memberId}>
                     <div className="flex items-center gap-3">
                       <div className="relative w-8 h-8 rounded-full bg-amber-300 shrink-0">
