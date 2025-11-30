@@ -97,8 +97,16 @@ const PopupClient = () => {
       </section>
 
       {/* === 팝업 컴포넌트 === */}
-      <MakeTeamPopup open={open1} setOpen={setOpen1} />
-      <RequestPopup open={open2} setOpen={setOpen2} />
+      <MakeTeamPopup
+        open={open1}
+        setOpen={setOpen1}
+        contestId={10}   // 데모용이여서 1 같은 고정 값 
+      />
+      <RequestPopup
+        open={open2}
+        setOpen={setOpen2}
+        teamId={1}   // 데모 페이지 임시값 
+      />
       <TeamInfoPopup open={open3} setOpen={setOpen3} teamId={1} />
       <RemovePlayerPopup open={open4} setOpen={setOpen4} playerName="홍길동" teamId={1} memberId={2} />
       <MyRecruitPopup open={open5} setOpen={setOpen5} />

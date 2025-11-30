@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 
 import TeamCard from './TeamCard';
@@ -10,25 +9,59 @@ import RequestPopup from '@/components/popup/contest-detail/RequestPopup';
 
 import type { ContestTeamItemDto } from '@/features/contest/types/ContestTeamListResponse';
 
-
 interface TeamListProps {
-  teams: ContestTeamItemDto[];
   contestId: number;
+  teams: ContestTeamItemDto[];
+  isLoading?: boolean;
+  isError?: boolean;
 }
 
-export default function TeamList({ teams, contestId }: TeamListProps) {
-
+export default function TeamList({
+  teams,
+  contestId,
+  isLoading,
+  isError,
+}: TeamListProps) {
   const [isMakeTeamOpen, setIsMakeTeamOpen] = useState(false);
   const [isRequestOpen, setIsRequestOpen] = useState(false);
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
 
+  // 🔹 로딩 상태
+  if (isLoading) {
+    return (
+      <div className="w-full bg-bg-02 border-b border-border-01 p-4 py-10 rounded-b-lg">
+        <div className="animate-pulse flex flex-col gap-3">
+          <div className="h-6 w-32 bg-gray-200 rounded" />
+          <div className="h-[137px] bg-gray-100 rounded" />
+          <div className="h-[137px] bg-gray-100 rounded" />
+          <div className="h-[137px] bg-gray-100 rounded" />
+        </div>
+      </div>
+    );
+  }
 
+  // 🔹 에러 상태
+  if (isError) {
+    return (
+      <div className="w-full bg-bg-02 border-b border-border-01 p-4 py-10 rounded-b-lg">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-xl font-semibold text-text-01">팀원 모집</h2>
+        </div>
+        <p className="text-sm text-red-500">
+          팀 목록을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.
+        </p>
+      </div>
+    );
+  }
+
+  // 🔹 정상 데이터 기준 페이지네이션
+  const safeTeams = teams ?? [];
   const [currentPage, setCurrentPage] = useState(1);
   const teamsPerPage = 3;
 
-  const totalPages = Math.max(1, Math.ceil(teams.length / teamsPerPage));
+  const totalPages = Math.max(1, Math.ceil(safeTeams.length / teamsPerPage));
   const startIndex = (currentPage - 1) * teamsPerPage;
-  const currentTeams = teams.slice(startIndex, startIndex + teamsPerPage);
+  const currentTeams = safeTeams.slice(startIndex, startIndex + teamsPerPage);
 
   const handleOpenRequest = (teamId: number) => {
     setSelectedTeamId(teamId);
@@ -70,7 +103,6 @@ export default function TeamList({ teams, contestId }: TeamListProps) {
         <div className="flex flex-col gap-3">
           {/* 팀 만들기 버튼 */}
           <button
-
             onClick={() => setIsMakeTeamOpen(true)}
             className="w-full h-[137px] bg-white border border-dashed border-[#BBBBBB] rounded-[10px] flex flex-col items-center justify-center gap-2.5 hover:bg-gray-50 transition-colors cursor-pointer"
           >
@@ -90,16 +122,14 @@ export default function TeamList({ teams, contestId }: TeamListProps) {
           {/* 팀 카드들 */}
           {currentTeams.map((team) => (
             <TeamCard
-
               key={team.teamId}
               team={team}
               onClickApply={() => handleOpenRequest(team.teamId)}
-
             />
           ))}
 
           {/* 팀이 하나도 없을 때 */}
-          {teams.length === 0 && (
+          {safeTeams.length === 0 && (
             <p className="mt-4 text-sm text-[#888888] text-center">
               아직 등록된 팀이 없어요. 가장 먼저 팀을 만들어보세요!
             </p>
@@ -108,20 +138,18 @@ export default function TeamList({ teams, contestId }: TeamListProps) {
       </div>
 
       {/* 팀 만들기 모달 */}
-
       <MakeTeamPopup
         open={isMakeTeamOpen}
         setOpen={setIsMakeTeamOpen}
         contestId={contestId}
       />
 
-      {/* 팀 신청 모달 (팀 상세 + 신청) */}
+      {/* 팀 신청 모달 */}
       <RequestPopup
         open={isRequestOpen}
         setOpen={setIsRequestOpen}
         teamId={selectedTeamId}
       />
-
     </>
   );
 }

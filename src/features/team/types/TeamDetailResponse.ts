@@ -17,6 +17,9 @@ export interface TeamDetailDto {
     contestEndDate: string;  // 공모전 마감일 (예: "2025.06.30")
     introduction: string;    // 팀 소개
     questionList: string[];  // 팀 신청 시 질문 리스트
+    memo?: string; 
+    // 팀원 목록 (없을 수도 있어서 옵션)
+    members?: MemberDto[];
   }
   
   // 팀 상세 응답 DTO 

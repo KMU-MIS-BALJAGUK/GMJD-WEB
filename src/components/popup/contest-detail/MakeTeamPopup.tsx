@@ -4,11 +4,11 @@ import { CircleMinus, CirclePlus, CircleX } from 'lucide-react';
 import Input from '../../common/Input';
 import LayerPopup from '../../common/layerpopup/LayerPopup';
 import { useMutation } from '@tanstack/react-query';
+import type { TeamCreateRequestDto } from '@/features/team/types/TeamCreateRequest';
+import type { TeamCreateResponseDto } from '@/features/team/types/TeamCreateResponse';
 
 // 팀 생성 API
 import { createTeam } from '@/lib/api/team/team'; 
-// 타입 경로 수정
-import type { TeamCreateRequestDto } from  '@/features/team/types/TeamCreateRequest';
 
 interface MakeTeamPopupProps {
   open: boolean;
@@ -31,8 +31,10 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
   const [questionInput, setQuestionInput] = useState<string>('');
 
   // 팀 생성 mutation
-  const { mutate: createTeamMutate, isLoading } = useMutation({
-    mutationFn: (body: TeamCreateRequestDto) => createTeam(contestId, body),
+  const {mutate: createTeamMutate,
+    isPending, 
+  } = useMutation<TeamCreateResponseDto, Error, TeamCreateRequestDto>({
+    mutationFn: (body) => createTeam(contestId, body),
     onSuccess: () => {
       // TODO: 팀 목록 refetch (React Query 쓰면 invalidateQueries 등)
       reset();
@@ -191,10 +193,10 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
           <Button
             onClick={handleSubmit}
             className="w-full"
-            variant={checkValidation() || isLoading ? 'disabled' : 'primary'}
-            disabled={checkValidation() || isLoading}
+            variant={checkValidation() || isPending ? 'disabled' : 'primary'}
+            disabled={checkValidation() || isPending }
           >
-            {isLoading ? '생성 중...' : '팀 만들기'}
+            {isPending? '생성 중...' : '팀 만들기'}
           </Button>
         </div>
       </div>

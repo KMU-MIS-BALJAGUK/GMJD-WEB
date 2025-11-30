@@ -79,7 +79,7 @@ export default function RequestPopup({
   // =========================
   // 4. 팀 신청 mutation
   // =========================
-  const { mutate: applyTeamMutate, isLoading: isApplyLoading } = useMutation({
+  const { mutate: applyTeamMutate, isPending: isApplyLoading } = useMutation({
     mutationFn: (body: TeamApplyRequestDto) => {
       if (!teamId) {
         throw new Error('teamId가 없습니다. 팀 신청이 불가능합니다.');

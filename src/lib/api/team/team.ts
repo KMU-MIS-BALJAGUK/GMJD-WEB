@@ -3,7 +3,7 @@
 
 import api from '@/lib/axios';
 import { MyTeamItemDto, MyTeamListResponse } from '@/features/team/types/MyTeamListResponse';
-import { TeamDetailResponse, TeamDetailDto } from '@/features/team/types/TeamDetailResponse';
+import { TeamDetailResponseDto, TeamDetailDto } from '@/features/team/types/TeamDetailResponse';
 import { TeamMemoUpdateRequest } from '@/features/team/types/TeamMemoUpdateRequest';
 import { TeamMemoUpdateResponse } from '@/features/team/types/TeamMemoUpdateResponse';
 import { TeamKickMemberRequest } from '@/features/team/types/TeamKickMemberRequest';
@@ -24,7 +24,7 @@ export async function fetchMyTeamList(): Promise<MyTeamItemDto[]> {
 
 // 팀 상세 조회 API
 export async function fetchTeamDetail(teamId: number): Promise<TeamDetailDto> {
-  const response = await api.get<TeamDetailResponse>(`/api/v1/teams/my-teams/${teamId}`);
+  const response = await api.get<TeamDetailResponseDto>(`/api/v1/teams/${teamId}/detail`);
   return response.data.data;
 }
 
