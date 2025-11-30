@@ -3,7 +3,6 @@
 import Button from '@/components/common/Button';
 import Tag from '@/components/common/Tag';
 import { UsersRound } from 'lucide-react';
-import Image from 'next/image';
 import { useCancelApplication } from '@/hooks/mypage/useCancelApplication';
 
 export interface MyApplyCardProps {
@@ -11,10 +10,10 @@ export interface MyApplyCardProps {
   applicationId: number;
   title: string;
   subtitle: string;
-  image: string;
+  image: string; // 사용하지만 외부 이미지 로드 X
   totalMembers: number;
-  status: 'PENDING' | 'ACCEPTED' | 'REJECTED'; // 지원 상태
-  recruitStatus: 'OPEN' | 'CLOSED';            // 모집 상태 ← 새로 필요
+  status: 'PENDING' | 'ACCEPTED' | 'REJECTED';
+  recruitStatus: 'OPEN' | 'CLOSED'; 
 }
 
 export default function MyApplyCard({
@@ -29,8 +28,7 @@ export default function MyApplyCard({
 }: MyApplyCardProps) {
   const { mutate: cancelMutation, isPending } = useCancelApplication();
 
-  const canCancel = status === 'PENDING'; // 취소 가능한 조건
-
+  const canCancel = status === 'PENDING';
   const isRecruitOpen = recruitStatus === 'OPEN';
 
   const handleCancel = () => {
@@ -43,9 +41,13 @@ export default function MyApplyCard({
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md bg-white hover:scale-105 transition duration-300">
       <div className="relative w-full h-[160px] bg-gray-100">
-        <Image src={image} alt={title} fill className="object-cover" />
+        {/* 외부 이미지 사용 금지 — 기본 빈 이미지 */}
+        <img
+          src=""
+          alt={title}
+          className="w-full h-full object-cover"
+        />
 
-        {/* 모집 상태 */}
         <div className="absolute bottom-2 left-2">
           {isRecruitOpen ? (
             <Tag variant="green" shape="square" className="text-xs">
@@ -67,18 +69,16 @@ export default function MyApplyCard({
           <UsersRound size={15} /> 모집 인원 {totalMembers}명
         </p>
 
-        <div className="mt-4">
-          {canCancel && (
-            <Button
-              variant="red"
-              className="w-full"
-              disabled={isPending}
-              onClick={handleCancel}
-            >
-              {isPending ? '취소 중...' : '신청 취소'}
-            </Button>
-          )}
-        </div>
+        {canCancel && (
+          <Button
+            variant="red"
+            className="w-full mt-4"
+            disabled={isPending}
+            onClick={handleCancel}
+          >
+            {isPending ? '취소 중...' : '신청 취소'}
+          </Button>
+        )}
       </div>
     </div>
   );

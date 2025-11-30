@@ -1,4 +1,4 @@
-//src/app/team/my_recruit/components/MyRecruitPageClient.tsx
+// src/app/team/my_recruit/components/MyRecruitPageClient.tsx
 
 'use client';
 
@@ -13,10 +13,11 @@ export default function MyRecruitPageClient() {
     isError,
   } = useMyRecruitTeams();
 
-  const convertStatus = (status: 'OPEN' | 'CLOSED'): 'open' | 'closed' =>
-    status === 'OPEN' ? 'open' : 'closed';
+  // ⭐ 한글 상태값을 UI 상태값으로 변환
+  const convertStatus = (status: string): 'open' | 'closed' =>
+    status === '모집중' ? 'open' : 'closed';
 
-  // 로딩 상태
+  // 로딩
   if (isLoading) {
     return (
       <div className="max-w-[1200px] mx-auto py-10 px-4 md:px-6 lg:px-8">
@@ -26,7 +27,7 @@ export default function MyRecruitPageClient() {
     );
   }
 
-  // 에러 상태
+  // 에러
   if (isError) {
     return (
       <div className="max-w-[1200px] mx-auto py-10 px-4 md:px-6 lg:px-8">
@@ -46,7 +47,9 @@ export default function MyRecruitPageClient() {
           <Link href="/team" className="text-gray-600 hover:text-black">
             나의 팀
           </Link>
-          <span className="font-semibold text-blue border-b-2 border-blue pb-2">나의 모집</span>
+          <span className="font-semibold text-blue border-b-2 border-blue pb-2">
+            나의 모집
+          </span>
           <Link href="/team/my_apply" className="text-gray-600 hover:text-black">
             나의 지원
           </Link>
@@ -57,7 +60,7 @@ export default function MyRecruitPageClient() {
     );
   }
 
-  // 정상 렌더링
+  // 정상 데이터 렌더링
   return (
     <div className="max-w-[1200px] mx-auto py-10 px-4 md:px-6 lg:px-8">
       <h1 className="text-2xl font-bold mb-6">팀 관리</h1>
@@ -66,7 +69,9 @@ export default function MyRecruitPageClient() {
         <Link href="/team" className="text-gray-600 hover:text-black">
           나의 팀
         </Link>
-        <span className="font-semibold text-blue border-b-2 border-blue pb-2">나의 모집</span>
+        <span className="font-semibold text-blue border-b-2 border-blue pb-2">
+          나의 모집
+        </span>
         <Link href="/team/my_apply" className="text-gray-600 hover:text-black">
           나의 지원
         </Link>

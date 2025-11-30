@@ -1,5 +1,3 @@
-//src/app/team/my_apply/components/MyApplyPageClient.tsx
-
 'use client';
 
 import Link from 'next/link';
@@ -18,11 +16,9 @@ export default function MyApplyPageClient() {
         <Link href="/team" className="text-gray-600 hover:text-black">
           나의 팀
         </Link>
-
         <Link href="/team/my_recruit" className="text-gray-600 hover:text-black">
           나의 모집
         </Link>
-
         <span className="font-semibold text-[#1487F9] border-b-2 border-[#1487F9] pb-2">
           나의 지원
         </span>
@@ -34,9 +30,9 @@ export default function MyApplyPageClient() {
       {/* 에러 */}
       {isError && <p>데이터를 불러오는 중 오류가 발생했습니다.</p>}
 
-      {/* 빈 목록 */}
+      {/* 빈 상태 */}
       {!isLoading && myAppliedList?.length === 0 && (
-        <p className="text-gray-500">지원한 팀이 존재하지 않습니다.</p>
+        <p className="text-gray-500 mb-4">지원한 팀이 존재하지 않습니다.</p>
       )}
 
       {/* 카드 리스트 */}
@@ -52,6 +48,7 @@ export default function MyApplyPageClient() {
               image={item.contestImageUrl}
               totalMembers={item.memberCount}
               status={item.status}
+              recruitStatus={item.recruitStatus} // ★ 서버 값 그대로 사용
             />
           ))}
       </div>
