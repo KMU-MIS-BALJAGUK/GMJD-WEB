@@ -3,34 +3,33 @@
 import React, { useEffect, useState, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import axios from 'axios';
-import { useAuth } from '@/context/AuthContext';
+import { useAuthStore } from '@/store/authStore';
 import { useQueryClient } from '@tanstack/react-query';
 import { fetchUserProfile } from '@/lib/api/mypage/mypage';
+import Loading from '@/components/common/Loading';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
-// 백엔드 API 주소
-const BACKEND_AUTH_BASE_API: string = `${API_BASE_URL}/oauth/google/callback`;
-// 토큰 구조 정의
+const BACKEND_AUTH_BASE_API = `${API_BASE_URL}/oauth/google/callback`;
+
 interface DecodedTokenPayload {
   sub: string;
   exp: number;
-  isRegistered?: boolean; // 토큰 안에 있을 수도 있음
+  isRegistered?: boolean;
   [key: string]: unknown;
 }
 
 const CoreCallbackLogic: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login } = useAuth();
+  const login = useAuthStore((s) => s.login); // Zustand로 변경
   const queryClient = useQueryClient();
 
-  // 중복 요청 방지
   const isRequestSent = useRef<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const authCode: string | null = searchParams.get('code');
+    const authCode = searchParams.get('code');
 
     if (!authCode) {
       setError('인가 코드가 없습니다. 다시 로그인해주세요.');
@@ -43,70 +42,47 @@ const CoreCallbackLogic: React.FC = () => {
 
     const exchangeCodeForTokens = async () => {
       try {
-        if (!API_BASE_URL) {
-          throw new Error('서비스 설정에 오류가 발생했습니다. 관리자에게 문의해주세요.');
-        }
-
-        // 1. API 호출
         const response = await axios.get(BACKEND_AUTH_BASE_API, {
           params: { code: authCode },
         });
 
-        const fullToken: string | undefined = response.headers['authorization'];
-
-        const accessToken: string | null = fullToken?.startsWith('Bearer ')
+        // AccessToken 가져오기
+        const fullToken = response.headers['authorization'];
+        const accessToken = fullToken?.startsWith('Bearer ')
           ? fullToken.substring(7)
-          : response.data.accessToken || null; // 헤더에 없으면 바디를 확인
+          : response.data.accessToken || null;
 
         if (!accessToken) {
           throw new Error('서버에서 토큰을 주지 않았습니다.');
         }
+
+        // Zustand에 토큰 저장
         login(accessToken);
 
-        // 토큰 저장 직후 프로필 데이터를 미리 가져와 캐시에 저장합니다.
+        // React Query로 프로필 프리패치
         await queryClient.prefetchQuery({
           queryKey: ['userProfile'],
           queryFn: fetchUserProfile,
         });
 
-        // isRegistered 값 찾기
+        // isRegistered 판별
+        const { jwtDecode } = await import('jwt-decode');
+        const decoded: DecodedTokenPayload = jwtDecode(accessToken);
 
-        let isRegistered: boolean | undefined = undefined;
+        const isRegistered =
+          typeof decoded.isRegistered === 'boolean' ? decoded.isRegistered : false;
 
-        try {
-          const { jwtDecode } = await import('jwt-decode');
+        router.replace(isRegistered ? '/' : '/signup/register');
+      } catch (e) {
+        let message = '로그인 처리 중 오류가 발생했습니다.';
 
-          const decoded: DecodedTokenPayload = jwtDecode(accessToken);
-          if (typeof decoded.isRegistered === 'boolean') {
-            isRegistered = decoded.isRegistered;
-          }
-        } catch (e) {
-          console.error('JWT 디코딩 중 오류가 발생했습니다. (isRegistered 확인 실패):', e);
-          throw new Error('유효하지 않은 토큰 형식입니다. 다시 로그인해주세요.');
-        }
-
-        // 값을 못 찾았으면 신규 회원으로 간주 (안전장치)
-        if (isRegistered === undefined) {
-          isRegistered = false;
-        }
-
-        if (isRegistered === true) {
-          router.replace('/');
-        } else {
-          router.replace('/signup/register');
-        }
-      } catch (e: unknown) {
-        let errorMessage = '로그인 처리 중 오류가 발생했습니다.';
         if (axios.isAxiosError(e)) {
-          if (e.response) {
-            errorMessage = e.response.data?.message || '서버 에러: ' + e.response.status;
-          } else {
-            errorMessage = '서버와 통신할 수 없습니다. 네트워크 연결을 확인해주세요.';
-          }
+          message = e.response?.data?.message || '서버 오류가 발생했습니다.';
         } else if (e instanceof Error) {
-          errorMessage = e.message;
+          message = e.message;
         }
-        setError(errorMessage);
+
+        setError(message);
         setLoading(false);
       }
     };
@@ -129,17 +105,14 @@ const CoreCallbackLogic: React.FC = () => {
         </div>
       ) : (
         <div className="flex flex-col items-center">
-          <div className="animate-spin rounded-full h-10 w-10 border-4 border-t-4 border-blue-500 border-opacity-25"></div>
-          <p className="mt-4 text-lg font-semibold text-gray-700">
-            {loading ? '로그인 중입니다...' : '이동 중...'}
-          </p>
+          {loading ? <Loading message="로그인 중입니다..." /> : <Loading message="이동 중..." />}
         </div>
       )}
     </div>
   );
 };
 
-const GoogleAuthCallbackPage: React.FC = () => {
+const GoogleAuthCallbackPage = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <CoreCallbackLogic />

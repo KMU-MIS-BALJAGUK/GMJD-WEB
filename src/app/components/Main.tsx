@@ -8,21 +8,22 @@ import { useContests } from '@/hooks/contest/useContests';
 import { ContestItemDto } from '@/features/contest/types/contest-response';
 
 const Main = () => {
-  const { data: user, isLoading: userLoading } = useUserProfile();
+  const { data: user, isLoading: userLoading } = useUserProfile(); // 스켈레톤 UI
   console.log(user);
   const isLoggedIn = !!user;
-  const recommendContestsParams = isLoggedIn && user.categoryList?.length > 0
-    ? {
-        sortType: 'popular' as const,
-        page: 0,
-        size: 4,
-        interest: CATEGORY_MAP[user.categoryList[0]],
-      }
-    : {
-        sortType: 'popular' as const,
-        page: 0,
-        size: 4,
-      };
+  const recommendContestsParams =
+    isLoggedIn && user.categoryList?.length > 0
+      ? {
+          sortType: 'popular' as const,
+          page: 0,
+          size: 4,
+          interest: CATEGORY_MAP[user.categoryList[0]],
+        }
+      : {
+          sortType: 'popular' as const,
+          page: 0,
+          size: 4,
+        };
 
   const upcomingDeadlineContestsParams = {
     sortType: 'deadline' as const,

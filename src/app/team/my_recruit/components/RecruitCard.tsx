@@ -3,7 +3,7 @@
 'use client';
 
 import Image from 'next/image';
-import MoreMenu from '@/components/MoreMenu';
+import MoreMenu from '@/app/team/components/MoreMenu';
 import { UsersRound } from 'lucide-react';
 
 export interface RecruitManageCardProps {
