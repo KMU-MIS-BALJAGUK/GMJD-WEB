@@ -4,6 +4,7 @@ import TeamCard from '@/app/team/components/TeamCard';
 import Link from 'next/link';
 import { useMyTeams } from '@/hooks/team/useMyTeams';
 import { useMyRecruitTeams } from '@/hooks/team/useMyRecruitTeams';
+import { UsersRound } from 'lucide-react';
 
 export default function MyTeamPageClient() {
   const { data: myTeams, isLoading: loadingTeams, isError: teamsError } = useMyTeams();

@@ -1,10 +1,11 @@
 //src/hooks/team/useMyRecruitTeams.ts
 
 import { useQuery } from '@tanstack/react-query';
+import { MyRecruitItemDto } from '@/features/team/types/MyRecruitResponse';
 import { fetchMyRecruitList } from '@/lib/api/team/team';
 
 export function useMyRecruitTeams() {
-  return useQuery({
+  return useQuery<MyRecruitItemDto[]>({
     queryKey: ['myRecruitTeams'],
     queryFn: fetchMyRecruitList,
     staleTime: 1000 * 60 * 5,

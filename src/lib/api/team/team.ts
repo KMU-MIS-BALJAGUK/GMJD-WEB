@@ -2,16 +2,20 @@
 // 팀 관련 API 호출 함수
 
 import api from '@/lib/axios';
+import { MyApplyItemDto } from '@/features/team/types/MyApplyListResponse';
+import { MyRecruitItemDto, MyRecruitListResponse } from '@/features/team/types/MyRecruitResponse';
 import { MyTeamItemDto, MyTeamListResponse } from '@/features/team/types/MyTeamListResponse';
-import { TeamDetailResponse, TeamDetailDto } from '@/features/team/types/TeamDetailResponse';
-import { TeamMemoUpdateRequest } from '@/features/team/types/TeamMemoUpdateRequest';
-import { TeamMemoUpdateResponse } from '@/features/team/types/TeamMemoUpdateResponse';
+import { TeamDetailDto, TeamDetailResponse } from '@/features/team/types/TeamDetailResponse';
 import { TeamKickMemberRequest } from '@/features/team/types/TeamKickMemberRequest';
 import { TeamKickMemberResponse } from '@/features/team/types/TeamKickMemberResponse';
+import { TeamMemoUpdateRequest } from '@/features/team/types/TeamMemoUpdateRequest';
+import { TeamMemoUpdateResponse } from '@/features/team/types/TeamMemoUpdateResponse';
 
 import * as TeamApi from '@/lib/api/team/team';
 
-console.log("Team API:", TeamApi);
+type MyAppliedItemDto = MyApplyItemDto;
+
+console.log('Team API:', TeamApi);
 
 // 나의 팀 목록 조회 API
 export async function fetchMyTeamList(): Promise<MyTeamItemDto[]> {
@@ -37,9 +41,9 @@ export async function kickTeamMember(teamId: number, memberId: number): Promise<
   return response.data;
 }
 
-// 나의 모집 팀 목록 조회 API (내가 팀장인 팀 목록)
-export async function fetchMyRecruitList() {
-  const response = await api.get('/api/v1/teams/my-recruit');
+// 나의 모집 팀 목록 조회 API (리더인 팀 목록)
+export async function fetchMyRecruitList(): Promise<MyRecruitItemDto[]> {
+  const response = await api.get<MyRecruitListResponse>('/api/v1/teams/my-recruit');
   return response.data.data.recruitList;
 }
 
@@ -47,5 +51,5 @@ export async function fetchMyRecruitList() {
 export async function fetchMyAppliedList(): Promise<MyAppliedItemDto[]> {
   const response = await api.get('/api/v1/teams/my-applies');
 
-  return response.data?.data?.myApplyList ?? []; 
+  return response.data?.data?.myApplyList ?? [];
 }

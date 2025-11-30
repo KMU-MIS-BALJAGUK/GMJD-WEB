@@ -11,6 +11,9 @@ export interface MyApplyItemDto {
   teamTitle: string;
   memberCount: number;
 
+  // 팀 모집 상태 (OPEN, CLOSED)
+  recruitStatus: 'OPEN' | 'CLOSED';
+
   status: 'PENDING' | 'ACCEPTED' | 'REJECTED';
 }
 
