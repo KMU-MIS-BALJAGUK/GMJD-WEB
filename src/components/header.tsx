@@ -40,6 +40,17 @@ const Header = () => {
     router.push('/');
   };
 
+  const handleProtectedClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!isLoggedIn) {
+      e.preventDefault(); // 기본 Link 동작 방지
+      alert('로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.');
+      router.push('/signup');
+    } else {
+      // 모바일 메뉴가 열려 있다면 닫아줍니다.
+      setOpen(false);
+    }
+  };
+
   return (
     <header className="w-full h-[68px] border-b border-border-01">
       <div className="flex justify-between w-[90%] lg:w-[80%] mx-auto items-center h-full">
@@ -78,6 +89,7 @@ const Header = () => {
             </Link>
             <Link
               href="/team"
+              onClick={handleProtectedClick}
               className={`cursor-pointer ${
                 pathname === '/team' && 'text-blue'
               } hover:text-blue transition-colors`}
@@ -86,6 +98,7 @@ const Header = () => {
             </Link>
             <Link
               href="/chat"
+              onClick={handleProtectedClick}
               className={`cursor-pointer ${
                 pathname === '/chat' && 'text-blue'
               } hover:text-blue transition-colors`}
@@ -171,7 +184,7 @@ const Header = () => {
             </Link>
             <Link
               href="/team"
-              onClick={() => setOpen(false)}
+              onClick={handleProtectedClick}
               className={`cursor-pointer ${
                 pathname === '/team' && 'text-blue'
               } hover:text-blue transition-colors`}
@@ -180,7 +193,7 @@ const Header = () => {
             </Link>
             <Link
               href="/chat"
-              onClick={() => setOpen(false)}
+              onClick={handleProtectedClick}
               className={`cursor-pointer ${
                 pathname === '/chat' && 'text-blue'
               } hover:text-blue transition-colors`}
