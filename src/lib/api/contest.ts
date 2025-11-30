@@ -1,111 +1,67 @@
-import {
-  Contest,
-  Team,
-  ContestDetailResponse,
-  TeamListResponse,
-} from '@/features/contest/types/contest-mock';
 
-// API Base URL (환경변수로 관리 예정)
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api';
+import api from '@/lib/axios';
+import axios from 'axios';
 
-/**
- * 공모전 상세 정보 조회
- * @param contestId 공모전 ID
- * @returns 공모전 상세 정보
- */
-export async function getContestDetail(contestId: number): Promise<Contest> {
-  try {
-    // TODO: 실제 API 연동 시 주석 해제
-    // const response = await fetch(`${API_BASE_URL}/contests/${contestId}`);
-    // if (!response.ok) {
-    //   throw new Error('Failed to fetch contest detail');
-    // }
-    // return await response.json();
+// Contest types
+import { ContestDetailResponseDto } from '@/features/contest/types/ContestDetailResponse';
+import { ContestTeamListResponseDto } from '@/features/contest/types/ContestTeamListResponse';
 
-    // 임시 목 데이터 사용
-    const response = await fetch('/mock-data/contest-detail.json');
-    const data: ContestDetailResponse = await response.json();
-    return data.contest;
-  } catch (error) {
-    console.error('Error fetching contest detail:', error);
-    throw error;
+// Team 생성/신청은 team.ts에서 처리
+import type { TeamCreateRequestDto } from '@/features/team/types/TeamCreateRequest';
+import type { AiQuestionRecommendResponseDto } from '@/features/team/types/AiQuestionRecommendResponse';
+
+
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+// 공모전 상세 조회 API
+// GET /api/v1/contests/{contestId}
+export async function fetchContestDetail(contestId: number) {
+  if (!BASE_URL) {
+    throw new Error('NEXT_PUBLIC_API_BASE_URL가 설정되어 있지 않습니다.');
+
   }
+
+  const res = await fetch(`${BASE_URL}/api/v1/contests/${contestId}`, {
+    method: 'GET',
+    // 공모전 상세는 공개라서 credentials 필요 X
+  });
+
+  if (!res.ok) {
+    throw new Error(`contest detail 요청 실패: ${res.status}`);
+  }
+
+  const json = (await res.json()) as ContestDetailResponseDto;
+  return json.data; // ContestDetailDto
 }
 
-/**
- * 공모전별 팀 목록 조회
- * @param contestId 공모전 ID
- * @param params 검색 파라미터 (정렬, 필터 등)
- * @returns 팀 목록
- */
-export async function getContestTeams(
-  contestId: number,
-  params?: {
-    page?: number;
-    size?: number;
-    sort?: 'recent' | 'popular';
-    status?: 'recruiting' | 'closed';
+
+// 공모전별 팀 목록 조회 API
+// GET /api/v1/teams/{contestId}
+export async function fetchContestTeams(contestId: number) {
+  if (!BASE_URL) {
+    throw new Error('NEXT_PUBLIC_API_BASE_URL가 설정되어 있지 않습니다.');
   }
-): Promise<TeamListResponse> {
+
   try {
-    // TODO: 실제 API 연동 시 주석 해제
-    // const queryParams = new URLSearchParams();
-    // if (params?.page) queryParams.append('page', params.page.toString());
-    // if (params?.size) queryParams.append('size', params.size.toString());
-    // if (params?.sort) queryParams.append('sort', params.sort);
-    // if (params?.status) queryParams.append('status', params.status);
-
-    // const response = await fetch(
-    //   `${API_BASE_URL}/contests/${contestId}/teams?${queryParams}`
-    // );
-    // if (!response.ok) {
-    //   throw new Error('Failed to fetch contest teams');
-    // }
-    // return await response.json();
-
-    // 임시 목 데이터 사용
-    const response = await fetch('/mock-data/contest-detail.json');
-    const data: ContestDetailResponse = await response.json();
-
-    // 필터링 (status가 있으면)
-    let teams = data.teams;
-    if (params?.status) {
-      teams = teams.filter((team) => team.status === params.status);
-    }
-
-    return {
-      teams,
-      totalCount: teams.length,
-    };
-  } catch (error) {
-    console.error('Error fetching contest teams:', error);
-    throw error;
-  }
-}
-
-/**
- * 팀 신청하기
- * @param teamId 팀 ID
- * @returns 신청 결과
- */
-export async function applyToTeam(teamId: number): Promise<{ success: boolean; message: string }> {
-  try {
-    // TODO: 실제 API 연동
-    const response = await fetch(`${API_BASE_URL}/teams/${teamId}/apply`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      // credentials: 'include', // 쿠키 포함
+    const res = await fetch(`${BASE_URL}/api/v1/teams/${contestId}`, {
+      method: 'GET',
     });
 
-    if (!response.ok) {
-      throw new Error('Failed to apply to team');
+    // 팀 API가 아직 준비 안 됐거나, contestId에 팀이 없으면 404일 수도 있음
+    if (!res.ok) {
+      console.warn('팀 목록 API 실패 상태코드:', res.status);
+      // 팀이 없어도 상세페이지는 떠야 하니까, 그냥 빈 배열 리턴
+      return [];
+
     }
 
-    return await response.json();
+    const json = (await res.json()) as ContestTeamListResponseDto;
+    return json.data.teams; // ContestTeamItemDto[]
   } catch (error) {
-    console.error('Error applying to team:', error);
-    throw error;
+    console.error(' 팀 목록 API 네트워크 에러:', error);
+    return []; // 에러여도 페이지 죽이지 말고 "팀 없음" 상태로
   }
 }
+
+
+
