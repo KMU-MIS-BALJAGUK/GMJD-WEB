@@ -13,7 +13,7 @@ export interface MyApplyCardProps {
   image: string; // 사용하지만 외부 이미지 로드 X
   totalMembers: number;
   status: 'PENDING' | 'ACCEPTED' | 'REJECTED';
-  recruitStatus: 'OPEN' | 'CLOSED'; 
+  recruitStatus: 'OPEN' | 'CLOSED';
 }
 
 export default function MyApplyCard({
@@ -42,10 +42,10 @@ export default function MyApplyCard({
     <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md bg-white hover:scale-105 transition duration-300">
       <div className="relative w-full h-[160px] bg-gray-100">
         {/* 외부 이미지 사용 금지 — 기본 빈 이미지 */}
-        <img
-          src=""
-          alt={title}
-          className="w-full h-full object-cover"
+        <div
+          role="img"
+          aria-label={title}
+          className="w-full h-full object-cover bg-gray-200"
         />
 
         <div className="absolute bottom-2 left-2">

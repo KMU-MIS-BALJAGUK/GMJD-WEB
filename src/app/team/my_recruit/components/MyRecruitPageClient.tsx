@@ -13,9 +13,9 @@ export default function MyRecruitPageClient() {
     isError,
   } = useMyRecruitTeams();
 
-  // ⭐ 한글 상태값을 UI 상태값으로 변환
-  const convertStatus = (status: string): 'open' | 'closed' =>
-    status === '모집중' ? 'open' : 'closed';
+  // 한글 상태값을 UI 상태값으로 변환
+  const convertStatus = (status: 'OPEN' | 'CLOSED'): 'open' | 'closed' =>
+    status === 'OPEN' ? 'open' : 'closed';
 
   // 로딩
   if (isLoading) {

@@ -18,7 +18,7 @@ export interface MyApplyItemDto {
 }
 
 export interface MyApplyListDataDto {
-  applies: MyApplyItemDto[];
+  myApplyList: MyApplyItemDto[];
 }
 
 export interface MyApplyListResponse {

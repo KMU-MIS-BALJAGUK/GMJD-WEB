@@ -2,7 +2,7 @@
 // 팀 관련 API 호출 함수
 
 import api from '@/lib/axios';
-import { MyApplyItemDto } from '@/features/team/types/MyApplyListResponse';
+import { MyApplyItemDto, MyApplyListResponse } from '@/features/team/types/MyApplyListResponse';
 import { MyRecruitItemDto, MyRecruitListResponse } from '@/features/team/types/MyRecruitResponse';
 import { MyTeamItemDto, MyTeamListResponse } from '@/features/team/types/MyTeamListResponse';
 import { TeamDetailDto, TeamDetailResponse } from '@/features/team/types/TeamDetailResponse';
@@ -10,12 +10,6 @@ import { TeamKickMemberRequest } from '@/features/team/types/TeamKickMemberReque
 import { TeamKickMemberResponse } from '@/features/team/types/TeamKickMemberResponse';
 import { TeamMemoUpdateRequest } from '@/features/team/types/TeamMemoUpdateRequest';
 import { TeamMemoUpdateResponse } from '@/features/team/types/TeamMemoUpdateResponse';
-
-import * as TeamApi from '@/lib/api/team/team';
-
-type MyAppliedItemDto = MyApplyItemDto;
-
-console.log('Team API:', TeamApi);
 
 // 나의 팀 목록 조회 API
 export async function fetchMyTeamList(): Promise<MyTeamItemDto[]> {
@@ -48,8 +42,8 @@ export async function fetchMyRecruitList(): Promise<MyRecruitItemDto[]> {
 }
 
 // 나의 지원 목록 조회 API
-export async function fetchMyAppliedList(): Promise<MyAppliedItemDto[]> {
-  const response = await api.get('/api/v1/teams/my-applies');
+export async function fetchMyAppliedList(): Promise<MyApplyItemDto[]> {
+  const response = await api.get<MyApplyListResponse>('/api/v1/teams/my-applies');
 
   return response.data?.data?.myApplyList ?? [];
 }
