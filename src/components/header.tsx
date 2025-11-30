@@ -40,6 +40,19 @@ const Header = () => {
     router.push('/');
   };
 
+  const handleProtectedClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (!isLoggedIn) {
+      e.preventDefault(); // 기본 Link 동작 방지
+      alert('로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.');
+      router.push('/signup');
+    } else {
+      // 로그인되어 있다면 Link의 href 속성을 따르도록 기본 동작을 유지 (아무것도 안 함)
+      router.push(href);
+      // 모바일 메뉴가 열려 있다면 닫아줍니다.
+      setOpen(false);
+    }
+  };
+
   return (
     <header className="w-full h-[68px] border-b border-border-01">
       <div className="flex justify-between w-[90%] lg:w-[80%] mx-auto items-center h-full">
@@ -77,7 +90,8 @@ const Header = () => {
               공모전
             </Link>
             <Link
-              href="/team"
+              href={isLoggedIn ? '/team' : '/signup'}
+              onClick={(e) => handleProtectedClick(e, '/team')}
               className={`cursor-pointer ${
                 pathname === '/team' && 'text-blue'
               } hover:text-blue transition-colors`}
@@ -85,7 +99,8 @@ const Header = () => {
               팀 관리
             </Link>
             <Link
-              href="/chat"
+              href={isLoggedIn ? '/chat' : '/signup'}
+              onClick={(e) => handleProtectedClick(e, '/chat')}
               className={`cursor-pointer ${
                 pathname === '/chat' && 'text-blue'
               } hover:text-blue transition-colors`}
@@ -170,8 +185,8 @@ const Header = () => {
               공모전
             </Link>
             <Link
-              href="/team"
-              onClick={() => setOpen(false)}
+              href={isLoggedIn ? '/team' : '/signup'}
+              onClick={(e) => handleProtectedClick(e, '/team')}
               className={`cursor-pointer ${
                 pathname === '/team' && 'text-blue'
               } hover:text-blue transition-colors`}
@@ -179,8 +194,8 @@ const Header = () => {
               팀 관리
             </Link>
             <Link
-              href="/chat"
-              onClick={() => setOpen(false)}
+              href={isLoggedIn ? '/chat' : '/signup'}
+              onClick={(e) => handleProtectedClick(e, '/chat')}
               className={`cursor-pointer ${
                 pathname === '/chat' && 'text-blue'
               } hover:text-blue transition-colors`}

@@ -7,6 +7,10 @@ import { UsersRound } from 'lucide-react';
 import Button from '@/components/common/Button';
 import Tag from '@/components/common/Tag';
 
+import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/store/authStore';
+import { useShallow } from 'zustand/react/shallow';
+
 interface TeamCardProps {
   team: Team;
   onDetailView: () => void;
@@ -14,6 +18,23 @@ interface TeamCardProps {
 
 export default function TeamCard({ team, onDetailView }: TeamCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter(); // useRouter 훅 사용
+
+  // useAuthStore에서 accessToken 상태를 useShallow를 이용해 가져옵니다.
+  const accessToken = useAuthStore(useShallow((state) => state.accessToken));
+  const isLoggedIn = !!accessToken;
+
+  // 참여 신청 버튼 클릭 핸들러
+  const handleApplyClick = () => {
+    if (!isLoggedIn) {
+      alert('로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.');
+      router.push('/signup');
+      return;
+    }
+
+    // 로그인 상태일 경우: 원래 로직대로 모달 열기
+    setIsModalOpen(true);
+  };
 
   return (
     <>
