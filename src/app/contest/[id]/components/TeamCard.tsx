@@ -7,6 +7,7 @@ import type { ContestTeamItemDto } from '@/features/contest/types/ContestTeamLis
 
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/authStore';
+import { useUserProfile } from '@/hooks/mypage/useUserProfile';
 
 interface TeamCardProps {
   team: ContestTeamItemDto;
