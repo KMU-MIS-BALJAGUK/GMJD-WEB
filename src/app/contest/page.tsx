@@ -1,7 +1,5 @@
-'use client';
-
-import { fetchContestList } from '@/lib/api/contest/contest';
 import ContestPageClient from './components/ContestPageClient';
+
 
 export const contests = [
   {
@@ -82,4 +80,5 @@ export default async function ContestPage() {
   // const contests = await fetchContestList({ sort: 'latest' });
 
   return <ContestPageClient />;
+
 }

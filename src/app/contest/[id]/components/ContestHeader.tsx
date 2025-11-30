@@ -1,6 +1,7 @@
 'use client';
 
 import Button from '@/components/common/Button';
+
 import type { ContestDetailDto } from '@/types/contest';
 import Image from 'next/image';
 import Link from 'next/link';

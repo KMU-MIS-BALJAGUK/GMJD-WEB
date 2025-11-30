@@ -1,7 +1,13 @@
 import ChatPageClient from './components/ChatPageClient';
 
-export default function ChatPage({ searchParams }: { searchParams: { roomId?: string } }) {
-  const roomId = searchParams.roomId ? Number(searchParams.roomId) : null;
+export default async function ChatPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ roomId?: string }>;
+}) {
+  const params = await searchParams;
+
+  const roomId = params.roomId ? Number(params.roomId) : null;
 
   return <ChatPageClient initialRoomId={roomId} />;
 }

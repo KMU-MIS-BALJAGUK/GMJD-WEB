@@ -1,3 +1,4 @@
+
 import api from '@/lib/axios';
 import axios from 'axios';
 
@@ -16,6 +17,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export async function fetchContestDetail(contestId: number) {
   if (!BASE_URL) {
     throw new Error('NEXT_PUBLIC_API_BASE_URL가 설정되어 있지 않습니다.');
+
   }
 
   const res = await fetch(`${BASE_URL}/api/v1/contests/${contestId}`, {
@@ -30,6 +32,7 @@ export async function fetchContestDetail(contestId: number) {
   const json = (await res.json()) as ContestDetailResponseDto;
   return json.data; // ContestDetailDto
 }
+
 
 // 공모전별 팀 목록 조회 API
 // GET /api/v1/teams/{contestId}
@@ -48,6 +51,7 @@ export async function fetchContestTeams(contestId: number) {
       console.warn('팀 목록 API 실패 상태코드:', res.status);
       // 팀이 없어도 상세페이지는 떠야 하니까, 그냥 빈 배열 리턴
       return [];
+
     }
 
     const json = (await res.json()) as ContestTeamListResponseDto;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import LayerPopup from '../../common/layerpopup/LayerPopup';
 import Input from '../../common/Input';
 import { Search, X } from 'lucide-react';
@@ -6,15 +6,49 @@ import Button from '../../common/Button';
 import Tag from '../../common/Tag';
 import { SelectBox } from '@/components/common/SelectBox';
 
-const InfoEditPopup = ({
-  open,
-  setOpen,
-  type,
-}: {
+import { useUserProfileMutations } from '@/hooks/mypage/useUserProfileMutations';
+import { UserProfileDataDto } from '@/features/mypage/types/my-profile-response';
+import {
+  IntroductionRequestDto,
+  EducationInfoRequestDto,
+  SkillsRequestDto,
+  CategoryRequestDto,
+} from '@/features/mypage/types/my-profile-request';
+import { EDUCATION_MAP, DEGREE_MAP, EducationLevel, RecognizedDegree } from '@/constants/register';
+import { CATEGORY_MAP } from '@/constants/contest';
+
+const CATEGORY_OPTIONS = Object.keys(CATEGORY_MAP).map((name) => ({
+  value: name,
+  label: name,
+}));
+
+//ENUM <=> 한글 역매핑 상수 정의 (초기값 설정을 위해 ENUM -> 한글 변환)
+const REVERSE_EDUCATION_MAP: Record<string, string> = Object.entries(EDUCATION_MAP).reduce(
+  (acc, [key, value]) => {
+    acc[value] = key;
+    return acc;
+  },
+  {} as Record<string, string>
+);
+
+const REVERSE_DEGREE_MAP: Record<string, string> = Object.entries(DEGREE_MAP).reduce(
+  (acc, [key, value]) => {
+    acc[value] = key;
+    return acc;
+  },
+  {} as Record<string, string>
+);
+
+// Props 인터페이스 확장
+interface InfoEditPopupProps {
   open: boolean;
   setOpen: (value: boolean) => void;
-  type: string;
-}) => {
+  type: 'intro' | 'education' | 'skill' | 'interest';
+  initialData: UserProfileDataDto | undefined;
+  mutations: ReturnType<typeof useUserProfileMutations>;
+}
+
+const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEditPopupProps) => {
   // 변수 관리
   const [intro, setIntro] = useState<string>('');
   const [univ, setUniv] = useState<string>('');
@@ -23,6 +57,7 @@ const InfoEditPopup = ({
   const [skillSet, setSkillSet] = useState<string[]>([]);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const [interest, setInterest] = useState<string>('');
+
   const [selectedEducation, setSelectedEducation] = useState<string>('대학교');
   const [selectedMajorType, setSelectedMajorType] = useState<string>('대학교 (4년제)');
   const isHighschool = selectedEducation === '고등학교';
@@ -36,6 +71,25 @@ const InfoEditPopup = ({
     '경희대학교',
   ];
 
+  //  팝업 열릴 때 initialData로 상태 초기화
+  useEffect(() => {
+    if (open && initialData) {
+      setIntro(initialData.introduction || '');
+      setUniv(initialData.universityName || '');
+      setMajor(initialData.major || '');
+      setSkillSet(initialData.skillList || []);
+      setInterest(initialData.categoryList?.[0] || '');
+
+      // 학력/학위 초기화 로직 (ENUM -> 한글 역매핑)
+      if (initialData.education) {
+        setSelectedEducation(REVERSE_EDUCATION_MAP[initialData.education] || '대학교');
+      }
+      if (initialData.recognizedDegree) {
+        setSelectedMajorType(REVERSE_DEGREE_MAP[initialData.recognizedDegree] || '대학교 (4년제)');
+      }
+    }
+  }, [open, initialData]);
+
   // 함수 관리
   const addSkills = (q: string) => {
     setSkillSet([...skillSet, q]);
@@ -48,9 +102,65 @@ const InfoEditPopup = ({
   };
 
   const handleSubmit = () => {
-    setUniv(univ);
-    setMajor(major);
-    setOpen(false);
+    if (!initialData) return;
+
+    switch (type) {
+      case 'intro': {
+        const body: IntroductionRequestDto = { introduction: intro };
+        mutations.updateIntroMutation.mutate(body, {
+          onSuccess: () => {
+            setOpen(false);
+          },
+        });
+        break;
+      }
+      case 'education': {
+        const DEFAULT_EDUCATION = EDUCATION_MAP['대학교'];
+        const DEFAULT_DEGREE = DEGREE_MAP['대학교 (4년제)'];
+
+        const body: EducationInfoRequestDto = {
+          universityName: univ,
+          major: major,
+          // 한글 -> ENUM 변환하여 전송 (EDUCATION_MAP, DEGREE_MAP 사용)
+          education: EDUCATION_MAP[selectedEducation] || DEFAULT_EDUCATION,
+          recognizedDegree: DEGREE_MAP[selectedMajorType] || DEFAULT_DEGREE,
+        };
+        mutations.updateEducationMutation.mutate(body, {
+          onSuccess: () => {
+            setOpen(false);
+          },
+        });
+        break;
+      }
+      case 'skill': {
+        const body: SkillsRequestDto = { skills: skillSet };
+        mutations.updateSkillsMutation.mutate(body, {
+          onSuccess: () => {
+            setOpen(false);
+          },
+        });
+        break;
+      }
+      case 'interest': {
+        // 관심분야는 SelectBox의 'value'를 사용하므로, 실제 백엔드 요청 DTO에 맞게 categoryIds를 구성해야 함.
+        const selectedId = CATEGORY_MAP[interest];
+        if (!selectedId) {
+          // 관심분야가 선택되지 않았거나 유효하지 않은 경우 (초기값 미설정 등)
+          alert('관심분야를 선택해주세요.');
+          return;
+        }
+
+        const body: CategoryRequestDto = { categoryIds: [selectedId] };
+        mutations.updateCategoriesMutation.mutate(body, {
+          onSuccess: () => {
+            setOpen(false);
+          },
+        });
+        break;
+      }
+      default:
+        break;
+    }
   };
 
   return (
@@ -81,8 +191,13 @@ const InfoEditPopup = ({
           </div>
 
           <div className="pt-5">
-            <Button className="w-full" variant="primary" onClick={handleSubmit}>
-              수정 완료
+            <Button
+              className="w-full"
+              variant="primary"
+              onClick={handleSubmit}
+              disabled={mutations.updateIntroMutation.isPending}
+            >
+              {mutations.updateIntroMutation.isPending ? '수정 중...' : '수정 완료'}
             </Button>
           </div>
         </div>
@@ -185,8 +300,13 @@ const InfoEditPopup = ({
           </div>
 
           <div className="pt-5">
-            <Button className="w-full" variant="primary" onClick={handleSubmit}>
-              수정 완료
+            <Button
+              className="w-full"
+              variant="primary"
+              onClick={handleSubmit}
+              disabled={mutations.updateEducationMutation.isPending}
+            >
+              {mutations.updateEducationMutation.isPending ? '수정 중...' : '수정 완료'}
             </Button>
           </div>
         </div>
@@ -235,8 +355,13 @@ const InfoEditPopup = ({
           </div>
 
           <div className="pt-5">
-            <Button className="w-full" variant="primary" onClick={handleSubmit}>
-              수정 완료
+            <Button
+              className="w-full"
+              variant="primary"
+              onClick={handleSubmit}
+              disabled={mutations.updateSkillsMutation.isPending}
+            >
+              {mutations.updateSkillsMutation.isPending ? '수정 중...' : '수정 완료'}
             </Button>
           </div>
         </div>
@@ -250,19 +375,19 @@ const InfoEditPopup = ({
               placeholder="선택해주세요"
               value={interest}
               onChange={(value) => setInterest(value)}
-              options={[
-                { value: '사진/영상/UCC', label: '사진/영상/UCC' },
-                { value: '광고/마케팅', label: '광고/마케팅' },
-                { value: '디자인/순수미술/공예', label: '디자인/순수미술/공예' },
-                { value: '네이밍/슬로건', label: '네이밍/슬로건' },
-              ]}
+              options={CATEGORY_OPTIONS}
               className="mt-1"
             />
           </div>
 
           <div className="pt-5">
-            <Button className="w-full" variant="primary" onClick={handleSubmit}>
-              수정 완료
+            <Button
+              className="w-full"
+              variant="primary"
+              onClick={handleSubmit}
+              disabled={mutations.updateCategoriesMutation.isPending}
+            >
+              {mutations.updateCategoriesMutation.isPending ? '수정 중...' : '수정 완료'}
             </Button>
           </div>
         </div>

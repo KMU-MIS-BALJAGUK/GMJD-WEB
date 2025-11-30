@@ -7,6 +7,7 @@ import Tag from '@/components/common/Tag';
 import type { ContestTeamItemDto } from '@/features/contest/types/ContestTeamListResponse';
 
 interface TeamCardProps {
+
   team: ContestTeamItemDto;
   onClickApply: () => void;
 }
@@ -28,6 +29,7 @@ export default function TeamCard({ team, onClickApply }: TeamCardProps) {
             모집인원 : {team.currentMemberCount}/{team.maxMember}명
           </span>
         </div>
+
       </div>
 
       {/* 신청 버튼 */}

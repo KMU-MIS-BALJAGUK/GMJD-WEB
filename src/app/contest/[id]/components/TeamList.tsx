@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 
 import TeamCard from './TeamCard';
@@ -9,15 +10,18 @@ import RequestPopup from '@/components/popup/contest-detail/RequestPopup';
 
 import type { ContestTeamItemDto } from '@/features/contest/types/ContestTeamListResponse';
 
+
 interface TeamListProps {
   teams: ContestTeamItemDto[];
   contestId: number;
 }
 
 export default function TeamList({ teams, contestId }: TeamListProps) {
+
   const [isMakeTeamOpen, setIsMakeTeamOpen] = useState(false);
   const [isRequestOpen, setIsRequestOpen] = useState(false);
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
+
 
   const [currentPage, setCurrentPage] = useState(1);
   const teamsPerPage = 3;
@@ -66,6 +70,7 @@ export default function TeamList({ teams, contestId }: TeamListProps) {
         <div className="flex flex-col gap-3">
           {/* 팀 만들기 버튼 */}
           <button
+
             onClick={() => setIsMakeTeamOpen(true)}
             className="w-full h-[137px] bg-white border border-dashed border-[#BBBBBB] rounded-[10px] flex flex-col items-center justify-center gap-2.5 hover:bg-gray-50 transition-colors cursor-pointer"
           >
@@ -85,9 +90,11 @@ export default function TeamList({ teams, contestId }: TeamListProps) {
           {/* 팀 카드들 */}
           {currentTeams.map((team) => (
             <TeamCard
+
               key={team.teamId}
               team={team}
               onClickApply={() => handleOpenRequest(team.teamId)}
+
             />
           ))}
 
@@ -101,6 +108,7 @@ export default function TeamList({ teams, contestId }: TeamListProps) {
       </div>
 
       {/* 팀 만들기 모달 */}
+
       <MakeTeamPopup
         open={isMakeTeamOpen}
         setOpen={setIsMakeTeamOpen}
@@ -113,6 +121,7 @@ export default function TeamList({ teams, contestId }: TeamListProps) {
         setOpen={setIsRequestOpen}
         teamId={selectedTeamId}
       />
+
     </>
   );
 }

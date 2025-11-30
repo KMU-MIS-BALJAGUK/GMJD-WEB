@@ -1,3 +1,4 @@
+
 import type { ContestDetailDto } from '@/types/contest';
 
 interface ContestInfoProps {
