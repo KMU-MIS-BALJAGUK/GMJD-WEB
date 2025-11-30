@@ -5,7 +5,7 @@ import ContestPageClient from './components/ContestPageClient';
 
 export const contests = [
   {
-    id: 1,
+    id: 10,
     thumbnailUrl: '/contest.png',
     dDay: 23,
     teams: 4,

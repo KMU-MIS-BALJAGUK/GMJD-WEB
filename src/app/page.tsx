@@ -3,7 +3,7 @@ import Main from './components/Main';
 
 export const MAIN_DATA = [
   {
-    id: 1,
+    id: 10,
     title: 'NH농협카드 플레이트&스티커 디자인 콘테스트',
     organizer: 'NH농협은행',
     dDay: 2,

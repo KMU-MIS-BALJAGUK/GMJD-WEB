@@ -18,7 +18,7 @@ type ContestCardProps = {
 
 export default function ContestCard({ contest }: ContestCardProps) {
   return (
-    <Link href={`/contest/1`}>
+    <Link href={`/contest/${contest.id}`}>
       {' '}
       {/* /contest/${contest.id} */}
       <div className="w-full sm:w-[280px] sm:h-[299px] flex flex-col cursor-pointer">

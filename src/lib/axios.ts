@@ -40,3 +40,5 @@ api.interceptors.response.use(
 );
 
 export default api;
+
+console.log('API BASE URL >>>', process.env.NEXT_PUBLIC_API_BASE_URL);

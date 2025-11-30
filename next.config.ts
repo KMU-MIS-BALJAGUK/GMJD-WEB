@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'media-cdn.linkareer.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'gmjd-contest.s3.ap-northeast-2.amazonaws.com',
+      },
     ],
   },
 };
