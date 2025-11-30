@@ -1,3 +1,5 @@
+//src/app/team/my_apply/components/MyApplyPageClient.tsx
+
 'use client';
 
 import Link from 'next/link';

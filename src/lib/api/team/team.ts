@@ -44,7 +44,8 @@ export async function fetchMyRecruitList() {
 }
 
 // 나의 지원 목록 조회 API
-export async function fetchMyAppliedList() {
-  const response = await api.get<MyApplyListResponse>('/api/v1/teams/my-applies');
-  return response.data.data.applies;
+export async function fetchMyAppliedList(): Promise<MyAppliedItemDto[]> {
+  const response = await api.get('/api/v1/teams/my-applies');
+
+  return response.data?.data?.myApplyList ?? []; 
 }
