@@ -1,11 +1,12 @@
 'use client';
 
 import React from 'react';
-import ContestCard from '@/components/common/ContestCard';
+import ContestCard from '@/components/common/contest/ContestCard';
 import { useUserProfile } from '@/hooks/mypage/useUserProfile';
 import { CATEGORY_MAP } from '@/constants/contest';
 import { useContests } from '@/hooks/contest/useContests';
 import { ContestItemDto } from '@/features/contest/types/contest-response';
+import ContestCardSkeleton from '@/components/common/contest/ContestCardSkeleton';
 
 const Main = () => {
   const { data: user, isLoading: userLoading } = useUserProfile(); // 스켈레톤 UI
@@ -47,9 +48,11 @@ const Main = () => {
             이것만 한 게 없어요!
           </p>
           <div className="grid-cols-2 xl:grid-cols-4 grid gap-x-6 gap-y-6">
-            {recommendContestsData?.contests?.map((contest: ContestItemDto) => {
-              return <ContestCard contest={contest} key={contest.id} />;
-            })}
+            {recommendLoading
+              ? Array.from({ length: 4 }).map((_, i) => <ContestCardSkeleton key={i} />)
+              : recommendContestsData?.contests?.map((contest: ContestItemDto) => (
+                  <ContestCard contest={contest} key={contest.id} />
+                ))}
           </div>
         </div>
         <div className="mt-16 mb-16">
@@ -59,9 +62,11 @@ const Main = () => {
             다가오는 공모전이에요
           </p>
           <div className="grid-cols-2 xl:grid-cols-4 grid gap-x-6 gap-y-6">
-            {upcomingDeadlineContestsData?.contests?.map((contest: ContestItemDto) => {
-              return <ContestCard contest={contest} key={contest.id} />;
-            })}
+            {upcomingDeadlineLoading
+              ? Array.from({ length: 4 }).map((_, i) => <ContestCardSkeleton key={i} />)
+              : upcomingDeadlineContestsData?.contests?.map((contest: ContestItemDto) => {
+                  return <ContestCard contest={contest} key={contest.id} />;
+                })}
           </div>
         </div>
       </div>
