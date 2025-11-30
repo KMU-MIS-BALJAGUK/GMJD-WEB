@@ -42,3 +42,9 @@ export async function fetchMyRecruitList() {
   const response = await api.get('/api/v1/teams/my-recruit');
   return response.data.data.recruitList;
 }
+
+// 나의 지원 목록 조회 API
+export async function fetchMyAppliedList() {
+  const response = await api.get<MyApplyListResponse>('/api/v1/teams/my-applies');
+  return response.data.data.applies;
+}

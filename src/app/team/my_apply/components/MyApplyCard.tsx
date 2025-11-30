@@ -1,3 +1,6 @@
+//src/app/team/my_apply/components/MyApplyCard.tsx
+// 
+
 'use client';
 
 import Button from '@/components/common/Button';
@@ -8,12 +11,12 @@ import { useCancelApplication } from '@/hooks/mypage/useCancelApplication';
 
 export interface MyApplyCardProps {
   teamId: number;
-  applicationId: number; // Added for cancel functionality
+  applicationId: number;
   title: string;
   subtitle: string;
   image: string;
   totalMembers: number;
-  status: string; // 'open', 'closed'
+  status: 'PENDING' | 'ACCEPTED' | 'REJECTED';
 }
 
 export default function MyApplyCard({
@@ -25,15 +28,15 @@ export default function MyApplyCard({
   totalMembers,
   status,
 }: MyApplyCardProps) {
-  const { mutate: cancelApplicationMutation, isPending } = useCancelApplication();
+  const { mutate: cancelMutation, isPending } = useCancelApplication();
 
-  const isOpen = status === 'open';
-  const isClosed = status === 'closed'; // Status for UI, e.g., 'open' or 'closed'
+  const isClosed = status === 'REJECTED';
+  const isOpen = !isClosed;
 
-  const handleCancelApplication = () => {
-    cancelApplicationMutation({
-      teamId: teamId,
-      data: { applicationId: applicationId },
+  const handleCancel = () => {
+    cancelMutation({
+      teamId,
+      data: { applicationId },
     });
   };
 
@@ -43,7 +46,7 @@ export default function MyApplyCard({
       <div className="relative w-full h-[160px] bg-gray-100">
         <Image src={image} alt={title} fill className="object-cover" />
 
-        {/* 상태 배지 */}
+        {/* 상태 표시 */}
         <div className="absolute bottom-2 left-2">
           {isOpen ? (
             <Tag variant="green" shape="square" className="text-xs">
@@ -57,27 +60,23 @@ export default function MyApplyCard({
         </div>
       </div>
 
-      {/* 카드 내용 */}
+      {/* 내용 */}
       <div className="p-4">
-        {/* 제목 */}
         <p className="font-semibold text-sm leading-tight line-clamp-2">{title}</p>
-
-        {/* 기관명 */}
         <p className="text-xs text-gray-500 mt-1">{subtitle}</p>
 
-        {/* 모집 / 지원 */}
         <p className="flex items-center gap-1 text-sm mt-2">
           <UsersRound size={15} /> 모집 인원 {totalMembers}명
         </p>
 
-        {/* 버튼 */}
+        {/* 취소 버튼 */}
         <div className="mt-4">
           {isOpen && (
             <Button
               variant="red"
               className="w-full"
-              onClick={handleCancelApplication}
               disabled={isPending}
+              onClick={handleCancel}
             >
               {isPending ? '취소 중...' : '신청 취소'}
             </Button>
