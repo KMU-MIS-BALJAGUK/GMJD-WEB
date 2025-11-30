@@ -15,8 +15,8 @@ interface TeamCardProps {
 
 export default function TeamCard({ team, onClickApply }: TeamCardProps) {
   const router = useRouter();
-  const accessToken = useAuthStore((state) => state.accessToken);
-  const isLoggedIn = !!accessToken;
+  const { data: user } = useUserProfile();
+  const isLoggedIn = !!user;
 
   const isOpen = team.status === 'OPEN';
 
