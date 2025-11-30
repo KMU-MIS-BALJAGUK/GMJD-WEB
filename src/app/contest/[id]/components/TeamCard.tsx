@@ -21,7 +21,7 @@ export default function TeamCard({ team, onDetailView }: TeamCardProps) {
   const router = useRouter(); // useRouter 훅 사용
 
   // useAuthStore에서 accessToken 상태를 useShallow를 이용해 가져옵니다.
-  const accessToken = useAuthStore(useShallow((state) => state.accessToken));
+  const accessToken = useAuthStore((state) => state.accessToken);
   const isLoggedIn = !!accessToken;
 
   // 참여 신청 버튼 클릭 핸들러
@@ -62,7 +62,7 @@ export default function TeamCard({ team, onDetailView }: TeamCardProps) {
           </div>
         </div>
         {/* 신청 버튼 - 텍스트 수정 */}
-        <Button onClick={() => setIsModalOpen(true)} disabled={team.status === 'closed'}>
+        <Button onClick={handleApplyClick} disabled={team.status === 'closed'}>
           {team.status === 'recruiting' ? '참여 신청하기' : '모집 완료'}
         </Button>
       </div>
