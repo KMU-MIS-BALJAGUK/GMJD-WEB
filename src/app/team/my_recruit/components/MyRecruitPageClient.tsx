@@ -3,14 +3,25 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 import RecruitManageCard from './RecruitCard';
+import MyRecruitPopup from '@/components/popup/my-recruit/MyRecruitPopup';
 import { useMyRecruitTeams } from '@/hooks/team/useMyRecruitTeams';
 import Loading from '@/components/common/Loading';
 import Error from '@/components/common/Error';
 import { Megaphone } from 'lucide-react';
 
+interface PopupTeamData {
+  title: string;
+  status: 'open' | 'closed';
+  recruitMember: number;
+  applyNumber: number;
+}
+
 export default function MyRecruitPageClient() {
   const { data: recruitTeams, isLoading, isError } = useMyRecruitTeams();
+  const [popupOpen, setPopupOpen] = useState(false);
+  const [selectedTeam, setSelectedTeam] = useState<PopupTeamData | null>(null);
 
   // 한글 상태값을 UI 상태값으로 변환
   const convertStatus = (
@@ -19,6 +30,16 @@ export default function MyRecruitPageClient() {
     if (status === 'OPEN' || status === '모집중') return 'open';
     if (status === 'CLOSED' || status === '모집완료') return 'closed';
     return 'closed';
+  };
+
+  const handleCardClick = (team: NonNullable<typeof recruitTeams>[number]) => {
+    setSelectedTeam({
+      title: team.contestName,
+      status: convertStatus(team.status),
+      recruitMember: team.maxMember ?? team.memberCount ?? 0,
+      applyNumber: team.requestedCount ?? 0,
+    });
+    setPopupOpen(true);
   };
 
   // 정상 데이터 렌더링
@@ -65,10 +86,21 @@ export default function MyRecruitPageClient() {
               totalMembers={team.maxMember}
               applicants={team.requestedCount}
               status={convertStatus(team.status)}
+              onClick={() => handleCardClick(team)}
             />
           ))}
         </div>
       )}
+
+      <MyRecruitPopup
+        open={popupOpen}
+        setOpen={setPopupOpen}
+        title={selectedTeam?.title}
+        status={selectedTeam?.status}
+        recruitMember={selectedTeam?.recruitMember}
+        applyNumber={selectedTeam?.applyNumber}
+        applicants={[]}
+      />
     </div>
   );
 }

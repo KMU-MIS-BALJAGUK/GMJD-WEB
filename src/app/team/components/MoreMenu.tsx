@@ -5,9 +5,10 @@ import { useCloseRecruitTeam } from '@/hooks/team/useCloseRecruitTeam';
 
 interface MoreMenuProps {
   teamId: number;
+  status: 'open' | 'closed';
 }
 
-export default function MoreMenu({ teamId }: MoreMenuProps) {
+export default function MoreMenu({ teamId, status }: MoreMenuProps) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const { mutate: closeRecruit, isPending } = useCloseRecruitTeam();
@@ -35,14 +36,18 @@ export default function MoreMenu({ teamId }: MoreMenuProps) {
 
       {/* 메뉴 팝업 */}
       {open && (
-        <div className="absolute right-0 top-7 mt-2 w-28 bg-white border border-gray-200 rounded-md shadow-md z-50">
-          <button
-            onClick={() => closeRecruit(teamId, { onSuccess: () => setOpen(false) })}
-            disabled={isPending}
-            className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 disabled:opacity-60"
-          >
-            {isPending ? '마감중...' : '마감하기'}
-          </button>
+        <div className="absolute right-0 top-7 mt-2 min-w-[140px] bg-white border border-gray-200 rounded-md shadow-md z-50">
+          {status === 'open' ? (
+            <button
+              onClick={() => closeRecruit(teamId, { onSuccess: () => setOpen(false) })}
+              disabled={isPending}
+              className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 disabled:opacity-60"
+            >
+              {isPending ? '마감중...' : '마감하기'}
+            </button>
+          ) : (
+            <div className="px-3 py-2 text-sm text-gray-500 whitespace-nowrap">이미 마감되었습니다.</div>
+          )}
         </div>
       )}
     </div>

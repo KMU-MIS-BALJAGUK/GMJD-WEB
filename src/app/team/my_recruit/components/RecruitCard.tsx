@@ -14,6 +14,7 @@ export interface RecruitManageCardProps {
   totalMembers: number;
   applicants: number;
   status: 'open' | 'closed';
+  onClick?: () => void;
 }
 
 export default function RecruitManageCard({
@@ -24,11 +25,20 @@ export default function RecruitManageCard({
   totalMembers,
   applicants,
   status,
+  onClick,
 }: RecruitManageCardProps) {
   const isOpen = status === 'open';
 
   return (
-    <div className="border border-gray-200 rounded-lg shadow-sm hover:shadow-md bg-white relative hover:scale-105 transition duration-300">
+    <div
+      className="border border-gray-200 rounded-lg shadow-sm hover:shadow-md bg-white relative hover:scale-105 transition duration-300 cursor-pointer"
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') onClick?.();
+      }}
+    >
       {/* 이미지 */}
       <div className="relative w-full h-[160px] bg-gray-100">
         <Image src={image} alt={title} fill className="object-cover rounded-t-lg" />
@@ -50,8 +60,12 @@ export default function RecruitManageCard({
       {/* 내용 */}
       <div className="p-4 relative">
         {/* 점 3개 메뉴 */}
-        <div className="absolute top-3 right-3">
-          <MoreMenu teamId={id} />
+        <div
+          className="absolute top-3 right-3"
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={(e) => e.stopPropagation()}
+        >
+          <MoreMenu teamId={id} status={status} />
         </div>
 
         {/* 제목 */}
