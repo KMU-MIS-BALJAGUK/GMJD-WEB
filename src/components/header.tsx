@@ -54,10 +54,9 @@ const Header = () => {
       });
 
       router.push('/signup');
-      setOpen(false);
-    } else {
-      setOpen(false);
     }
+
+    setOpen(false);
   };
 
   return (
