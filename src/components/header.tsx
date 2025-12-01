@@ -54,8 +54,8 @@ const Header = () => {
       });
 
       router.push('/signup');
+      setOpen(false);
     } else {
-      // 모바일 메뉴가 열려 있다면 닫아줍니다.
       setOpen(false);
     }
   };
@@ -163,7 +163,7 @@ const Header = () => {
 
       <div
         className={cn(
-          'fixed inset-0 bg-black/40 z-50 md:hidden transition-opacity duration-300',
+          'fixed inset-0 bg-black/40 z-100 md:hidden transition-opacity duration-300',
           open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         )}
         onClick={() => setOpen(false)}
