@@ -64,10 +64,12 @@ const Main = () => {
       <div className="flex flex-col items-center">
         {isEmpty && <FullEmptyState />}
         <div className="mt-16">
-          <p className="text-[20px] font-medium mb-6">
-            대외활동엔 <br />
-            이것만 한 게 없어요!
-          </p>
+          {!isEmpty && (
+            <p className="text-[20px] font-medium mb-6">
+              대외활동엔 <br />
+              이것만 한 게 없어요!
+            </p>
+          )}
           <div className="grid-cols-2 xl:grid-cols-4 grid gap-x-6 gap-y-6">
             {recommendLoading
               ? Array.from({ length: 4 }).map((_, i) => <ContestCardSkeleton key={i} />)
@@ -77,11 +79,13 @@ const Main = () => {
           </div>
         </div>
         <div className="mt-16 mb-16">
-          <p className="text-[20px] font-medium mb-6">
-            곧 마감이
-            <br />
-            다가오는 공모전이에요
-          </p>
+          {!isEmpty && (
+            <p className="text-[20px] font-medium mb-6">
+              곧 마감이
+              <br />
+              다가오는 공모전이에요
+            </p>
+          )}
           <div className="grid-cols-2 xl:grid-cols-4 grid gap-x-6 gap-y-6">
             {upcomingDeadlineLoading
               ? Array.from({ length: 4 }).map((_, i) => <ContestCardSkeleton key={i} />)
