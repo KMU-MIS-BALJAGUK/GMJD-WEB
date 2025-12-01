@@ -64,7 +64,7 @@ const Main = () => {
       <div className="flex flex-col items-center">
         {isEmpty && <FullEmptyState />}
         <div className="mt-16">
-          {!isEmpty && (
+          {(recommendLoading || (recommendContestsData?.contests?.length ?? 0) > 0) && (
             <p className="text-[20px] font-medium mb-6">
               대외활동엔 <br />
               이것만 한 게 없어요!
@@ -79,7 +79,8 @@ const Main = () => {
           </div>
         </div>
         <div className="mt-16 mb-16">
-          {!isEmpty && (
+          {(upcomingDeadlineLoading ||
+            (upcomingDeadlineContestsData?.contests?.length ?? 0) > 0) && (
             <p className="text-[20px] font-medium mb-6">
               곧 마감이
               <br />
