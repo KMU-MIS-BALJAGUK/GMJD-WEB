@@ -1,4 +1,4 @@
-//src/app/layout.tsx
+// src/app/layout.tsx
 
 'use client';
 
@@ -9,11 +9,12 @@ import { ReactQueryProvider } from '@/lib/queryClient';
 import { useEffect } from 'react';
 import { useAuthStore } from '@/store/authStore';
 
+import { ToastProvider } from '@/components/ui/use-toast';
+import { Toaster } from '@/components/ui/toaster';
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  // Zustand store access
   const login = useAuthStore((state) => state.login);
 
-  // 앱 시작 시 토큰 로드
   useEffect(() => {
     const token = sessionStorage.getItem('accessToken');
     if (token) login(token);
@@ -22,11 +23,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="min-h-screen flex flex-col">
-        <ReactQueryProvider>
-          <Header />
-          <div className="flex-1">{children}</div>
-          <Footer />
-        </ReactQueryProvider>
+        <ToastProvider>
+          <ReactQueryProvider>
+            <Header />
+            <div className="flex-1">{children}</div>
+            <Footer />
+          </ReactQueryProvider>
+
+          <Toaster />
+        </ToastProvider>
       </body>
     </html>
   );

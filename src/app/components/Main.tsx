@@ -7,8 +7,11 @@ import { CATEGORY_MAP } from '@/constants/contest';
 import { useContests } from '@/hooks/contest/useContests';
 import { ContestItemDto } from '@/features/contest/types/contest-response';
 import ContestCardSkeleton from '@/components/common/contest/ContestCardSkeleton';
+import { useToast } from '@/components/ui/use-toast';
 
 const Main = () => {
+  const { toast } = useToast();
+
   const { data: user, isLoading: userLoading } = useUserProfile(); // 스켈레톤 UI
   console.log(user);
   const isLoggedIn = !!user;
@@ -41,6 +44,18 @@ const Main = () => {
 
   return (
     <div className="w-full px-4 md:px-8">
+      <button
+        onClick={() =>
+          toast({
+            title: '토스트 테스트',
+            description: '정상적으로 동작합니다 🎉',
+            variant: 'default',
+          })
+        }
+        className="px-4 py-2 bg-blue-500 text-white rounded mb-4"
+      >
+        토스트 테스트
+      </button>
       <div className="flex flex-col items-center">
         <div className="mt-16">
           <p className="text-[20px] font-medium mb-6">

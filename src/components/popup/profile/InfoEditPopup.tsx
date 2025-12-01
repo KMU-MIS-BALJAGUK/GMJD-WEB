@@ -16,6 +16,7 @@ import {
 } from '@/features/mypage/types/my-profile-request';
 import { EDUCATION_MAP, DEGREE_MAP, EducationLevel, RecognizedDegree } from '@/constants/register';
 import { CATEGORY_MAP } from '@/constants/contest';
+import { useToast } from '@/components/ui/use-toast';
 
 const CATEGORY_OPTIONS = Object.keys(CATEGORY_MAP).map((name) => ({
   value: name,
@@ -61,6 +62,8 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
   const [selectedEducation, setSelectedEducation] = useState<string>('대학교');
   const [selectedMajorType, setSelectedMajorType] = useState<string>('대학교 (4년제)');
   const isHighschool = selectedEducation === '고등학교';
+
+  const { toast } = useToast();
 
   const univList = [
     '서울대학교',
@@ -146,7 +149,11 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
         const selectedId = CATEGORY_MAP[interest];
         if (!selectedId) {
           // 관심분야가 선택되지 않았거나 유효하지 않은 경우 (초기값 미설정 등)
-          alert('관심분야를 선택해주세요.');
+          toast({
+            title: '관심분야 선택 오류 🚨',
+            description: '관심분야를 올바르게 선택해주세요.',
+            variant: 'destructive',
+          });
           return;
         }
 
