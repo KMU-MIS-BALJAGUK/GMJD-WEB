@@ -114,7 +114,7 @@ const CoreCallbackLogic: React.FC = () => {
 
 const GoogleAuthCallbackPage = () => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense>
       <CoreCallbackLogic />
     </Suspense>
   );
