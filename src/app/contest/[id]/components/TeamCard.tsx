@@ -2,12 +2,12 @@
 
 import { UsersRound } from 'lucide-react';
 import Button from '@/components/common/Button';
-import Tag from '@/components/common/Tag';
 import type { ContestTeamItemDto } from '@/features/contest/types/ContestTeamListResponse';
 
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/authStore';
 import { useUserProfile } from '@/hooks/mypage/useUserProfile';
+import { useToast } from '@/components/ui/use-toast';
 
 interface TeamCardProps {
   team: ContestTeamItemDto;
@@ -18,12 +18,18 @@ export default function TeamCard({ team, onClickApply }: TeamCardProps) {
   const router = useRouter();
   const { data: user } = useUserProfile();
   const isLoggedIn = !!user;
+  const { toast } = useToast();
 
   const isOpen = team.status === 'OPEN';
 
   const handleProtectedApplyClick = () => {
     if (!isLoggedIn) {
-      alert('로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.');
+      toast({
+        title: '로그인이 필요합니다 🚨',
+        description: '로그인 페이지로 이동합니다.',
+        variant: 'destructive',
+      });
+
       router.push('/signup');
       return;
     }

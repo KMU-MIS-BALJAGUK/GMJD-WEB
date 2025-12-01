@@ -10,6 +10,7 @@ import Input from './common/Input';
 import { useUserProfile } from '@/hooks/mypage/useUserProfile';
 import { useAuthStore } from '@/store/authStore';
 import { useQueryClient } from '@tanstack/react-query';
+import { useToast } from './ui/use-toast';
 
 const Header = () => {
   const { data: user } = useUserProfile();
@@ -22,6 +23,8 @@ const Header = () => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const [keyword, setKeyword] = useState('');
+
+  const { toast } = useToast();
 
   useEffect(() => {
     if (pathname !== '/contest') {
@@ -43,7 +46,13 @@ const Header = () => {
   const handleProtectedClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!isLoggedIn) {
       e.preventDefault(); // 기본 Link 동작 방지
-      alert('로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.');
+
+      toast({
+        title: '로그인이 필요합니다 🚨',
+        description: '로그인 페이지로 이동합니다.',
+        variant: 'destructive',
+      });
+
       router.push('/signup');
     } else {
       // 모바일 메뉴가 열려 있다면 닫아줍니다.

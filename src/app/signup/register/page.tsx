@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import { useSignUp } from '@/hooks/register/useSignup';
 import { UserProfileDto } from '@/features/register/types/register';
 import { EDUCATION_MAP, DEGREE_MAP, CATEGORY_MAP } from '@/constants/register';
+import { useToast } from '@/components/ui/use-toast';
 
 interface FormFieldProps {
   label: string;
@@ -43,6 +44,7 @@ const univList = [
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { toast } = useToast();
 
   // useSignUp 훅 사용
   const {
@@ -54,12 +56,20 @@ export default function RegisterPage() {
   } = useSignUp({
     onSuccess: (data) => {
       console.log('✅ 회원가입 성공:', data);
-      alert('회원가입이 성공적으로 완료되었습니다! 메인 페이지로 이동합니다.');
+      toast({
+        title: '회원가입이 성공적으로 완료되었습니다! 🎉',
+        description: '메인 페이지로 이동합니다.',
+        variant: 'default',
+      });
       router.push('/');
     },
     onError: (err) => {
       console.error('❌ 회원가입 실패:', err);
-      alert(`회원가입 실패: ${err.message}`);
+      toast({
+        title: '회원가입에 실패했습니다. 🚨',
+        description: `잠시 후 다시 시도해주세요.`,
+        variant: 'destructive',
+      });
     },
   });
 
@@ -147,7 +157,11 @@ export default function RegisterPage() {
     const categoryId = CATEGORY_MAP[formData.interest];
     if (formData.interest && !categoryId) {
       console.error('유효하지 않은 관심분야 값입니다.');
-      alert('관심분야를 올바르게 선택해주세요.');
+      toast({
+        title: '관심분야 선택 오류 🚨',
+        description: '관심분야를 올바르게 선택해주세요.',
+        variant: 'destructive',
+      });
       return;
     }
 

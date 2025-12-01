@@ -1,4 +1,4 @@
-// src/hooks/mypage/useUserProfileMutations.ts
+'use client';
 
 import { useMutation } from '@tanstack/react-query';
 import {
@@ -14,21 +14,33 @@ import {
   IntroductionRequestDto,
 } from '@/features/mypage/types/my-profile-request';
 import { useinvalidateUserProfileCache } from './useUserProfile';
+import { useToast } from '@/components/ui/use-toast';
 
 // 마이프로필 정보 수정을 위한 React Query Mutation
 export const useUserProfileMutations = () => {
   // 모든 수정 작업 성공 시 호출되어 캐시를 무효화하는 공통 함수
+  const { toast } = useToast();
 
   const invalidateProfileCache = useinvalidateUserProfileCache();
 
   const onSuccess = (message: string) => {
     invalidateProfileCache();
-    alert(message);
+
+    toast({
+      title: '정보 수정 완료 🎉',
+      description: message,
+    });
   };
+
   //모든 수정 작업 실패 시 호출되는 공통 에러 핸들러
   const onError = (error: unknown) => {
     console.error('프로필 수정 실패:', error);
-    alert('정보 수정에 실패했습니다. 입력값을 확인하거나 잠시 후 다시 시도해 주세요.');
+
+    toast({
+      title: '정보 수정 실패 🚨',
+      description: '입력값을 확인하거나 잠시 후 다시 시도해주세요.',
+      variant: 'destructive',
+    });
   };
 
   //  한 줄 소개 수정 Mutation
