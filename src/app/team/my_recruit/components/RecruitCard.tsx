@@ -17,6 +17,7 @@ export interface RecruitManageCardProps {
 }
 
 export default function RecruitManageCard({
+  id,
   title,
   subtitle,
   image,
@@ -50,7 +51,7 @@ export default function RecruitManageCard({
       <div className="p-4 relative">
         {/* 점 3개 메뉴 */}
         <div className="absolute top-3 right-3">
-          <MoreMenu onClose={() => console.log('모집 마감')} />
+          <MoreMenu teamId={id} />
         </div>
 
         {/* 제목 */}

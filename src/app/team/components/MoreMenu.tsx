@@ -1,12 +1,18 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useCloseRecruitTeam } from '@/hooks/team/useCloseRecruitTeam';
 
-export default function MoreMenu({ onClose }: { onClose?: () => void }) {
+interface MoreMenuProps {
+  teamId: number;
+}
+
+export default function MoreMenu({ teamId }: MoreMenuProps) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const { mutate: closeRecruit, isPending } = useCloseRecruitTeam();
 
-  // 🔥 외부 클릭 감지
+  // 외부 클릭 감지
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -31,10 +37,11 @@ export default function MoreMenu({ onClose }: { onClose?: () => void }) {
       {open && (
         <div className="absolute right-0 top-7 mt-2 w-28 bg-white border border-gray-200 rounded-md shadow-md z-50">
           <button
-            onClick={onClose}
-            className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100"
+            onClick={() => closeRecruit(teamId, { onSuccess: () => setOpen(false) })}
+            disabled={isPending}
+            className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 disabled:opacity-60"
           >
-            마감하기
+            {isPending ? '마감중...' : '마감하기'}
           </button>
         </div>
       )}

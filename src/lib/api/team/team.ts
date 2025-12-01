@@ -16,6 +16,12 @@ import type { TeamCreateRequestDto } from '@/features/team/types/TeamCreateReque
 import type { TeamCreateResponseDto } from '@/features/team/types/TeamCreateResponse';
 import type { AiQuestionRecommendResponseDto } from '@/features/team/types/AiQuestionRecommendResponse';
 
+type ApiBaseResponse = {
+  code: number;
+  msg: string;
+  data: unknown;
+};
+
 
 
 // 나의 팀 목록 조회 API
@@ -100,6 +106,12 @@ export async function fetchAiQuestions(contestId: number) {
 export async function fetchMyRecruitList(): Promise<MyRecruitItemDto[]> {
   const response = await api.get<MyRecruitListResponse>('/api/v1/teams/my-recruit');
   return response.data.data.recruitList;
+}
+
+// 팀 모집 마감
+export async function closeRecruitTeam(teamId: number): Promise<ApiBaseResponse> {
+  const response = await api.patch<ApiBaseResponse>(`/api/v1/teams/${teamId}/close`);
+  return response.data;
 }
 
 // 나의 지원 목록 조회 API
