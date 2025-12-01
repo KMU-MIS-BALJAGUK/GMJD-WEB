@@ -7,11 +7,9 @@ import { CATEGORY_MAP } from '@/constants/contest';
 import { useContests } from '@/hooks/contest/useContests';
 import { ContestItemDto } from '@/features/contest/types/contest-response';
 import ContestCardSkeleton from '@/components/common/contest/ContestCardSkeleton';
-import { useToast } from '@/components/ui/use-toast';
+import { Package } from 'lucide-react';
 
 const Main = () => {
-  const { toast } = useToast();
-
   const { data: user, isLoading: userLoading } = useUserProfile(); // 스켈레톤 UI
   console.log(user);
   const isLoggedIn = !!user;
@@ -42,21 +40,29 @@ const Main = () => {
     params: upcomingDeadlineContestsParams,
   });
 
+  const isEmpty =
+    !recommendLoading &&
+    !upcomingDeadlineLoading &&
+    (recommendContestsData?.contests?.length ?? 0) === 0 &&
+    (upcomingDeadlineContestsData?.contests?.length ?? 0) === 0;
+
+  function FullEmptyState() {
+    return (
+      <div className="flex flex-col items-center justify-center w-full py-20 text-center px-4">
+        <div className="p-4 bg-bg-02 rounded-full mb-3">
+          <Package className="w-10 h-10 text-text-03" />
+        </div>
+
+        <p className="text-text-02 text-sm font-medium">표시할 공모전이 없어요</p>
+        <p className="text-text-04 text-xs mt-1">잠시 후 다시 시도해 주세요!</p>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full px-4 md:px-8">
-      <button
-        onClick={() =>
-          toast({
-            title: '토스트 테스트',
-            description: '정상적으로 동작합니다 🎉',
-            variant: 'default',
-          })
-        }
-        className="px-4 py-2 bg-blue-500 text-white rounded mb-4"
-      >
-        토스트 테스트
-      </button>
       <div className="flex flex-col items-center">
+        {isEmpty && <FullEmptyState />}
         <div className="mt-16">
           <p className="text-[20px] font-medium mb-6">
             대외활동엔 <br />
