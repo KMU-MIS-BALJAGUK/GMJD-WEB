@@ -7,6 +7,8 @@ import { useMutation } from '@tanstack/react-query';
 import type { TeamCreateRequestDto } from '@/features/team/types/TeamCreateRequest';
 import type { TeamCreateResponseDto } from '@/features/team/types/TeamCreateResponse';
 
+import axios from 'axios'; 
+
 // 팀 생성 API
 import { createTeam } from '@/lib/api/team/team';
 
@@ -44,13 +46,19 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
   } = useMutation<TeamCreateResponseDto, Error, TeamCreateRequestDto>({
     mutationFn: (body) => createTeam(contestId, body),
     onSuccess: () => {
+      console.log('✅ 팀 생성 성공');
       // TODO: 팀 목록 refetch (React Query 쓰면 invalidateQueries 등)
       reset();
       setOpen(false);
     },
     onError: (error) => {
-      console.error('팀 생성 실패:', error);
-      // TODO: 에러 토스트 띄우기 등
+      // Axios 에러면 응답 본문까지 찍기
+      if (axios.isAxiosError(error)) {
+        console.error('❌ 팀 생성 실패 - status:', error.response?.status);
+        console.error('❌ 팀 생성 실패 - response data:', error.response?.data);
+      } else {
+        console.error('❌ 팀 생성 실패 (non-axios error):', error);
+      }
     },
   });
 
@@ -102,6 +110,8 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
       introduction: content,
       questions: question,
     };
+
+    console.log('📤 팀 생성 요청 payload', { contestId, payload });
 
     createTeamMutate(payload);
   };
