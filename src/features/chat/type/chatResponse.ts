@@ -11,6 +11,7 @@ export type ChatRoomDTO = {
     lastMessageAt: string;
     unReadMessageCount: number;
   };
+  teamMemberCount: number;
 };
 
 export type ChatRoomListResponse = {
