@@ -63,37 +63,39 @@ const Main = () => {
     <div className="w-full px-4 md:px-8">
       <div className="flex flex-col items-center">
         {isEmpty && <FullEmptyState />}
-        <div className="mt-16">
-          {!isEmpty && (
+        {(recommendLoading || (recommendContestsData?.contests?.length ?? 0) > 0) && (
+          <div className="mt-16">
             <p className="text-[20px] font-medium mb-6">
               대외활동엔 <br />
               이것만 한 게 없어요!
             </p>
-          )}
-          <div className="grid-cols-2 xl:grid-cols-4 grid gap-x-6 gap-y-6">
-            {recommendLoading
-              ? Array.from({ length: 4 }).map((_, i) => <ContestCardSkeleton key={i} />)
-              : recommendContestsData?.contests?.map((contest: ContestItemDto) => (
-                  <ContestCard contest={contest} key={contest.id} />
-                ))}
+
+            <div className="grid-cols-2 xl:grid-cols-4 grid gap-x-6 gap-y-6">
+              {recommendLoading
+                ? Array.from({ length: 4 }).map((_, i) => <ContestCardSkeleton key={i} />)
+                : recommendContestsData?.contests?.map((contest: ContestItemDto) => (
+                    <ContestCard contest={contest} key={contest.id} />
+                  ))}
+            </div>
           </div>
-        </div>
-        <div className="mt-16 mb-16">
-          {!isEmpty && (
+        )}
+        {(upcomingDeadlineLoading || (upcomingDeadlineContestsData?.contests?.length ?? 0) > 0) && (
+          <div className="mt-16 mb-16">
             <p className="text-[20px] font-medium mb-6">
               곧 마감이
               <br />
               다가오는 공모전이에요
             </p>
-          )}
-          <div className="grid-cols-2 xl:grid-cols-4 grid gap-x-6 gap-y-6">
-            {upcomingDeadlineLoading
-              ? Array.from({ length: 4 }).map((_, i) => <ContestCardSkeleton key={i} />)
-              : upcomingDeadlineContestsData?.contests?.map((contest: ContestItemDto) => {
-                  return <ContestCard contest={contest} key={contest.id} />;
-                })}
+
+            <div className="grid-cols-2 xl:grid-cols-4 grid gap-x-6 gap-y-6">
+              {upcomingDeadlineLoading
+                ? Array.from({ length: 4 }).map((_, i) => <ContestCardSkeleton key={i} />)
+                : upcomingDeadlineContestsData?.contests?.map((contest: ContestItemDto) => (
+                    <ContestCard contest={contest} key={contest.id} />
+                  ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
