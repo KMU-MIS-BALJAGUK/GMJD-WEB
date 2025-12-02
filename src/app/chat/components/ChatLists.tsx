@@ -41,7 +41,7 @@ const ChatLists = ({
               <Inbox className="w-10 h-10 text-text-03" />
             </div>
             <p className="text-text-02 text-sm">아직 참여한 채팅방이 없어요</p>
-            <p className="text-text-04 text-xs">새로운 챌린지에 참여해 대화를 시작해보세요!</p>
+            <p className="text-text-04 text-xs">새로운 공모전에 참여해 대화를 시작해보세요!</p>
           </div>
         )}
 
@@ -65,7 +65,7 @@ const ChatLists = ({
                 alt={room.contestInfo.contestName}
                 width={48}
                 height={48}
-                className="w-12 h-12 rounded-full"
+                className="w-12 h-12 rounded-full shrink-0 object-cover"
               />
               <div className="flex justify-between w-full">
                 <div className="flex flex-col gap-[2px] w-[75%]">
@@ -73,6 +73,7 @@ const ChatLists = ({
                     <p className="font-medium text-[14px] line-clamp-1">
                       {room.contestInfo.contestName}
                     </p>
+                    <p className="font-medium text-[13px] text-text-04">{room.teamMemberCount}</p>
                   </div>
                   <p className="text-sm text-text-02 line-clamp-2">
                     {room.lastChatInfo.lastMessage}
