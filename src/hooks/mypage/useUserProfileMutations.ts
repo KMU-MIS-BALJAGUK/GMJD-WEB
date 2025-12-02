@@ -29,6 +29,7 @@ export const useUserProfileMutations = () => {
     toast({
       title: '정보 수정 완료 🎉',
       description: message,
+      variant: 'default',
     });
   };
 

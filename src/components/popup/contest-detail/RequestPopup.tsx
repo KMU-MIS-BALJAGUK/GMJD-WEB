@@ -10,9 +10,10 @@ import LayerPopup from '../../common/layerpopup/LayerPopup';
 import Tag from '../../common/Tag';
 
 import { fetchTeamDetailPublic, applyTeam } from '@/lib/api/team/team';
-
 import type { TeamApplyRequestDto } from '@/features/team/types/TeamApplyRequest';
 import type { TeamDetailDto } from '@/features/team/types/TeamDetailResponse';
+import { useToast } from '@/components/ui/use-toast';
+import axios from 'axios';
 
 interface RequestPopupProps {
   open: boolean;
@@ -21,11 +22,15 @@ interface RequestPopupProps {
   teamId: number | null;
 }
 
-export default function RequestPopup({
-  open,
-  setOpen,
-  teamId,
-}: RequestPopupProps) {
+// // 신청 성공 시
+// showToast({
+//   type: 'success',
+//   title: '팀 신청이 완료되었어요 ✅',
+//   description: '팀장이 검토 후 연락을 드릴 거예요.',
+// });
+
+export default function RequestPopup({ open, setOpen, teamId }: RequestPopupProps) {
+  const { toast } = useToast();
   // =========================
   // 1. 팀 상세 조회 (TeamDetailDto)
   // =========================
@@ -45,8 +50,6 @@ export default function RequestPopup({
     enabled: !!teamId && open,
   });
 
-
-
   // =========================
   // 2. 화면에 쓸 기본 정보 (fallback 포함)
   // =========================
@@ -56,8 +59,7 @@ export default function RequestPopup({
   const recruitNumber = team?.memberCount ?? 0;
   const totalNumber = team?.maxMember ?? 0;
   const recruitDeadline = team?.contestEndDate ?? '마감일 미정';
-  const content =
-    team?.introduction ?? '팀 소개가 아직 등록되지 않았습니다.';
+  const content = team?.introduction ?? '팀 소개가 아직 등록되지 않았습니다.';
 
   // 질문 리스트
   const questions =
@@ -93,11 +95,38 @@ export default function RequestPopup({
     onSuccess: () => {
       reset();
       setOpen(false);
-      // TODO: 토스트 등 성공 알람
+      toast({
+        variant: 'default',
+        title: '팀 신청이 완료되었어요 ✅',
+        description: '팀장이 검토 후 연락을 드릴 거예요.',
+      });
     },
     onError: (error) => {
       console.error('팀 신청 실패:', error);
-      // TODO: 에러 토스트
+
+      if (axios.isAxiosError(error)) {
+        const errorCode = error.response?.data?.code;
+
+        if (errorCode === 40003) {
+          toast({
+            variant: 'destructive',
+            title: '팀 신청에 실패했어요 🥲',
+            description: '본인이 생성한 팀에는 신청할 수 없습니다.',
+          });
+        } else if (errorCode === 40900) {
+          toast({
+            variant: 'destructive',
+            title: '팀 신청에 실패했어요 🥲',
+            description: '이미 신청한 팀입니다.',
+          });
+        }
+      } else {
+        toast({
+          variant: 'destructive',
+          title: '팀 신청에 실패했어요 🥲',
+          description: '잠시 후 다시 시도해주세요.',
+        });
+      }
     },
   });
 
@@ -159,8 +188,7 @@ export default function RequestPopup({
   // =========================
   // 6. 렌더링
   // =========================
-  const isFormDisabled =
-    isTeamLoading || !!teamError || isApplyLoading || !teamId;
+  const isFormDisabled = isTeamLoading || !!teamError || isApplyLoading || !teamId;
 
   return (
     <LayerPopup open={open} setOpen={handleOpenChange} title="신청하기">
@@ -169,9 +197,7 @@ export default function RequestPopup({
           {/* 상단 정보 */}
           <div className="flex flex-col gap-5 pb-5 border-b">
             <div>
-              <p className="text-text-01 font-semibold text-xl mb-1">
-                {title}
-              </p>
+              <p className="text-text-01 font-semibold text-xl mb-1">{title}</p>
               <p className="text-text-03 text-[13px]">
                 {author} {date && `${date} 작성`}
               </p>
@@ -198,9 +224,7 @@ export default function RequestPopup({
                 팀 정보를 불러오는 데 실패했습니다. 잠시 후 다시 시도해주세요.
               </p>
             ) : (
-              <p className="text-text-01 text-[15px] whitespace-pre-line">
-                {content}
-              </p>
+              <p className="text-text-01 text-[15px] whitespace-pre-line">{content}</p>
             )}
           </div>
 

@@ -5,9 +5,10 @@ import Button from '@/components/common/Button';
 import type { ContestTeamItemDto } from '@/features/contest/types/ContestTeamListResponse';
 
 import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/store/authStore';
 import { useUserProfile } from '@/hooks/mypage/useUserProfile';
 import { useToast } from '@/components/ui/use-toast';
+import { useState } from 'react';
+import LayerPopup from '@/components/common/layerpopup/LayerPopup';
 
 interface TeamCardProps {
   team: ContestTeamItemDto;
@@ -18,20 +19,16 @@ export default function TeamCard({ team, onClickApply }: TeamCardProps) {
   const router = useRouter();
   const { data: user } = useUserProfile();
   const isLoggedIn = !!user;
-  const { toast } = useToast();
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
 
   const isOpen = team.status === 'OPEN';
 
   const handleProtectedApplyClick = () => {
     if (!isLoggedIn) {
-      toast({
-        title: '로그인이 필요합니다 🚨',
-        description: '로그인 페이지로 이동합니다.',
-        variant: 'destructive',
-      });
-
-      router.push('/signup');
-      return;
+      if (!isLoggedIn) {
+        setIsLoginPopupOpen(true);
+        return;
+      }
     }
 
     // 로그인 상태일 경우: 부모 컴포넌트에서 받은 원래 신청 함수 호출
@@ -58,6 +55,23 @@ export default function TeamCard({ team, onClickApply }: TeamCardProps) {
       <Button onClick={handleProtectedApplyClick} disabled={!isOpen}>
         {isOpen ? '참여 신청하기' : '모집 완료'}
       </Button>
+
+      {/* 로그인 필요 팝업 */}
+      <LayerPopup open={isLoginPopupOpen} setOpen={setIsLoginPopupOpen}>
+        <p className="text-center">팀에 참여하기 위해 로그인이 필요합니다.</p>
+        <div className="flex gap-2">
+          <Button
+            className="mt-4 w-1/2"
+            variant="secondary"
+            onClick={() => setIsLoginPopupOpen(false)}
+          >
+            취소
+          </Button>
+          <Button className="mt-4 w-1/2" variant="primary" onClick={() => router.push('/signup')}>
+            확인
+          </Button>
+        </div>
+      </LayerPopup>
     </div>
   );
 }
