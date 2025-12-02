@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import LayerPopup from '../../common/layerpopup/LayerPopup';
 import Input from '../../common/Input';
 import { Search, X } from 'lucide-react';
@@ -17,6 +17,7 @@ import {
 import { EDUCATION_MAP, DEGREE_MAP, EducationLevel, RecognizedDegree } from '@/constants/register';
 import { CATEGORY_MAP } from '@/constants/contest';
 import { useToast } from '@/components/ui/use-toast';
+import { useUniversitySearch } from '@/hooks/univSearch/useUniversitySearch';
 
 const CATEGORY_OPTIONS = Object.keys(CATEGORY_MAP).map((name) => ({
   value: name,
@@ -64,15 +65,22 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
   const isHighschool = selectedEducation === '고등학교';
 
   const { toast } = useToast();
+  const { query, setQuery, filtered } = useUniversitySearch();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const univList = [
-    '서울대학교',
-    '연세대학교',
-    '고려대학교',
-    '성균관대학교',
-    '한양대학교',
-    '경희대학교',
-  ];
+  // dropdown 외부 클릭 감지
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setShowDropdown(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   //  팝업 열릴 때 initialData로 상태 초기화
   useEffect(() => {
@@ -83,6 +91,9 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
       setSkillSet(initialData.skillList || []);
       setInterest(initialData.categoryList?.[0] || '');
 
+      // 대학교 검색 query 동기화
+      setQuery(initialData.universityName || '');
+
       // 학력/학위 초기화 로직 (ENUM -> 한글 역매핑)
       if (initialData.education) {
         setSelectedEducation(REVERSE_EDUCATION_MAP[initialData.education] || '대학교');
@@ -91,7 +102,7 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
         setSelectedMajorType(REVERSE_DEGREE_MAP[initialData.recognizedDegree] || '대학교 (4년제)');
       }
     }
-  }, [open, initialData]);
+  }, [open, initialData, setQuery]);
 
   // 함수 관리
   const addSkills = (q: string) => {
@@ -233,6 +244,7 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
 
           {/* 학교명 검색 */}
           <div
+            ref={dropdownRef}
             className={`relative ${
               isHighschool ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''
             }`}
@@ -242,31 +254,44 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
               placeholder="학교명을 입력해주세요."
               className="mt-1"
               value={univ}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUniv(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setUniv(e.target.value);
+                setQuery(e.target.value);
+                setShowDropdown(true);
+              }}
               icon={
                 <Search
                   size={20}
                   className="text-text-02 cursor-pointer"
-                  onClick={() => setShowDropdown(true)}
+                  onClick={() => setShowDropdown((prev) => !prev)}
                 />
               }
             />
 
-            {univ.length > 0 && showDropdown && (
-              <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-md max-h-40 overflow-y-auto scrollbar">
-                {univList.map((name, index) => (
+            {/* 자동완성 리스트 */}
+            {showDropdown && !isHighschool && filtered.length > 0 && (
+              <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto scrollbar">
+                {filtered.map((u) => (
                   <li
-                    key={index}
-                    className="px-3 py-2 hover:bg-bg-blue cursor-pointer"
+                    key={u.id}
+                    className="px-3 py-2.5 text-sm hover:bg-gray-100 cursor-pointer"
                     onClick={() => {
-                      setUniv(name);
+                      setUniv(u.name);
+                      setQuery(u.name);
                       setShowDropdown(false);
                     }}
                   >
-                    {name}
+                    {u.name}
                   </li>
                 ))}
               </ul>
+            )}
+
+            {/* 검색 결과 없음 */}
+            {showDropdown && !isHighschool && filtered.length === 0 && query.trim() !== '' && (
+              <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg p-3 text-sm text-gray-500">
+                검색 결과가 없습니다.
+              </div>
             )}
           </div>
 
@@ -291,17 +316,24 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
             <div className="flex gap-2 mt-1">
               <Button
                 variant={selectedMajorType === '대학교 (2, 3년제)' ? 'active' : 'ghost'}
-                className="w-1/2"
+                className="w-1/3"
                 onClick={() => setSelectedMajorType('대학교 (2, 3년제)')}
               >
-                대학교 (2, 3년제)
+                대학교 <br className="sm:hidden" /> (2, 3년제)
               </Button>
               <Button
                 variant={selectedMajorType === '대학교 (4년제)' ? 'active' : 'ghost'}
-                className="w-1/2"
+                className="w-1/3"
                 onClick={() => setSelectedMajorType('대학교 (4년제)')}
               >
-                대학교 (4년제)
+                대학교 <br className="sm:hidden" /> (4년제)
+              </Button>
+              <Button
+                variant={selectedMajorType === '대학원' ? 'active' : 'ghost'}
+                className="w-1/3"
+                onClick={() => setSelectedMajorType('대학원')}
+              >
+                대학원
               </Button>
             </div>
           </div>
