@@ -8,13 +8,12 @@ import type { TeamCreateRequestDto } from '@/features/team/types/TeamCreateReque
 import type { TeamCreateResponseDto } from '@/features/team/types/TeamCreateResponse';
 import { useQueryClient } from '@tanstack/react-query';
 
-
 import axios from 'axios'; 
 
 // 팀 생성 API
 import { createTeam } from '@/lib/api/team/team';
 // 토스트 훅
-import { useToast } from '@/components/common/toast/ToastProvider';
+import { useToast } from '@/components/ui/use-toast';
 
 //  AI 추천 질문 API는 아직 403이라 나중에 연동
 // import { fetchAiQuestions } from '@/lib/api/team/team';
@@ -33,7 +32,8 @@ interface MakeTeamPopupProps {
 
 const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
   const queryClient = useQueryClient();
-  const { showToast } = useToast(); //  토스트 훅
+
+  const { toast } = useToast(); //  토스트 훅
 
   // 1. 상태 관리
   const [title, setTitle] = useState<string>('');
@@ -52,25 +52,31 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
     isPending,
   } = useMutation<TeamCreateResponseDto, Error, TeamCreateRequestDto>({
     mutationFn: (body) => createTeam(contestId, body),
-    onSuccess: () => {
+    onSuccess: async () => {
+      // 1) 팀 목록 쿼리 무효화 → 자동 refetch
+      await queryClient.invalidateQueries({
+        queryKey: ['contestTeams', contestId],
+      });
+
+      //  2) 폼 리셋 + 모달 닫기
       reset();
       setOpen(false);
 
-      // ✅ 성공 토스트
-      showToast({
-        type: 'success',
-        title: '팀이 생성되었어요 🎉',
-        description: '팀원 모집 탭에서 방금 만든 팀을 확인할 수 있어요.',
+      //  3) 팀 생성 성공 토스트
+      toast({
+        variant: 'default',
+        title: '팀이 생성되었어요 ✅',
+        description: '팀원 모집 글이 등록되었습니다.',
       });
     },
     onError: (error) => {
       console.error('팀 생성 실패:', error);
 
-      // ✅ 실패 토스트
-      showToast({
-        type: 'error',
+      // 실패 토스트
+      toast({
+        variant: 'destructive',
         title: '팀 생성에 실패했어요',
-        description: '잠시 후 다시 시도해 주세요. 문제가 계속되면 운영진에게 문의해주세요.',
+        description: '잠시 후 다시 시도해주세요.',
       });
     },
   });

@@ -12,7 +12,7 @@ import Tag from '../../common/Tag';
 import { fetchTeamDetailPublic, applyTeam } from '@/lib/api/team/team';
 import type { TeamApplyRequestDto } from '@/features/team/types/TeamApplyRequest';
 import type { TeamDetailDto } from '@/features/team/types/TeamDetailResponse';
-import { useToast } from '@/components/common/toast/ToastProvider';
+import { useToast } from '@/components/ui/use-toast';
 
 interface RequestPopupProps {
   open: boolean;
@@ -33,7 +33,7 @@ export default function RequestPopup({
   setOpen,
   teamId,
 }: RequestPopupProps) {
-  const { showToast } = useToast();
+  const { toast } = useToast(); 
   // =========================
   // 1. 팀 상세 조회 (TeamDetailDto)
   // =========================
@@ -100,18 +100,18 @@ export default function RequestPopup({
     onSuccess: () => {
       reset();
       setOpen(false);
-      showToast({
-        title: '팀 신청이 완료되었어요 🎉',
-        description: '팀장 승인 후 연락을 받게 됩니다.',
-        type: 'success',
+      toast({
+        variant: 'default',
+        title: '팀 신청이 완료되었어요 ✅',
+        description: '팀장이 검토 후 연락을 드릴 거예요.',
       });
     },
     onError: (error) => {
       console.error('팀 신청 실패:', error);
-      showToast({
+      toast({
+        variant: 'destructive',
         title: '팀 신청에 실패했어요',
-        description: '잠시 후 다시 시도해 주세요.',
-        type: 'error',
+        description: '잠시 후 다시 시도해주세요.',
       });
     },
   });
