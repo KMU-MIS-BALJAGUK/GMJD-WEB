@@ -1,32 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import React from 'react';
 import MyApplyCard from './MyApplyCard';
-import { useMyAppliedList } from '@/hooks/mypage/useMyAppliedList';
+import { useMyAppliedList } from '@/hooks/team/useMyAppliedList';
 import { ClipboardList } from 'lucide-react';
+import Error from '@/components/common/Error';
 import Loading from '@/components/common/Loading';
 
-const MyApplyPageClient = () => {
+export default function MyApplyPageClient() {
   const { data: myAppliedList, isLoading, isError } = useMyAppliedList();
-
-  if (isLoading) {
-    return (
-      <div className="max-w-[1200px] mx-auto py-10 px-4 md:px-6 lg:px-8">
-        <h1 className="text-2xl font-bold mb-6">팀 관리</h1>
-        <Loading message="지원한 팀 정보를 불러오는 중..." />
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className="max-w-[1200px] mx-auto py-10 px-4 md:px-6 lg:px-8">
-        <h1 className="text-2xl font-bold mb-6">팀 관리</h1>
-        <p>데이터를 불러오는 중 오류가 발생했습니다.</p>
-      </div>
-    );
-  }
 
   return (
     <div className="max-w-[1200px] mx-auto py-10 px-4 md:px-6 lg:px-8">
@@ -45,8 +27,14 @@ const MyApplyPageClient = () => {
         </span>
       </nav>
 
-      {/* 데이터 없음 Empty UI */}
-      {(!myAppliedList || myAppliedList.length === 0) && (
+      {/* 로딩 */}
+      {isLoading && <Loading />}
+
+      {/* 에러 */}
+      {isError && <Error message="데이터를 불러오는 중 오류가 발생했습니다." />}
+
+      {/* 빈 상태 */}
+      {!isLoading && myAppliedList?.length === 0 && (
         <div className="flex flex-col items-center justify-center h-[300px] text-center">
           <div className="p-4 bg-gray-100 rounded-full mb-3">
             <ClipboardList className="w-10 h-10 text-gray-400" />
@@ -57,24 +45,23 @@ const MyApplyPageClient = () => {
       )}
 
       {/* 카드 리스트 */}
-      {myAppliedList && myAppliedList.length > 0 && (
+      {myAppliedList?.length > 0 && !isLoading && !isError && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {myAppliedList.map((application) => (
+          {myAppliedList.map((item) => (
             <MyApplyCard
-              key={application.applicationId}
-              teamId={application.teamId}
-              applicationId={application.applicationId}
-              title={application.contestName}
-              subtitle={application.teamTitle}
-              image={application.contestImageUrl}
-              totalMembers={application.memberCount}
-              status={application.status === 'REJECTED' ? 'closed' : 'open'}
+              key={item.applicationId}
+              teamId={item.teamId}
+              applicationId={item.applicationId}
+              title={item.contestName}
+              subtitle={item.teamTitle}
+              image={item.contestImageUrl}
+              totalMembers={item.memberCount}
+              status={item.status}
+              recruitStatus={item.recruitStatus} // ★ 서버 값 그대로 사용
             />
           ))}
         </div>
       )}
     </div>
   );
-};
-
-export default MyApplyPageClient;
+}

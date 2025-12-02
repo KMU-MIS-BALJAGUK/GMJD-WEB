@@ -10,6 +10,7 @@ import Input from './common/Input';
 import { useUserProfile } from '@/hooks/mypage/useUserProfile';
 import { useAuthStore } from '@/store/authStore';
 import { useQueryClient } from '@tanstack/react-query';
+import { useToast } from './ui/use-toast';
 
 const Header = () => {
   const { data: user } = useUserProfile();
@@ -22,6 +23,8 @@ const Header = () => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const [keyword, setKeyword] = useState('');
+
+  const { toast } = useToast();
 
   useEffect(() => {
     if (pathname !== '/contest') {
@@ -38,6 +41,22 @@ const Header = () => {
     logout(); // Zustand 토큰 삭제
     queryClient.clear(); // React Query 전체 캐시 삭제
     router.push('/');
+  };
+
+  const handleProtectedClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!isLoggedIn) {
+      e.preventDefault(); // 기본 Link 동작 방지
+
+      toast({
+        title: '로그인이 필요합니다 🚨',
+        description: '로그인 페이지로 이동합니다.',
+        variant: 'destructive',
+      });
+
+      router.push('/signup');
+    }
+
+    setOpen(false);
   };
 
   return (
@@ -78,6 +97,7 @@ const Header = () => {
             </Link>
             <Link
               href="/team"
+              onClick={handleProtectedClick}
               className={`cursor-pointer ${
                 pathname === '/team' && 'text-blue'
               } hover:text-blue transition-colors`}
@@ -86,6 +106,7 @@ const Header = () => {
             </Link>
             <Link
               href="/chat"
+              onClick={handleProtectedClick}
               className={`cursor-pointer ${
                 pathname === '/chat' && 'text-blue'
               } hover:text-blue transition-colors`}
@@ -141,7 +162,7 @@ const Header = () => {
 
       <div
         className={cn(
-          'fixed inset-0 bg-black/40 z-50 md:hidden transition-opacity duration-300',
+          'fixed inset-0 bg-black/40 z-100 md:hidden transition-opacity duration-300',
           open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         )}
         onClick={() => setOpen(false)}
@@ -171,7 +192,7 @@ const Header = () => {
             </Link>
             <Link
               href="/team"
-              onClick={() => setOpen(false)}
+              onClick={handleProtectedClick}
               className={`cursor-pointer ${
                 pathname === '/team' && 'text-blue'
               } hover:text-blue transition-colors`}
@@ -180,7 +201,7 @@ const Header = () => {
             </Link>
             <Link
               href="/chat"
-              onClick={() => setOpen(false)}
+              onClick={handleProtectedClick}
               className={`cursor-pointer ${
                 pathname === '/chat' && 'text-blue'
               } hover:text-blue transition-colors`}

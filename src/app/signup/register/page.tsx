@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/common/Button';
 import { Tag } from '@/components/common/Tag';
 import { SelectBox } from '@/components/common/SelectBox';
-import { Check, Search, X } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import Input from '@/components/common/Input';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
@@ -12,6 +12,8 @@ import { useRouter } from 'next/navigation';
 import { useSignUp } from '@/hooks/register/useSignup';
 import { UserProfileDto } from '@/features/register/types/register';
 import { EDUCATION_MAP, DEGREE_MAP, CATEGORY_MAP } from '@/constants/register';
+import { useToast } from '@/components/ui/use-toast';
+import { useUniversitySearch } from '@/hooks/univSearch/useUniversitySearch';
 
 interface FormFieldProps {
   label: string;
@@ -43,6 +45,22 @@ const univList = [
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { toast } = useToast();
+  const { query, setQuery, filtered } = useUniversitySearch();
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setShowDropdown(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   // useSignUp 훅 사용
   const {
@@ -54,12 +72,20 @@ export default function RegisterPage() {
   } = useSignUp({
     onSuccess: (data) => {
       console.log('✅ 회원가입 성공:', data);
-      alert('회원가입이 성공적으로 완료되었습니다! 메인 페이지로 이동합니다.');
+      toast({
+        title: '회원가입이 성공적으로 완료되었습니다! 🎉',
+        description: '메인 페이지로 이동합니다.',
+        variant: 'default',
+      });
       router.push('/');
     },
     onError: (err) => {
       console.error('❌ 회원가입 실패:', err);
-      alert(`회원가입 실패: ${err.message}`);
+      toast({
+        title: '회원가입에 실패했습니다. 🚨',
+        description: `잠시 후 다시 시도해주세요.`,
+        variant: 'destructive',
+      });
     },
   });
 
@@ -73,7 +99,7 @@ export default function RegisterPage() {
   });
   // 2. 선택형 데이터 상태 관리
   const [selectedEducation, setSelectedEducation] = useState('대학교'); // '고등학교' | '대학교'
-  const [selectedMajorType, setSelectedMajorType] = useState('대학교 (4년제)'); // '대학교 (2, 3년제)' | '대학교 (4년제)'
+  const [selectedMajorType, setSelectedMajorType] = useState('대학교 (2, 3년제)'); // '대학교 (2, 3년제)' | '대학교 (4년제)' | '대학원'
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const isHighschool = selectedEducation === '고등학교';
 
@@ -147,7 +173,11 @@ export default function RegisterPage() {
     const categoryId = CATEGORY_MAP[formData.interest];
     if (formData.interest && !categoryId) {
       console.error('유효하지 않은 관심분야 값입니다.');
-      alert('관심분야를 올바르게 선택해주세요.');
+      toast({
+        title: '관심분야 선택 오류 🚨',
+        description: '관심분야를 올바르게 선택해주세요.',
+        variant: 'destructive',
+      });
       return;
     }
 
@@ -166,7 +196,7 @@ export default function RegisterPage() {
 
     const submitData: UserProfileDto = {
       introduction: formData.intro.trim(),
-      education: EDUCATION_MAP[selectedEducation], // 'HIGH_SCHOOL' 또는 'UNIVERSITY'
+      education: EDUCATION_MAP[selectedEducation], // 'HIGH_SCHOOL' 또는 'UNIVERSITY' 또는 'MASTER'
       categoryIds: categoryId ? [categoryId] : [],
       skills: skillsList,
       ...(isHighschool ? highschoolData : universityData),
@@ -226,7 +256,7 @@ export default function RegisterPage() {
                   type="button"
                   onClick={() => setSelectedEducation('대학교')}
                 >
-                  대학교
+                  대학교 / 대학원
                 </Button>
               </div>
             </FormField>
@@ -234,6 +264,7 @@ export default function RegisterPage() {
             {/* 3. 학교명 검색 */}
             <FormField label="학교 명 검색" disabled={isHighschool}>
               <div
+                ref={dropdownRef}
                 className={`relative w-full ${
                   isHighschool
                     ? 'opacity-50 cursor-not-allowed pointer-events-none transition-opacity duration-300'
@@ -242,9 +273,12 @@ export default function RegisterPage() {
               >
                 <Input
                   name="school"
-                  variant="default"
                   value={formData.school}
-                  onChange={handleInputChange}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    handleInputChange(e);
+                    setQuery(e.target.value);
+                    setShowDropdown(true);
+                  }}
                   placeholder="학교 명을 입력해주세요"
                   className="w-full"
                   icon={
@@ -258,22 +292,30 @@ export default function RegisterPage() {
                   }
                 />
 
-                {/* 드롭다운 UI 렌더링 */}
-                {showDropdown && !isHighschool && filteredUnivList.length > 0 && (
-                  <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto">
-                    {filteredUnivList.map((name, index) => (
+                {/* 자동완성 리스트 */}
+                {showDropdown && !isHighschool && filtered.length > 0 && (
+                  <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto scrollbar">
+                    {filtered.map((u) => (
                       <li
-                        key={index}
-                        className="px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+                        key={u.id}
+                        className="px-3 py-2.5 text-sm hover:bg-gray-100 cursor-pointer"
                         onClick={() => {
-                          setFormData((prev) => ({ ...prev, school: name }));
+                          setFormData((prev) => ({ ...prev, school: u.name }));
+                          setQuery(u.name);
                           setShowDropdown(false);
                         }}
                       >
-                        {name}
+                        {u.name}
                       </li>
                     ))}
                   </ul>
+                )}
+
+                {/* 검색 결과 없음 */}
+                {showDropdown && !isHighschool && filtered.length === 0 && (
+                  <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg p-3 text-sm text-gray-500">
+                    검색 결과가 없습니다.
+                  </div>
                 )}
               </div>
             </FormField>
@@ -289,19 +331,27 @@ export default function RegisterPage() {
               >
                 <Button
                   variant={selectedMajorType === '대학교 (2, 3년제)' ? 'active' : 'ghost'}
-                  className="w-1/2"
+                  className="w-1/3"
                   type="button"
                   onClick={() => setSelectedMajorType('대학교 (2, 3년제)')}
                 >
-                  대학교 (2, 3년제)
+                  대학교 <br className="sm:hidden" /> (2, 3년제)
                 </Button>
                 <Button
                   variant={selectedMajorType === '대학교 (4년제)' ? 'active' : 'ghost'}
-                  className="w-1/2"
+                  className="w-1/3"
                   type="button"
                   onClick={() => setSelectedMajorType('대학교 (4년제)')}
                 >
-                  대학교 (4년제)
+                  대학교 <br className="sm:hidden" /> (4년제)
+                </Button>
+                <Button
+                  variant={selectedMajorType === '대학원' ? 'active' : 'ghost'}
+                  className="w-1/3"
+                  type="button"
+                  onClick={() => setSelectedMajorType('대학원')}
+                >
+                  대학원
                 </Button>
               </div>
             </FormField>

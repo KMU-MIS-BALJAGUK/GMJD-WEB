@@ -3,17 +3,17 @@
 import Button from '@/components/common/Button';
 import Tag from '@/components/common/Tag';
 import { UsersRound } from 'lucide-react';
-import Image from 'next/image';
 import { useCancelApplication } from '@/hooks/mypage/useCancelApplication';
 
 export interface MyApplyCardProps {
   teamId: number;
-  applicationId: number; // Added for cancel functionality
+  applicationId: number;
   title: string;
   subtitle: string;
-  image: string;
+  image: string; // 사용하지만 외부 이미지 로드 X
   totalMembers: number;
-  status: string; // 'open', 'closed'
+  status: 'PENDING' | 'ACCEPTED' | 'REJECTED';
+  recruitStatus: 'OPEN' | 'CLOSED';
 }
 
 export default function MyApplyCard({
@@ -24,28 +24,32 @@ export default function MyApplyCard({
   image,
   totalMembers,
   status,
+  recruitStatus,
 }: MyApplyCardProps) {
-  const { mutate: cancelApplicationMutation, isPending } = useCancelApplication();
+  const { mutate: cancelMutation, isPending } = useCancelApplication();
 
-  const isOpen = status === 'open';
-  const isClosed = status === 'closed'; // Status for UI, e.g., 'open' or 'closed'
+  const canCancel = status === 'PENDING';
+  const isRecruitOpen = recruitStatus === 'OPEN';
 
-  const handleCancelApplication = () => {
-    cancelApplicationMutation({
-      teamId: teamId,
-      data: { applicationId: applicationId },
+  const handleCancel = () => {
+    cancelMutation({
+      teamId,
+      data: { applicationId },
     });
   };
 
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md bg-white hover:scale-105 transition duration-300">
-      {/* 이미지 */}
       <div className="relative w-full h-[160px] bg-gray-100">
-        <Image src={image} alt={title} fill className="object-cover" />
+        {/* 외부 이미지 사용 금지 — 기본 빈 이미지 */}
+        <div
+          role="img"
+          aria-label={title}
+          className="w-full h-full object-cover bg-gray-200"
+        />
 
-        {/* 상태 배지 */}
         <div className="absolute bottom-2 left-2">
-          {isOpen ? (
+          {isRecruitOpen ? (
             <Tag variant="green" shape="square" className="text-xs">
               모집중
             </Tag>
@@ -57,32 +61,24 @@ export default function MyApplyCard({
         </div>
       </div>
 
-      {/* 카드 내용 */}
       <div className="p-4">
-        {/* 제목 */}
         <p className="font-semibold text-sm leading-tight line-clamp-2">{title}</p>
-
-        {/* 기관명 */}
         <p className="text-xs text-gray-500 mt-1">{subtitle}</p>
 
-        {/* 모집 / 지원 */}
         <p className="flex items-center gap-1 text-sm mt-2">
           <UsersRound size={15} /> 모집 인원 {totalMembers}명
         </p>
 
-        {/* 버튼 */}
-        <div className="mt-4">
-          {isOpen && (
-            <Button
-              variant="red"
-              className="w-full"
-              onClick={handleCancelApplication}
-              disabled={isPending}
-            >
-              {isPending ? '취소 중...' : '신청 취소'}
-            </Button>
-          )}
-        </div>
+        {canCancel && (
+          <Button
+            variant="red"
+            className="w-full mt-4"
+            disabled={isPending}
+            onClick={handleCancel}
+          >
+            {isPending ? '취소 중...' : '신청 취소'}
+          </Button>
+        )}
       </div>
     </div>
   );

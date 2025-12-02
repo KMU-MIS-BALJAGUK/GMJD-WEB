@@ -1,4 +1,7 @@
+'use client';
+
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
+import { toastEventBus } from '@/lib/eventBus';
 
 interface CustomAxiosRequestConfig extends AxiosRequestConfig {
   _retry?: boolean;
@@ -97,12 +100,18 @@ api.interceptors.response.use(
         processQueue(null, newAccessToken);
         return api(originalRequest);
       } catch (refreshError) {
-        // Refresh 실패 (RT 만료/오류) 시 강제 로그아웃
         console.error('Token refresh failed. Logging out.', refreshError);
         processQueue(refreshError as AxiosError);
+
         sessionStorage.removeItem(ACCESS_TOKEN_KEY);
-        alert('인증이 만료되었습니다. 다시 로그인해주세요.');
-        // 로그인 페이지로 리다이렉트
+
+        // 토스트 표시
+        toastEventBus.emit({
+          title: '인증이 만료되었습니다 🚨',
+          description: '다시 로그인해주세요.',
+          variant: 'destructive',
+        });
+
         window.location.href = '/signup';
         return Promise.reject(refreshError);
       } finally {

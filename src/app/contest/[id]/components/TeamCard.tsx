@@ -1,19 +1,42 @@
 'use client';
 
-
 import { UsersRound } from 'lucide-react';
 import Button from '@/components/common/Button';
-import Tag from '@/components/common/Tag';
 import type { ContestTeamItemDto } from '@/features/contest/types/ContestTeamListResponse';
 
-interface TeamCardProps {
+import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/store/authStore';
+import { useUserProfile } from '@/hooks/mypage/useUserProfile';
+import { useToast } from '@/components/ui/use-toast';
 
+interface TeamCardProps {
   team: ContestTeamItemDto;
   onClickApply: () => void;
 }
 
 export default function TeamCard({ team, onClickApply }: TeamCardProps) {
+  const router = useRouter();
+  const { data: user } = useUserProfile();
+  const isLoggedIn = !!user;
+  const { toast } = useToast();
+
   const isOpen = team.status === 'OPEN';
+
+  const handleProtectedApplyClick = () => {
+    if (!isLoggedIn) {
+      toast({
+        title: '로그인이 필요합니다 🚨',
+        description: '로그인 페이지로 이동합니다.',
+        variant: 'destructive',
+      });
+
+      router.push('/signup');
+      return;
+    }
+
+    // 로그인 상태일 경우: 부모 컴포넌트에서 받은 원래 신청 함수 호출
+    onClickApply();
+  };
 
   return (
     <div className="w-full bg-white border border-[#E7E7E7] rounded-[10px] p-6 flex flex-col gap-6">
@@ -29,11 +52,10 @@ export default function TeamCard({ team, onClickApply }: TeamCardProps) {
             모집인원 : {team.currentMemberCount}/{team.maxMember}명
           </span>
         </div>
-
       </div>
 
       {/* 신청 버튼 */}
-      <Button onClick={onClickApply} disabled={!isOpen}>
+      <Button onClick={handleProtectedApplyClick} disabled={!isOpen}>
         {isOpen ? '참여 신청하기' : '모집 완료'}
       </Button>
     </div>

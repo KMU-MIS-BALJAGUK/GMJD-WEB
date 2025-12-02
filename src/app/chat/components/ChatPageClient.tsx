@@ -6,42 +6,16 @@ import ChatLists from './ChatLists';
 import ChatRoom from './ChatRoom';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-
-const roomList = [
-  {
-    roomId: 1,
-    name: 'NH농협카드 플레이트&스티커 디자인 콘테스트',
-    members: 12,
-    lastMessage:
-      '감사합니다! 다음주에 줌미팅에서 더 자세히 얘기해보면 좋을 것 같아요! 주말 잘 보내시기바랍니다!',
-    lastMessageAt: '2025-11-19T11:07:00Z',
-    unreadCount: 3,
-    profileImage: '/contest_example.png',
-  },
-  {
-    roomId: 2,
-    name: '제3회 기아 PBV 아이디어 공모전',
-    members: 5,
-    lastMessage: '좋아요! 주말 잘 보내시기바랍니다!',
-    lastMessageAt: '2025-11-14T09:55:00Z',
-    unreadCount: 0,
-    profileImage: '/contest_example.png',
-  },
-  {
-    roomId: 3,
-    name: '2024 대학 광고동아리 광고제',
-    members: 5,
-    lastMessage: '내일 10시에 회의 시작할게요.',
-    lastMessageAt: '2025-11-18T14:32:00Z',
-    unreadCount: 0,
-    profileImage: '/contest_example.png',
-  },
-];
+import { useChatRoomList } from '@/hooks/chat/useChatRoomLists';
 
 export default function ChatPageClient({ initialRoomId }: { initialRoomId: number | null }) {
   const router = useRouter();
   const [selectedRoom, setSelectedRoom] = useState<number | null>(initialRoomId);
   const [showChatRoom, setShowChatRoom] = useState(false);
+
+  // 실제 API 데이터 사용
+  const { data: roomLists } = useChatRoomList();
+  const rooms = roomLists ?? [];
 
   // URL 동기화
   const handleSelectRoom = (roomId: number) => {
@@ -51,7 +25,7 @@ export default function ChatPageClient({ initialRoomId }: { initialRoomId: numbe
     router.replace(`/chat?roomId=${roomId}`, { scroll: false });
   };
 
-  const currentRoomInfo = roomList.find((room) => room.roomId === selectedRoom) ?? null;
+  const currentRoomInfo = rooms.find((room) => room.chatroomId === selectedRoom) ?? null;
 
   return (
     <div className="h-[calc(100vh-68px)] md:h-[calc(100vh-68px-80px)] flex items-center justify-center gap-5 max-md:px-4 px-6">

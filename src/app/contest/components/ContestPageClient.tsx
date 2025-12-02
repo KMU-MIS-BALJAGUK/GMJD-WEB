@@ -1,7 +1,6 @@
 'use client';
 
-import Button from '@/components/common/Button';
-import ContestCard from '@/components/common/ContestCard';
+import ContestCard from '@/components/common/contest/ContestCard';
 import React, { useEffect, useState } from 'react';
 import SortButton from './SortButton';
 import { SelectBox } from '@/components/common/SelectBox';
@@ -151,37 +150,41 @@ const ContestPageClient = () => {
       {isLoading && <Loading />}
       {isError && <Error />}
 
-      <div className="flex justify-center">
-        <div className="grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid gap-x-6 gap-y-6">
-          {contestList?.map((contest: ContestItemDto) => (
-            <ContestCard contest={contest} key={contest.id} />
-          ))}
+      {contestList && !isLoading && (
+        <div className="flex justify-center">
+          <div className="grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid gap-x-6 gap-y-6">
+            {contestList?.map((contest: ContestItemDto) => (
+              <ContestCard contest={contest} key={contest.id} />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
-      <div className="mt-10 mb-5 flex justify-center">
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                onClick={() => handlePageChange(Math.max(0, page - 1))}
-                className={page === 0 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-              />
-            </PaginationItem>
+      {contestList && !isLoading && (
+        <div className="mt-10 mb-5 flex justify-center">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() => handlePageChange(Math.max(0, page - 1))}
+                  className={page === 0 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                />
+              </PaginationItem>
 
-            {renderPageNumbers()}
+              {renderPageNumbers()}
 
-            <PaginationItem>
-              <PaginationNext
-                onClick={() => handlePageChange(Math.min(totalPages - 1, page + 1))}
-                className={
-                  page === totalPages - 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      </div>
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() => handlePageChange(Math.min(totalPages - 1, page + 1))}
+                  className={
+                    page === totalPages - 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'
+                  }
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      )}
     </div>
   );
 };
