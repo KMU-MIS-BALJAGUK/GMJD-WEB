@@ -6,9 +6,13 @@ import LayerPopup from '../../common/layerpopup/LayerPopup';
 import { useMutation } from '@tanstack/react-query';
 import type { TeamCreateRequestDto } from '@/features/team/types/TeamCreateRequest';
 import type { TeamCreateResponseDto } from '@/features/team/types/TeamCreateResponse';
+import { useQueryClient } from '@tanstack/react-query';
+
 
 // 팀 생성 API
 import { createTeam } from '@/lib/api/team/team';
+// 토스트 훅
+import { useToast } from '@/components/ui/use-toast';
 
 //  AI 추천 질문 API는 아직 403이라 나중에 연동
 // import { fetchAiQuestions } from '@/lib/api/team/team';
@@ -26,6 +30,9 @@ interface MakeTeamPopupProps {
 }
 
 const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
+  const queryClient = useQueryClient();
+
+  const { toast } = useToast(); //  토스트 훅
 
   // 1. 상태 관리
   const [title, setTitle] = useState<string>('');
@@ -33,6 +40,7 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
   const [content, setContent] = useState<string>('');
   const [question, setQuestion] = useState<string[]>([]);
   const [questionInput, setQuestionInput] = useState<string>('');
+
 
   // 지금은 API 안 쓰고 기본 질문만 사용
   const questionSuggestions = DEFAULT_AI_QUESTIONS;
@@ -43,14 +51,32 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
     isPending,
   } = useMutation<TeamCreateResponseDto, Error, TeamCreateRequestDto>({
     mutationFn: (body) => createTeam(contestId, body),
-    onSuccess: () => {
-      // TODO: 팀 목록 refetch (React Query 쓰면 invalidateQueries 등)
+    onSuccess: async () => {
+      // 1) 팀 목록 쿼리 무효화 → 자동 refetch
+      await queryClient.invalidateQueries({
+        queryKey: ['contestTeams', contestId],
+      });
+
+      //  2) 폼 리셋 + 모달 닫기
       reset();
       setOpen(false);
+
+      //  3) 팀 생성 성공 토스트
+      toast({
+        variant: 'default',
+        title: '팀이 생성되었어요 ✅',
+        description: '팀원 모집 글이 등록되었습니다.',
+      });
     },
     onError: (error) => {
       console.error('팀 생성 실패:', error);
-      // TODO: 에러 토스트 띄우기 등
+
+      // 실패 토스트
+      toast({
+        variant: 'destructive',
+        title: '팀 생성에 실패했어요',
+        description: '잠시 후 다시 시도해주세요.',
+      });
     },
   });
 
@@ -102,6 +128,8 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
       introduction: content,
       questions: question,
     };
+
+ 
 
     createTeamMutate(payload);
   };
