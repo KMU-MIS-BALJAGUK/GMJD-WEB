@@ -8,7 +8,7 @@ interface CustomAxiosRequestConfig extends AxiosRequestConfig {
 }
 
 const ACCESS_TOKEN_KEY = 'accessToken';
-const REFRESH_API_URL = '/api/v1/auth/refresh'; //나중에 백엔드에서 추가해주는 API 참고해서 수정
+const REFRESH_API_URL = '/oauth/reissue';
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
 // 동시 요청 갱신 방지 및 요청 큐 관리
