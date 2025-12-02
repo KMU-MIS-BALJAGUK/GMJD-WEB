@@ -7,7 +7,6 @@ import { useCancelApplication } from '@/hooks/mypage/useCancelApplication';
 
 export interface MyApplyCardProps {
   teamId: number;
-  applicationId: number;
   title: string;
   subtitle: string;
   image: string; // 사용하지만 외부 이미지 로드 X
@@ -18,7 +17,6 @@ export interface MyApplyCardProps {
 
 export default function MyApplyCard({
   teamId,
-  applicationId,
   title,
   subtitle,
   image,
@@ -32,10 +30,7 @@ export default function MyApplyCard({
   const isRecruitOpen = recruitStatus === 'OPEN';
 
   const handleCancel = () => {
-    cancelMutation({
-      teamId,
-      data: { applicationId },
-    });
+    cancelMutation({ teamId });
   };
 
   return (

@@ -49,9 +49,8 @@ export default function MyApplyPageClient() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {myAppliedList.map((item) => (
             <MyApplyCard
-              key={item.applicationId}
+              key={item.teamId}
               teamId={item.teamId}
-              applicationId={item.applicationId}
               title={item.contestName}
               subtitle={item.teamTitle}
               image={item.contestImageUrl}
