@@ -4,6 +4,7 @@ import Button from '@/components/common/Button';
 import Tag from '@/components/common/Tag';
 import { UsersRound } from 'lucide-react';
 import { useCancelApplication } from '@/hooks/mypage/useCancelApplication';
+import NextImage from 'next/image';
 
 export interface MyApplyCardProps {
   teamId: number;
@@ -35,13 +36,10 @@ export default function MyApplyCard({
 
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md bg-white hover:scale-105 transition duration-300">
+
+
       <div className="relative w-full h-[160px] bg-gray-100">
-        {/* 외부 이미지 사용 금지 — 기본 빈 이미지 */}
-        <div
-          role="img"
-          aria-label={title}
-          className="w-full h-full object-cover bg-gray-200"
-        />
+        <NextImage src={image} alt={title} fill className="object-cover rounded-t-lg" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" />
 
         <div className="absolute bottom-2 left-2">
           {isRecruitOpen ? (
