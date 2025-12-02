@@ -36,8 +36,6 @@ export default function MyApplyCard({
 
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md bg-white hover:scale-105 transition duration-300">
-
-
       <div className="relative w-full h-[160px] bg-gray-100">
         <NextImage src={image} alt={title} fill className="object-cover rounded-t-lg" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" />
 
