@@ -8,7 +8,6 @@ import type { TeamCreateRequestDto } from '@/features/team/types/TeamCreateReque
 import type { TeamCreateResponseDto } from '@/features/team/types/TeamCreateResponse';
 import { useQueryClient } from '@tanstack/react-query';
 
-import axios from 'axios'; 
 
 // 팀 생성 API
 import { createTeam } from '@/lib/api/team/team';
@@ -130,7 +129,7 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
       questions: question,
     };
 
-    console.log('📤 팀 생성 요청 payload', { contestId, payload });
+ 
 
     createTeamMutate(payload);
   };
