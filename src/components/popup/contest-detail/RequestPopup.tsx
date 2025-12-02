@@ -10,9 +10,9 @@ import LayerPopup from '../../common/layerpopup/LayerPopup';
 import Tag from '../../common/Tag';
 
 import { fetchTeamDetailPublic, applyTeam } from '@/lib/api/team/team';
-
 import type { TeamApplyRequestDto } from '@/features/team/types/TeamApplyRequest';
 import type { TeamDetailDto } from '@/features/team/types/TeamDetailResponse';
+import { useToast } from '@/components/common/toast/ToastProvider';
 
 interface RequestPopupProps {
   open: boolean;
@@ -21,11 +21,19 @@ interface RequestPopupProps {
   teamId: number | null;
 }
 
+// // 신청 성공 시
+// showToast({
+//   type: 'success',
+//   title: '팀 신청이 완료되었어요 ✅',
+//   description: '팀장이 검토 후 연락을 드릴 거예요.',
+// });
+
 export default function RequestPopup({
   open,
   setOpen,
   teamId,
 }: RequestPopupProps) {
+  const { showToast } = useToast();
   // =========================
   // 1. 팀 상세 조회 (TeamDetailDto)
   // =========================
@@ -44,7 +52,6 @@ export default function RequestPopup({
     },
     enabled: !!teamId && open,
   });
-
 
 
   // =========================
@@ -93,11 +100,19 @@ export default function RequestPopup({
     onSuccess: () => {
       reset();
       setOpen(false);
-      // TODO: 토스트 등 성공 알람
+      showToast({
+        title: '팀 신청이 완료되었어요 🎉',
+        description: '팀장 승인 후 연락을 받게 됩니다.',
+        type: 'success',
+      });
     },
     onError: (error) => {
       console.error('팀 신청 실패:', error);
-      // TODO: 에러 토스트
+      showToast({
+        title: '팀 신청에 실패했어요',
+        description: '잠시 후 다시 시도해 주세요.',
+        type: 'error',
+      });
     },
   });
 

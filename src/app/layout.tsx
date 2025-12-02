@@ -6,6 +6,7 @@ import Header from '@/components/header';
 import { ReactQueryProvider } from '@/lib/queryClient';
 import { useEffect } from 'react';
 import { useAuthStore } from '@/store/authStore';
+import { ToastProvider } from '@/components/common/toast/ToastProvider';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   // Zustand store access
@@ -20,11 +21,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="min-h-screen flex flex-col">
-        <ReactQueryProvider>
-          <Header />
-          <div className="flex-1">{children}</div>
-          <Footer />
-        </ReactQueryProvider>
+        {/*  전역 토스트 프로바이더로 감싸기 */}
+        <ToastProvider>
+          <ReactQueryProvider>
+            <Header />
+            <div className="flex-1">{children}</div>
+            <Footer />
+          </ReactQueryProvider>
+        </ToastProvider>
       </body>
     </html>
   );

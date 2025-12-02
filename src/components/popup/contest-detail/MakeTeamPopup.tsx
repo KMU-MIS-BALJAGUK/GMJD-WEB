@@ -6,11 +6,15 @@ import LayerPopup from '../../common/layerpopup/LayerPopup';
 import { useMutation } from '@tanstack/react-query';
 import type { TeamCreateRequestDto } from '@/features/team/types/TeamCreateRequest';
 import type { TeamCreateResponseDto } from '@/features/team/types/TeamCreateResponse';
+import { useQueryClient } from '@tanstack/react-query';
+
 
 import axios from 'axios'; 
 
 // 팀 생성 API
 import { createTeam } from '@/lib/api/team/team';
+// 토스트 훅
+import { useToast } from '@/components/common/toast/ToastProvider';
 
 //  AI 추천 질문 API는 아직 403이라 나중에 연동
 // import { fetchAiQuestions } from '@/lib/api/team/team';
@@ -28,6 +32,8 @@ interface MakeTeamPopupProps {
 }
 
 const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
+  const queryClient = useQueryClient();
+  const { showToast } = useToast(); //  토스트 훅
 
   // 1. 상태 관리
   const [title, setTitle] = useState<string>('');
@@ -35,6 +41,7 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
   const [content, setContent] = useState<string>('');
   const [question, setQuestion] = useState<string[]>([]);
   const [questionInput, setQuestionInput] = useState<string>('');
+
 
   // 지금은 API 안 쓰고 기본 질문만 사용
   const questionSuggestions = DEFAULT_AI_QUESTIONS;
@@ -46,19 +53,25 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
   } = useMutation<TeamCreateResponseDto, Error, TeamCreateRequestDto>({
     mutationFn: (body) => createTeam(contestId, body),
     onSuccess: () => {
-      console.log('✅ 팀 생성 성공');
-      // TODO: 팀 목록 refetch (React Query 쓰면 invalidateQueries 등)
       reset();
       setOpen(false);
+
+      // ✅ 성공 토스트
+      showToast({
+        type: 'success',
+        title: '팀이 생성되었어요 🎉',
+        description: '팀원 모집 탭에서 방금 만든 팀을 확인할 수 있어요.',
+      });
     },
     onError: (error) => {
-      // Axios 에러면 응답 본문까지 찍기
-      if (axios.isAxiosError(error)) {
-        console.error('❌ 팀 생성 실패 - status:', error.response?.status);
-        console.error('❌ 팀 생성 실패 - response data:', error.response?.data);
-      } else {
-        console.error('❌ 팀 생성 실패 (non-axios error):', error);
-      }
+      console.error('팀 생성 실패:', error);
+
+      // ✅ 실패 토스트
+      showToast({
+        type: 'error',
+        title: '팀 생성에 실패했어요',
+        description: '잠시 후 다시 시도해 주세요. 문제가 계속되면 운영진에게 문의해주세요.',
+      });
     },
   });
 
