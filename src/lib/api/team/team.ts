@@ -9,6 +9,8 @@ import { TeamDetailResponseDto, TeamDetailDto } from '@/features/team/types/Team
 import { TeamKickMemberResponse } from '@/features/team/types/TeamKickMemberResponse';
 import { TeamMemoUpdateRequest } from '@/features/team/types/TeamMemoUpdateRequest';
 import { TeamMemoUpdateResponse } from '@/features/team/types/TeamMemoUpdateResponse';
+import { RecruitApplicantsResponse, RecruitApplicantDto } from '@/features/team/types/MyRecruitApplicantsResponse';
+import { RecruitApplicantDetailResponse, RecruitApplicantDetailDto } from '@/features/team/types/MyRecruitApplicantDetailResponse';
 
 import type { TeamApplyRequestDto } from '@/features/team/types/TeamApplyRequest';
 import type { TeamApplyResponseDto } from '@/features/team/types/TeamApplyResponse';
@@ -114,9 +116,27 @@ export async function closeRecruitTeam(teamId: number): Promise<ApiBaseResponse>
   return response.data;
 }
 
+// 팀 지원자 목록 조회
+export async function fetchRecruitApplicants(teamId: number): Promise<RecruitApplicantDto[]> {
+  const response = await api.get<RecruitApplicantsResponse>(`/api/v1/teams/my-recruit/${teamId}`);
+  return response.data.data.applicants;
+}
+
+// 팀 지원자 상세 조회
+export async function fetchRecruitApplicantDetail(
+  teamId: number,
+  applicantUserId: number,
+): Promise<RecruitApplicantDetailDto> {
+  const response = await api.get<RecruitApplicantDetailResponse>(
+    `/api/v1/teams/my-recruit/${teamId}/applicant/${applicantUserId}`,
+  );
+  return response.data.data.applicant;
+}
+
 // 나의 지원 목록 조회 API
 export async function fetchMyAppliedList(): Promise<MyApplyItemDto[]> {
   const response = await api.get<MyApplyListResponse>('/api/v1/teams/my-applies');
 
   return response.data?.data?.myApplyList ?? [];
 }
+

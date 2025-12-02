@@ -1,45 +1,81 @@
-import React, { useState } from 'react';
+import React from 'react';
 import LayerPopup from '../../common/layerpopup/LayerPopup';
 import Tag from '../../common/Tag';
 import Button from '../../common/Button';
 import Image from 'next/image';
+import { useRecruitApplicantDetail } from '@/hooks/team/useRecruitApplicantDetail';
 
-const PlayerInfoPopup = ({
-  open,
-  setOpen,
-}: {
+type QuestionAnswer = { q: string; answer: string };
+
+export interface ApplicantDetail {
+  userId?: number;
+  profileImageUrl?: string;
+  name: string;
+  summary: string[];
+  level: number;
+  skills: string[];
+  question: QuestionAnswer[];
+}
+
+interface PlayerInfoPopupProps {
   open: boolean;
   setOpen: (value: boolean) => void;
-}) => {
-  const data = {
-    name: '오연정',
-    summary: ['금융업', '개발', '화장'],
-    level: 3,
-    skills: ['React', 'Figma', 'Photoshop', 'Illustrator'],
-    question: [
-      { q: '평소에 즐겨 사용하는 디자인 툴이나 개발 언어가 있나요?', answer: 'Figma / Python' },
-      { q: '해당 공모전에 지원한 동기가 무엇인가요?', answer: '대외활동 및 경력 보완' },
-    ],
-  };
+  applicant?: ApplicantDetail;
+  teamId?: number | null;
+  applicantUserId?: number | null;
+}
+
+const fallbackData: ApplicantDetail = {
+  name: '지원자',
+  summary: [],
+  level: 0,
+  skills: [],
+  question: [],
+};
+
+const PlayerInfoPopup = ({ open, setOpen, applicant, teamId, applicantUserId }: PlayerInfoPopupProps) => {
+  const { data: fetchedDetail, isLoading, isError } = useRecruitApplicantDetail(
+    open ? teamId ?? null : null,
+    open ? applicantUserId ?? null : null,
+  );
+
+  const data = fetchedDetail
+    ? {
+        userId: fetchedDetail.userId,
+        profileImageUrl: fetchedDetail.profileImageUrl,
+        name: fetchedDetail.name,
+        summary: fetchedDetail.aiTags,
+        level: fetchedDetail.level,
+        skills: fetchedDetail.skills,
+        question:
+          fetchedDetail.qaList?.map((item) => ({ q: item.question, answer: item.answer })) ??
+          fallbackData.question,
+      }
+    : applicant ?? fallbackData;
 
   const handleOpenChange = (value: boolean) => {
     setOpen(value);
   };
 
   return (
-    <LayerPopup open={open} setOpen={handleOpenChange} title="팀 정보">
+    <LayerPopup open={open} setOpen={handleOpenChange} title="지원자 정보">
       <div className="px-2">
         <div className="flex items-center gap-3 border-b pb-5">
-          <Image src={'/profile-image.png'} alt="Profile Image" width={64} height={64} />
+          <Image
+            src={data.profileImageUrl || '/profile-image.png'}
+            alt="Profile Image"
+            width={64}
+            height={64}
+          />
 
           <div className="gap-1.5 flex flex-col">
             <div className="flex items-end">
-              <p>오연정</p>
+              <p>{data.name}</p>
               <Tag variant="blue" className="ml-2 text-xs">
                 추천LV.{data.level}
               </Tag>
             </div>
-            <div className="flex gap-1.5">
+            <div className="flex gap-1.5 flex-wrap">
               {data.summary.map((item, index) => (
                 <p key={index} className="text-[14px] text-text-03">
                   #{item}
@@ -58,11 +94,15 @@ const PlayerInfoPopup = ({
                 {skill}
               </Tag>
             ))}
+            {data.skills.length === 0 && <p className="text-text-03 text-sm">등록된 스킬이 없습니다.</p>}
           </div>
         </div>
 
         <div className="flex flex-col gap-1 pt-5">
           <p>답변</p>
+
+          {isLoading && <p className="text-text-03 text-sm mb-2">불러오는 중...</p>}
+          {isError && <p className="text-text-03 text-sm mb-2">불러오기에 실패했습니다.</p>}
 
           {data.question.map((item, index) => (
             <div key={index} className="mb-4">
@@ -72,6 +112,9 @@ const PlayerInfoPopup = ({
               <p className="text-[15px] text-text-01">{item.answer}</p>
             </div>
           ))}
+          {data.question.length === 0 && !isLoading && !isError && (
+            <p className="text-text-03 text-sm">등록된 답변이 없습니다.</p>
+          )}
         </div>
 
         <div className="flex gap-2 pt-5">

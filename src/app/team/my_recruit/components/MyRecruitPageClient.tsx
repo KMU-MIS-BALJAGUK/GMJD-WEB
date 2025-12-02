@@ -22,6 +22,7 @@ export default function MyRecruitPageClient() {
   const { data: recruitTeams, isLoading, isError } = useMyRecruitTeams();
   const [popupOpen, setPopupOpen] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState<PopupTeamData | null>(null);
+  const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
 
   // 한글 상태값을 UI 상태값으로 변환
   const convertStatus = (
@@ -39,6 +40,7 @@ export default function MyRecruitPageClient() {
       recruitMember: team.maxMember ?? team.memberCount ?? 0,
       applyNumber: team.requestedCount ?? 0,
     });
+    setSelectedTeamId(team.teamId);
     setPopupOpen(true);
   };
 
@@ -99,7 +101,7 @@ export default function MyRecruitPageClient() {
         status={selectedTeam?.status}
         recruitMember={selectedTeam?.recruitMember}
         applyNumber={selectedTeam?.applyNumber}
-        applicants={[]}
+        teamId={selectedTeamId}
       />
     </div>
   );
