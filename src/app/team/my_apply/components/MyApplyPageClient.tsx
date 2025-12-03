@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import React, { useState } from 'react';
 import MyApplyCard from './MyApplyCard';
-import { useMyAppliedList } from '@/hooks/team/useMyAppliedList';
+import { useMyAppliedList } from '@/hooks/mypage/useMyAppliedList';
 import { ClipboardList } from 'lucide-react';
 import Error from '@/components/common/Error';
 import Loading from '@/components/common/Loading';
@@ -53,21 +53,21 @@ export default function MyApplyPageClient() {
         )}
 
         {/* 카드 리스트 */}
-        {myAppliedList?.length > 0 && !isLoading && !isError && (
+        {myAppliedList && myAppliedList.length > 0 && !isLoading && !isError && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {myAppliedList.map((item) => (
+            {myAppliedList?.map((item) => (
               <MyApplyCard
-                key={item.teamId}
-                teamId={item.teamId}
-                title={item.contestName}
-                subtitle={item.teamTitle}
-                image={item.contestImageUrl}
-                totalMembers={item.memberCount}
-                status={item.status}
-                recruitStatus={item.recruitStatus} // ★ 서버 값 그대로 사용
-                onCardClick={handleCardClick}
-              />
-            ))}
+              key={item.teamId}
+              teamId={item.teamId}
+              title={item.contestName}
+              subtitle={item.teamTitle}
+              image={item.contestImageUrl}
+              memberCount={item.memberCount}
+              maxMember={item.maxMember}
+              status={item.status}
+              recruitStatus={item.recruitStatus} // ★ 서버 값 그대로 사용
+              onCardClick={handleCardClick}
+            />            ))}
           </div>
         )}
       </div>

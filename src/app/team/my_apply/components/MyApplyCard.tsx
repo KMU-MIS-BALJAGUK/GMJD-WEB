@@ -10,11 +10,12 @@ export interface MyApplyCardProps {
   teamId: number;
   title: string;
   subtitle: string;
-  image: string; // 사용하지만 외부 이미지 로드 X
-  totalMembers: number;
+  image: string;
+  memberCount: number; // 현재 인원
+  maxMember: number;   // 전체 인원
   status: 'PENDING' | 'ACCEPTED' | 'REJECTED';
   recruitStatus: 'OPEN' | 'CLOSED';
-  onCardClick: (teamId: number) => void; // 카드 클릭 이벤트 핸들러
+  onCardClick: (teamId: number) => void;
 }
 
 export default function MyApplyCard({
@@ -22,19 +23,59 @@ export default function MyApplyCard({
   title,
   subtitle,
   image,
-  totalMembers,
+  memberCount,
+  maxMember,
   status,
   recruitStatus,
   onCardClick,
 }: MyApplyCardProps) {
   const { mutate: cancelMutation, isPending } = useCancelApplication();
 
-  const canCancel = status === 'PENDING';
   const isRecruitOpen = recruitStatus === 'OPEN';
 
   const handleCancel = (e: React.MouseEvent) => {
-    e.stopPropagation(); // 이벤트 버블링 방지
+    e.stopPropagation();
     cancelMutation({ teamId });
+  };
+
+  const renderButton = () => {
+    // 모집이 완료된 경우 (recruitStatus === 'CLOSED')
+    if (!isRecruitOpen) { // isRecruitOpen is true when recruitStatus is 'OPEN'
+      return (
+        <Button variant="gray" className="w-full mt-4" disabled>
+          삭제
+        </Button>
+      );
+    }
+
+    // 모집이 진행 중인 경우 (recruitStatus === 'OPEN')
+    switch (status) {
+      case 'PENDING':
+        return (
+          <Button
+            variant="red"
+            className="w-full mt-4"
+            disabled={isPending}
+            onClick={handleCancel}
+          >
+            {isPending ? '취소 중...' : '신청 취소'}
+          </Button>
+        );
+      case 'ACCEPTED':
+        return (
+          <Button variant="green" className="w-full mt-4" disabled>
+            승인됨
+          </Button>
+        );
+      case 'REJECTED':
+        return (
+          <Button variant="gray" className="w-full mt-4" disabled>
+            거절됨
+          </Button>
+        );
+      default:
+        return null;
+    }
   };
 
   return (
@@ -63,19 +104,10 @@ export default function MyApplyCard({
         <p className="text-xs text-gray-500 mt-1">{subtitle}</p>
 
         <p className="flex items-center gap-1 text-sm mt-2">
-          <UsersRound size={15} /> 모집 인원 {totalMembers}명
+          <UsersRound size={15} /> 현재 {memberCount}명 / 모집 {maxMember}명
         </p>
 
-        {canCancel && (
-          <Button
-            variant="red"
-            className="w-full mt-4"
-            disabled={isPending}
-            onClick={handleCancel}
-          >
-            {isPending ? '취소 중...' : '신청 취소'}
-          </Button>
-        )}
+        <div className="mt-4 h-[36px]">{renderButton()}</div>
       </div>
     </div>
   );
