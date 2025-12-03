@@ -50,7 +50,7 @@ export async function fetchMyAppliedList(): Promise<MyApplicationItemDto[]> {
 }
 
 // 신청 취소 API
-export async function cancelApplication(teamId: number, data: MyApplyCancelRequest): Promise<MyApplyCancelResponse> {
-  const response = await api.patch<MyApplyCancelResponse>(`/api/v1/teams/apply/${teamId}/cancel`, data);
+export async function cancelApplication(teamId: number): Promise<MyApplyCancelResponse> {
+  const response = await api.patch<MyApplyCancelResponse>(`/api/v1/teams/apply/${teamId}/cancel`);
   return response.data;
 }
