@@ -133,6 +133,22 @@ export async function fetchRecruitApplicantDetail(
   return response.data.data.applicant;
 }
 
+// 팀 지원자 수락
+export async function acceptRecruitApplicant(teamId: number, applicantUserId: number): Promise<ApiBaseResponse> {
+  const response = await api.post<ApiBaseResponse>(
+    `/api/v1/teams/my-recruit/${teamId}/applicant/${applicantUserId}/accept`,
+  );
+  return response.data;
+}
+
+// 팀 지원자 거절
+export async function rejectRecruitApplicant(teamId: number, applicantUserId: number): Promise<ApiBaseResponse> {
+  const response = await api.post<ApiBaseResponse>(
+    `/api/v1/teams/my-recruit/${teamId}/applicant/${applicantUserId}/reject`,
+  );
+  return response.data;
+}
+
 // 나의 지원 목록 조회 API
 export async function fetchMyAppliedList(): Promise<MyApplyItemDto[]> {
   const response = await api.get<MyApplyListResponse>('/api/v1/teams/my-applies');
