@@ -1,14 +1,16 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 import Button from '../../common/Button';
 import { Crown, PenLine, UsersRound } from 'lucide-react';
 import Input from '../../common/Input';
 import LayerPopup from '../../common/layerpopup/LayerPopup';
 import { useTeamDetail } from '@/hooks/team/useTeamDetail';
 import { useUpdateTeamMemo } from '@/hooks/team/useUpdateTeamMemo';
-import RemovePlayerPopup from './RemovePlayerPopup'; // 내보내기 팝업
-import { useUserProfile } from '@/hooks/mypage/useUserProfile'; // 현재 사용자 정보
+import RemovePlayerPopup from './RemovePlayerPopup';
+import { useUserProfile } from '@/hooks/mypage/useUserProfile';
+import { useRecruitApplicants } from '@/hooks/team/useRecruitApplicants';
 
 const TeamInfoPopup = ({
   open,
@@ -19,18 +21,16 @@ const TeamInfoPopup = ({
   setOpen: (value: boolean) => void;
   teamId: number | null;
 }) => {
-  // API Hooks
   const { data, isLoading, isError } = useTeamDetail(teamId);
   const { data: userProfile } = useUserProfile();
   const { mutate: updateMemo, isPending: isUpdatingMemo } = useUpdateTeamMemo();
+  const { data: applicants, isLoading: isApplicantsLoading } = useRecruitApplicants(teamId ?? null);
 
-  // State
   const [memo, setMemo] = useState<string>('');
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isKickPopupOpen, setIsKickPopupOpen] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState<{ id: number; name: string } | null>(null);
 
-  // 데이터 로드 시 메모 상태 초기화
   useEffect(() => {
     if (data?.memo) {
       setMemo(data.memo);
@@ -55,7 +55,7 @@ const TeamInfoPopup = ({
         onSuccess: () => {
           setIsEditing(false);
         },
-      }
+      },
     );
   };
 
@@ -67,7 +67,6 @@ const TeamInfoPopup = ({
   if (isLoading) return <LayerPopup open={open} setOpen={setOpen} title="팀 정보"><p>로딩 중...</p></LayerPopup>;
   if (isError || !data) return <LayerPopup open={open} setOpen={setOpen} title="팀 정보"><p>오류가 발생했습니다.</p></LayerPopup>;
 
-  // 현재 사용자가 리더인지 확인 (이름으로 비교, ID로 비교하는 것이 더 정확합니다)
   const isLeader = userProfile?.name === data.leaderName;
 
   return (
@@ -86,7 +85,6 @@ const TeamInfoPopup = ({
                   인원 {data.memberCount}/{data.maxMember}명
                 </p>
 
-                {/* 리더일 경우에만 수정 버튼 노출 */}
                 {isLeader && !isEditing && (
                   <Button
                     variant="ghost"
@@ -112,6 +110,7 @@ const TeamInfoPopup = ({
                 />
               </div>
 
+              {/* 팀원 관리 */}
               <div className="flex flex-col gap-4 text-[14px]">
                 <p className="text-base">팀원 관리</p>
 
@@ -135,7 +134,6 @@ const TeamInfoPopup = ({
                             </p>
                           </div>
 
-                          {/* 내보내기 → 수정 모드 & 내가 리더 & 다른 팀원일 때 */}
                           {isEditing && isLeader && player.name !== data.leaderName && (
                             <button
                               className="text-blue cursor-pointer"
@@ -150,6 +148,38 @@ const TeamInfoPopup = ({
                   );
                 })}
               </div>
+
+              {/* 지원자 목록 */}
+              <div className="flex flex-col gap-4 text-[14px]">
+                <p className="text-base">지원자</p>
+                {isApplicantsLoading && <p className="text-text-03 text-sm">불러오는 중...</p>}
+                {!isApplicantsLoading && (applicants?.length ?? 0) === 0 && (
+                  <p className="text-text-03 text-sm">지원자가 없습니다.</p>
+                )}
+                {!isApplicantsLoading &&
+                  applicants?.map((applicant) => (
+                    <div key={applicant.userId}>
+                      <div className="flex items-center gap-3">
+                        <div className="relative w-8 h-8 rounded-full overflow-hidden bg-gray-200 shrink-0">
+                          <Image
+                            src={applicant.profileImageUrl || '/profile-image.png'}
+                            alt={`${applicant.name} 프로필`}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="flex justify-between w-full">
+                          <div className="flex flex-col">
+                            <p className="font-medium">{applicant.name}</p>
+                            <p className="text-text-04 text-sm">
+                              {applicant.aiTags.map((tag) => `#${tag}`).join(' ')}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
             </div>
           </div>
 
@@ -161,18 +191,10 @@ const TeamInfoPopup = ({
               </Button>
             ) : (
               <>
-                <Button
-                  className="w-full"
-                  variant="secondary"
-                  disabled={true} 
-                >
-                  공모전 바로가기
+                <Button className="w-full" variant="secondary" disabled>
+                  홈페이지 지원
                 </Button>
-                <Button
-                  className="w-full"
-                  variant="primary"
-                  onClick={() => console.log('팀 채팅 이동')}
-                >
+                <Button className="w-full" variant="primary" onClick={() => console.log('팀 채팅 이동')}>
                   팀 채팅
                 </Button>
               </>
@@ -180,8 +202,7 @@ const TeamInfoPopup = ({
           </div>
         </div>
       </LayerPopup>
-      
-      {/* 팀원 내보내기 팝업 */}
+
       {selectedPlayer && (
         <RemovePlayerPopup
           open={isKickPopupOpen}
