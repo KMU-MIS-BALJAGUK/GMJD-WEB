@@ -1,4 +1,4 @@
-//src/app/team/my_recruit/components/RecruitCard.tsx
+// src/app/team/my_recruit/components/RecruitCard.tsx
 
 'use client';
 
@@ -13,22 +13,33 @@ export interface RecruitManageCardProps {
   image: string;
   totalMembers: number;
   applicants: number;
-  status: 'open' | 'closed';
+  status: '모집중' | '모집완료';
+  onClick?: () => void;
 }
 
 export default function RecruitManageCard({
+  id,
   title,
   subtitle,
   image,
   totalMembers,
   applicants,
   status,
+  onClick,
 }: RecruitManageCardProps) {
-  const isOpen = status === 'open';
+  const isOpen = status === '모집중';
 
   return (
-    <div className="border border-gray-200 rounded-lg shadow-sm hover:shadow-md bg-white relative hover:scale-105 transition duration-300">
-      {/* 이미지 */}
+    <div
+      className="border border-gray-200 rounded-lg shadow-sm hover:shadow-md bg-white relative hover:scale-105 transition duration-300 cursor-pointer"
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') onClick?.();
+      }}
+    >
+      {/* 썸네일 */}
       <div className="relative w-full h-[160px] bg-gray-100">
         <Image src={image} alt={title} fill className="object-cover rounded-t-lg" />
 
@@ -48,9 +59,13 @@ export default function RecruitManageCard({
 
       {/* 내용 */}
       <div className="p-4 relative">
-        {/* 점 3개 메뉴 */}
-        <div className="absolute top-3 right-3">
-          <MoreMenu onClose={() => console.log('모집 마감')} />
+        {/* 더보기 메뉴 */}
+        <div
+          className="absolute top-3 right-3"
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={(e) => e.stopPropagation()}
+        >
+          <MoreMenu teamId={id} status={status} />
         </div>
 
         {/* 제목 */}
