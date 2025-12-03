@@ -4,7 +4,7 @@
 import { ApiResponse } from '@/types/api';
 
 export interface MyApplicationItemDto {
-  recruitStatus: "OPEN" | "CLOSED";
+  recruitStatus?: 'OPEN' | 'CLOSED' | '모집중' | '모집완료';
   applicationId: number;
   teamId: number;
   contestImageUrl: string;
@@ -12,7 +12,8 @@ export interface MyApplicationItemDto {
   teamTitle: string;
   maxMember: number;
   memberCount: number;
-  status: 'PENDING' | 'ACCEPTED' | 'REJECTED'; // "PENDING", "ACCEPTED", "REJECTED" 등
+  requestedCount?: number;
+  status: 'PENDING' | 'ACCEPTED' | 'REJECTED' | '모집중' | '모집완료';
 }
 
 export interface MyApplicationListDataDto {

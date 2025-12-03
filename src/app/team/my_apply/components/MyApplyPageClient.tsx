@@ -17,6 +17,14 @@ export default function MyApplyPageClient() {
     setSelectedTeamId(teamId);
   };
 
+  const normalizeRecruitStatus = (
+    status: 'OPEN' | 'CLOSED' | '모집중' | '모집완료' | 'PENDING' | 'ACCEPTED' | 'REJECTED' | undefined,
+  ): 'OPEN' | 'CLOSED' | '모집중' | '모집완료' => {
+    if (status === 'OPEN' || status === '모집중') return '모집중';
+    if (status === 'CLOSED' || status === '모집완료') return '모집완료';
+    return '모집완료';
+  };
+
   return (
     <>
       <div className="max-w-[1200px] mx-auto py-10 px-4 md:px-6 lg:px-8">
@@ -65,7 +73,8 @@ export default function MyApplyPageClient() {
               memberCount={item.memberCount}
               maxMember={item.maxMember}
               status={item.status}
-              recruitStatus={item.recruitStatus} // ★ 서버 값 그대로 사용
+              recruitStatus={normalizeRecruitStatus(item.recruitStatus ?? (item.status as any))}
+              requestedCount={item.requestedCount ?? 0}
               onCardClick={handleCardClick}
             />            ))}
           </div>
