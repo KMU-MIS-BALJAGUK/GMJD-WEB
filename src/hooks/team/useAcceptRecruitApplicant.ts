@@ -24,9 +24,9 @@ export function useAcceptRecruitApplicant() {
         queryFn: fetchMyRecruitList,
       });
 
-      const team = latestTeams.find((item) => item.teamId === teamId);
-      const isOpen = team?.status === 'OPEN' || team?.status === '모집중';
-      const isFull = team ? team.memberCount >= team.maxMember : false;
+        const team = latestTeams.find((item) => item.teamId === teamId);
+        const isOpen = team?.status === '모집중';
+        const isFull = team ? team.memberCount >= team.maxMember : false;
 
       if (team && isOpen && isFull) {
         await closeRecruitTeam(teamId);

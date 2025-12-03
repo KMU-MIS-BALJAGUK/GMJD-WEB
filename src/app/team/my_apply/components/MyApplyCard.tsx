@@ -13,8 +13,7 @@ export interface MyApplyCardProps {
   image: string;
   memberCount: number; // 모집된 인원
   maxMember: number; // 모집 목표 인원
-  status: 'PENDING' | 'ACCEPTED' | 'REJECTED';
-  recruitStatus: 'OPEN' | 'CLOSED' | '모집중' | '모집완료';
+  recruitStatus: '모집중' | '모집완료';
   requestedCount: number;
   onCardClick: (teamId: number) => void;
 }
@@ -26,13 +25,12 @@ export default function MyApplyCard({
   image,
   memberCount,
   maxMember,
-  status,
   recruitStatus,
   requestedCount,
   onCardClick,
 }: MyApplyCardProps) {
   const { mutate: cancelApplication, isPending: isCancelling } = useCancelApplication();
-  const isRecruitOpen = recruitStatus === 'OPEN' || recruitStatus === '모집중';
+  const isRecruitOpen = recruitStatus === '모집중';
 
   const handleCancel = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -40,20 +38,16 @@ export default function MyApplyCard({
   };
 
   const renderActionButton = () => {
-    if (isRecruitOpen) {
-      return (
-        <Button
-          className="w-full mt-4 bg-[#fdeaea] text-[#d65c5c] hover:bg-[#f7dada]"
-          variant="ghost"
-          disabled={isCancelling}
-          onClick={handleCancel}
-        >
-          {isCancelling ? '취소 중...' : '신청 취소'}
-        </Button>
-      );
-    }
-
-    return (
+    return isRecruitOpen ? (
+      <Button
+        className="w-full mt-4 bg-[#fdeaea] text-[#d65c5c] hover:bg-[#f7dada]"
+        variant="ghost"
+        disabled={isCancelling}
+        onClick={handleCancel}
+      >
+        {isCancelling ? '취소 중...' : '신청 취소'}
+      </Button>
+    ) : (
       <Button
         className="w-full mt-4 bg-gray-200 text-gray-700 hover:bg-gray-300 cursor-pointer border border-gray-300"
         variant="ghost"

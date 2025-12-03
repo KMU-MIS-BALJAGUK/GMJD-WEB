@@ -18,17 +18,8 @@ interface PopupTeamData {
   applyNumber: number;
 }
 
-const normalizeStatus = (
-  status: 'OPEN' | 'CLOSED' | '모집중' | '모집완료',
-): '모집중' | '모집완료' => {
-  switch (status) {
-    case 'OPEN':
-    case '모집중':
-      return '모집중';
-    default:
-      return '모집완료';
-  }
-};
+const normalizeStatus = (status: '모집중' | '모집완료'): '모집중' | '모집완료' =>
+  status === '모집중' ? '모집중' : '모집완료';
 
 export default function MyRecruitPageClient() {
   const { data: recruitTeams, isLoading, isError } = useMyRecruitTeams();

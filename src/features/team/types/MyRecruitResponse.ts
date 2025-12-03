@@ -6,7 +6,7 @@ export interface MyRecruitItemDto {
   maxMember: number;
   memberCount: number;
   requestedCount: number;
-  status: 'OPEN' | 'CLOSED' | '모집중' | '모집완료';
+  status: '모집중' | '모집완료';
 }
 
 export interface MyRecruitListDataDto {

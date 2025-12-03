@@ -18,18 +18,12 @@ export default function MyApplyPageClient() {
   };
 
   const normalizeRecruitStatus = (
-    status: 'OPEN' | 'CLOSED' | '모집중' | '모집완료' | string | undefined,
+    status: '모집중' | '모집완료' | string | undefined,
     fallbackStatus?: string,
   ): '모집중' | '모집완료' => {
     const primary = status ?? fallbackStatus;
-    if (primary === 'OPEN' || primary === '모집중') return '모집중';
-    if (primary === 'CLOSED' || primary === '모집완료') return '모집완료';
+    if (primary === '모집중') return '모집중';
     return '모집완료';
-  };
-
-  const normalizeApplicationStatus = (status: unknown): 'PENDING' | 'ACCEPTED' | 'REJECTED' => {
-    if (status === 'ACCEPTED' || status === 'REJECTED') return status;
-    return 'PENDING';
   };
 
   return (
@@ -67,7 +61,6 @@ export default function MyApplyPageClient() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {myAppliedList.map((item) => {
               const recruitStatus = normalizeRecruitStatus(item.recruitStatus as any, item.status as any);
-              const applicationStatus = normalizeApplicationStatus(item.status);
 
               return (
                 <MyApplyCard
@@ -78,7 +71,6 @@ export default function MyApplyPageClient() {
                   image={item.contestImageUrl}
                   memberCount={item.memberCount}
                   maxMember={item.maxMember}
-                  status={applicationStatus}
                   recruitStatus={recruitStatus}
                   requestedCount={item.requestedCount ?? 0}
                   onCardClick={handleCardClick}
