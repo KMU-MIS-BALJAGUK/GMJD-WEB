@@ -129,7 +129,7 @@ const MyRecruitPopup = ({
                         </div>
 
                         <button
-                          className="p-1"
+                          className="p-1 cursor-pointer"
                           onClick={() => handleApplicantClick(player)}
                           aria-label={`${player.name} 지원자 정보 보기`}
                         >

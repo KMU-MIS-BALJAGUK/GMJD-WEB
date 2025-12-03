@@ -30,7 +30,7 @@ export default function MoreMenu({ teamId, status }: MoreMenuProps) {
   return (
     <div ref={menuRef} className="relative">
       {/* 점 3개 버튼 */}
-      <button onClick={() => setOpen(!open)} className="p-2 hover:bg-gray-100 rounded-full">
+      <button onClick={() => setOpen(!open)} className="p-2 hover:bg-gray-100 rounded-full cursor-pointer">
         <span className="text-lg">⋮</span>
       </button>
 
@@ -41,7 +41,7 @@ export default function MoreMenu({ teamId, status }: MoreMenuProps) {
             <button
               onClick={() => closeRecruit(teamId, { onSuccess: () => setOpen(false) })}
               disabled={isPending}
-              className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 disabled:opacity-60"
+              className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 disabled:opacity-60 cursor-pointer"
             >
               {isPending ? '마감중...' : '마감하기'}
             </button>
