@@ -24,10 +24,7 @@ export default function MyRecruitPageClient() {
   const [selectedTeam, setSelectedTeam] = useState<PopupTeamData | null>(null);
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
 
-  // 한글 상태값을 UI 상태값으로 변환
-  const convertStatus = (
-    status: 'OPEN' | 'CLOSED' | '모집중' | '모집완료',
-  ): 'open' | 'closed' => {
+  const convertStatus = (status: 'OPEN' | 'CLOSED' | '모집중' | '모집완료'): 'open' | 'closed' => {
     if (status === 'OPEN' || status === '모집중') return 'open';
     if (status === 'CLOSED' || status === '모집완료') return 'closed';
     return 'closed';
@@ -44,10 +41,9 @@ export default function MyRecruitPageClient() {
     setPopupOpen(true);
   };
 
-  // 정상 데이터 렌더링
   return (
     <div className="max-w-[1200px] mx-auto py-10 px-4 md:px-6 lg:px-8">
-      <h1 className="text-2xl font-bold mb-6">팀 관리</h1>
+      <h1 className="text-2xl font-bold mb-6">내 모집 관리</h1>
 
       <nav className="flex gap-6 mb-8 border-b pb-2 text-sm">
         <Link href="/team" className="text-gray-600 hover:text-black">
@@ -63,7 +59,7 @@ export default function MyRecruitPageClient() {
       {isLoading && <Loading />}
 
       {/* 에러 */}
-      {isError && <Error message="데이터를 불러오는 중 오류가 발생했습니다." />}
+      {isError && <Error message="팀 정보를 불러오는 중 오류가 발생했습니다." />}
 
       {/* 빈 상태 */}
       {!isLoading && recruitTeams?.length === 0 && (

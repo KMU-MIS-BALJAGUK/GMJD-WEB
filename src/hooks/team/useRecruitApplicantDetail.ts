@@ -6,7 +6,7 @@ import { fetchRecruitApplicantDetail } from '@/lib/api/team/team';
 import { RecruitApplicantDetailDto } from '@/features/team/types/MyRecruitApplicantDetailResponse';
 
 export function useRecruitApplicantDetail(teamId: number | null, applicantUserId: number | null) {
-  return useQuery<RecruitApplicantDetailDto>({
+  return useQuery<RecruitApplicantDetailDto, unknown>({
     queryKey: ['recruitApplicantDetail', teamId, applicantUserId],
     queryFn: () => fetchRecruitApplicantDetail(teamId as number, applicantUserId as number),
     enabled: !!teamId && !!applicantUserId,
