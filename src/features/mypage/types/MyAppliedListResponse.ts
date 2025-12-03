@@ -13,7 +13,7 @@ export interface MyApplicationItemDto {
   maxMember: number;
   memberCount: number;
   requestedCount?: number;
-  status: 'PENDING' | 'ACCEPTED' | 'REJECTED' | '모집중' | '모집완료';
+  status: 'PENDING' | 'ACCEPTED' | 'REJECTED';
 }
 
 export interface MyApplicationListDataDto {

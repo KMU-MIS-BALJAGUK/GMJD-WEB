@@ -18,8 +18,8 @@ export default function MyApplyPageClient() {
   };
 
   const normalizeRecruitStatus = (
-    status: 'OPEN' | 'CLOSED' | '모집중' | '모집완료' | 'PENDING' | 'ACCEPTED' | 'REJECTED' | undefined,
-  ): 'OPEN' | 'CLOSED' | '모집중' | '모집완료' => {
+    status: 'OPEN' | 'CLOSED' | '모집중' | '모집완료' | undefined,
+  ): '모집중' | '모집완료' => {
     if (status === 'OPEN' || status === '모집중') return '모집중';
     if (status === 'CLOSED' || status === '모집완료') return '모집완료';
     return '모집완료';
@@ -73,7 +73,7 @@ export default function MyApplyPageClient() {
               memberCount={item.memberCount}
               maxMember={item.maxMember}
               status={item.status}
-              recruitStatus={normalizeRecruitStatus(item.recruitStatus ?? (item.status as any))}
+              recruitStatus={normalizeRecruitStatus(item.recruitStatus)}
               requestedCount={item.requestedCount ?? 0}
               onCardClick={handleCardClick}
             />            ))}
