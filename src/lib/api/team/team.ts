@@ -130,7 +130,23 @@ export async function fetchRecruitApplicantDetail(
   const response = await api.get<RecruitApplicantDetailResponse>(
     `/api/v1/teams/my-recruit/${teamId}/applicant/${applicantUserId}`,
   );
-  return response.data.data.applicant;
+  return response.data.data;
+}
+
+// 팀 지원자 수락
+export async function acceptRecruitApplicant(teamId: number, applicantUserId: number): Promise<ApiBaseResponse> {
+  const response = await api.post<ApiBaseResponse>(
+    `/api/v1/teams/my-recruit/${teamId}/applicant/${applicantUserId}/accept`,
+  );
+  return response.data;
+}
+
+// 팀 지원자 거절
+export async function rejectRecruitApplicant(teamId: number, applicantUserId: number): Promise<ApiBaseResponse> {
+  const response = await api.post<ApiBaseResponse>(
+    `/api/v1/teams/my-recruit/${teamId}/applicant/${applicantUserId}/reject`,
+  );
+  return response.data;
 }
 
 // 나의 지원 목록 조회 API

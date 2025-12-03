@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import Image from 'next/image';
 import { ChevronRight, UsersRound } from 'lucide-react';
 import LayerPopup from '../../common/layerpopup/LayerPopup';
 import Tag from '../../common/Tag';
@@ -6,13 +7,19 @@ import Button from '../../common/Button';
 import PlayerInfoPopup, { ApplicantDetail } from './PlayerInfoPopup';
 import { useRecruitApplicants } from '@/hooks/team/useRecruitApplicants';
 
-type ApplicantSummary = { userId: number; name: string; summary: string[]; detail?: ApplicantDetail };
+type ApplicantSummary = {
+  userId: number;
+  name: string;
+  summary: string[];
+  profileImageUrl?: string;
+  detail?: ApplicantDetail;
+};
 
 interface MyRecruitPopupProps {
   open: boolean;
   setOpen: (value: boolean) => void;
   title?: string;
-  status?: 'open' | 'closed';
+  status?: '모집중' | '모집완료';
   recruitMember?: number;
   applyNumber?: number;
   applicants?: ApplicantSummary[];
@@ -20,8 +27,8 @@ interface MyRecruitPopupProps {
 }
 
 const fallbackData = {
-  title: 'NH농협카드 플레이&스티커 디자인 콘테스트',
-  status: 'open' as const,
+  title: '모집 공고 제목',
+  status: '모집중' as const,
   recruitMember: 2,
   applyNumber: 4,
 };
@@ -57,7 +64,10 @@ const MyRecruitPopup = ({
         userId: item.userId,
         name: item.name,
         summary: item.aiTags,
+        profileImageUrl: item.profileImageUrl,
         detail: {
+          userId: item.userId,
+          profileImageUrl: item.profileImageUrl,
           name: item.name,
           summary: item.aiTags,
           level: 0,
@@ -84,17 +94,17 @@ const MyRecruitPopup = ({
 
   return (
     <>
-      <LayerPopup open={open} setOpen={handleOpenChange} title="팀 정보">
+      <LayerPopup open={open} setOpen={handleOpenChange} title="모집 정보">
         <div>
           <div className="flex flex-col px-2 h-auto pb-1 max-h-[600px] overflow-y-auto scrollbar">
             <div className="flex flex-col gap-3 pb-5 border-b">
               <div>
                 <Tag
-                  variant={resolvedData.status === 'open' ? 'green' : 'gray'}
+                  variant={resolvedData.status === '모집중' ? 'green' : 'gray'}
                   shape="square"
                   className="mb-2"
                 >
-                  {resolvedData.status === 'open' ? '모집중' : '모집완료'}
+                  {resolvedData.status}
                 </Tag>
                 <p className="text-text-01 font-semibold text-xl mb-1">{resolvedData.title}</p>
               </div>
@@ -116,10 +126,17 @@ const MyRecruitPopup = ({
                   <p className="text-text-03 text-sm">지원자가 없습니다.</p>
                 )}
 
-                {resolvedData.applyPlayers.map((player, index) => (
-                  <div key={index}>
+                {resolvedData.applyPlayers.map((player) => (
+                  <div key={player.userId}>
                     <div className="flex items-center gap-3">
-                      <div className="relative w-8 h-8 rounded-full bg-amber-300 shrink-0" />
+                      <div className="relative w-8 h-8 rounded-full bg-amber-300 shrink-0 overflow-hidden">
+                        <Image
+                          src={player.profileImageUrl || '/profile-image.png'}
+                          alt={`${player.name} 프로필`}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
                       <div className="flex justify-between w-full">
                         <div className="flex max-sm:flex-col sm:gap-1.5">
                           <p>{player.name}</p>
@@ -129,7 +146,7 @@ const MyRecruitPopup = ({
                         </div>
 
                         <button
-                          className="p-1"
+                          className="p-1 cursor-pointer"
                           onClick={() => handleApplicantClick(player)}
                           aria-label={`${player.name} 지원자 정보 보기`}
                         >

@@ -1,4 +1,4 @@
-//src/app/team/my_recruit/components/RecruitCard.tsx
+// src/app/team/my_recruit/components/RecruitCard.tsx
 
 'use client';
 
@@ -13,7 +13,7 @@ export interface RecruitManageCardProps {
   image: string;
   totalMembers: number;
   applicants: number;
-  status: 'open' | 'closed';
+  status: '모집중' | '모집완료';
   onClick?: () => void;
 }
 
@@ -27,7 +27,7 @@ export default function RecruitManageCard({
   status,
   onClick,
 }: RecruitManageCardProps) {
-  const isOpen = status === 'open';
+  const isOpen = status === '모집중';
 
   return (
     <div
@@ -39,7 +39,7 @@ export default function RecruitManageCard({
         if (e.key === 'Enter' || e.key === ' ') onClick?.();
       }}
     >
-      {/* 이미지 */}
+      {/* 썸네일 */}
       <div className="relative w-full h-[160px] bg-gray-100">
         <Image src={image} alt={title} fill className="object-cover rounded-t-lg" />
 
@@ -59,7 +59,7 @@ export default function RecruitManageCard({
 
       {/* 내용 */}
       <div className="p-4 relative">
-        {/* 점 3개 메뉴 */}
+        {/* 더보기 메뉴 */}
         <div
           className="absolute top-3 right-3"
           onClick={(e) => e.stopPropagation()}
