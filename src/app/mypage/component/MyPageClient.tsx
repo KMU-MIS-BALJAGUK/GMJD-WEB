@@ -106,9 +106,11 @@ export default function MyPageClient({ initialUser }: MyPageClientProps) {
     return <Error message="프로필 정보를 불러오는 중 오류가 발생했습니다." />;
 
   return (
-    <div className="h-[calc(100vh-68px-80px)] bg-white flex justify-center items-center py-16">
+    <div className="min-h-[calc(100vh-68px-80px)] bg-white flex justify-center py-12 overflow-y-auto scrollbar">
       <section className="w-full max-w-xl mx-auto px-4">
-        <h2 className="text-xl font-bold mb-4 text-text-01 max-sm:hidden">마이페이지</h2>
+        <h2 className="text-xl font-bold mb-4 text-text-01 max-sm:hidden flex-shrink-0">
+          마이페이지
+        </h2>
 
         <div className="bg-white border border-border-2 rounded-[8px] p-6 shadow-sm space-y-6">
           <div className="flex flex-col items-center gap-2">
