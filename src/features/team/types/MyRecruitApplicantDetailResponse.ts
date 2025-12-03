@@ -8,12 +8,8 @@ export interface RecruitApplicantDetailDto {
   qaList: { question: string; answer: string }[];
 }
 
-export interface RecruitApplicantDetailDataDto {
-  applicant: RecruitApplicantDetailDto;
-}
-
 export interface RecruitApplicantDetailResponse {
   code: number;
   msg: string;
-  data: RecruitApplicantDetailDataDto;
+  data: RecruitApplicantDetailDto;
 }

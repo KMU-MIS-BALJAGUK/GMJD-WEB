@@ -130,7 +130,7 @@ export async function fetchRecruitApplicantDetail(
   const response = await api.get<RecruitApplicantDetailResponse>(
     `/api/v1/teams/my-recruit/${teamId}/applicant/${applicantUserId}`,
   );
-  return response.data.data.applicant;
+  return response.data.data;
 }
 
 // 팀 지원자 수락
