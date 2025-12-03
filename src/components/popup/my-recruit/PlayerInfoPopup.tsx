@@ -66,6 +66,7 @@ const PlayerInfoPopup = ({ open, setOpen, applicant, teamId, applicantUserId }: 
             alt="Profile Image"
             width={64}
             height={64}
+            className="rounded-full object-cover"
           />
 
           <div className="gap-1.5 flex flex-col">

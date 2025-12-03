@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import Image from 'next/image';
 import { ChevronRight, UsersRound } from 'lucide-react';
 import LayerPopup from '../../common/layerpopup/LayerPopup';
 import Tag from '../../common/Tag';
@@ -6,7 +7,13 @@ import Button from '../../common/Button';
 import PlayerInfoPopup, { ApplicantDetail } from './PlayerInfoPopup';
 import { useRecruitApplicants } from '@/hooks/team/useRecruitApplicants';
 
-type ApplicantSummary = { userId: number; name: string; summary: string[]; detail?: ApplicantDetail };
+type ApplicantSummary = {
+  userId: number;
+  name: string;
+  summary: string[];
+  profileImageUrl?: string;
+  detail?: ApplicantDetail;
+};
 
 interface MyRecruitPopupProps {
   open: boolean;
@@ -57,7 +64,10 @@ const MyRecruitPopup = ({
         userId: item.userId,
         name: item.name,
         summary: item.aiTags,
+        profileImageUrl: item.profileImageUrl,
         detail: {
+          userId: item.userId,
+          profileImageUrl: item.profileImageUrl,
           name: item.name,
           summary: item.aiTags,
           level: 0,
@@ -119,7 +129,14 @@ const MyRecruitPopup = ({
                 {resolvedData.applyPlayers.map((player, index) => (
                   <div key={index}>
                     <div className="flex items-center gap-3">
-                      <div className="relative w-8 h-8 rounded-full bg-amber-300 shrink-0" />
+                      <div className="relative w-8 h-8 rounded-full bg-amber-300 shrink-0 overflow-hidden">
+                        <Image
+                          src={player.profileImageUrl || '/profile-image.png'}
+                          alt={`${player.name} 프로필`}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
                       <div className="flex justify-between w-full">
                         <div className="flex max-sm:flex-col sm:gap-1.5">
                           <p>{player.name}</p>
