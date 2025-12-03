@@ -6,9 +6,13 @@ import LayerPopup from '../../common/layerpopup/LayerPopup';
 import { useMutation } from '@tanstack/react-query';
 import type { TeamCreateRequestDto } from '@/features/team/types/TeamCreateRequest';
 import type { TeamCreateResponseDto } from '@/features/team/types/TeamCreateResponse';
+import { useQueryClient } from '@tanstack/react-query';
 
 // 팀 생성 API
 import { createTeam } from '@/lib/api/team/team';
+// 토스트 훅
+import { useToast } from '@/components/ui/use-toast';
+import axios from 'axios';
 
 //  AI 추천 질문 API는 아직 403이라 나중에 연동
 // import { fetchAiQuestions } from '@/lib/api/team/team';
@@ -26,6 +30,9 @@ interface MakeTeamPopupProps {
 }
 
 const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
+  const queryClient = useQueryClient();
+
+  const { toast } = useToast(); //  토스트 훅
 
   // 1. 상태 관리
   const [title, setTitle] = useState<string>('');
@@ -38,19 +45,57 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
   const questionSuggestions = DEFAULT_AI_QUESTIONS;
 
   // 3. 팀 생성 mutation
-  const {
-    mutate: createTeamMutate,
-    isPending,
-  } = useMutation<TeamCreateResponseDto, Error, TeamCreateRequestDto>({
+  const { mutate: createTeamMutate, isPending } = useMutation<
+    TeamCreateResponseDto,
+    Error,
+    TeamCreateRequestDto
+  >({
     mutationFn: (body) => createTeam(contestId, body),
-    onSuccess: () => {
-      // TODO: 팀 목록 refetch (React Query 쓰면 invalidateQueries 등)
+    onSuccess: async () => {
+      // 1) 팀 목록 쿼리 무효화 → 자동 refetch
+      await queryClient.invalidateQueries({
+        queryKey: ['contestTeams', contestId],
+      });
+
+      //  2) 폼 리셋 + 모달 닫기
       reset();
       setOpen(false);
+
+      //  3) 팀 생성 성공 토스트
+      toast({
+        variant: 'default',
+        title: '팀이 생성되었어요 ✅',
+        description: '팀원 모집 글이 등록되었습니다.',
+      });
     },
     onError: (error) => {
       console.error('팀 생성 실패:', error);
-      // TODO: 에러 토스트 띄우기 등
+
+      if (axios.isAxiosError(error)) {
+        // 이제 error는 AxiosError 타입으로 추론됨
+        const errorCode = error.response?.data?.code;
+
+        if (errorCode === 40009) {
+          toast({
+            variant: 'destructive',
+            title: '팀 생성에 실패했어요 🥲',
+            description: '해당 공모전에 이미 모집 중인 팀이 존재합니다.',
+          });
+        } else {
+          toast({
+            variant: 'destructive',
+            title: '팀 생성에 실패했어요 🥲',
+            description: '잠시 후 다시 시도해주세요.',
+          });
+        }
+      } else {
+        // AxiosError가 아닌 다른 에러
+        toast({
+          variant: 'destructive',
+          title: '팀 생성에 실패했어요 🥲',
+          description: '잠시 후 다시 시도해주세요.',
+        });
+      }
     },
   });
 
@@ -154,9 +199,7 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
               placeholder="내용을 입력하세요. ex) 팀 소개, 모집 역할, 필요 스킬"
               variant="textArea"
               value={content}
-              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                setContent(e.target.value)
-              }
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setContent(e.target.value)}
             />
           </div>
 
