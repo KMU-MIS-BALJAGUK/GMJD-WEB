@@ -4,6 +4,7 @@
 import { ApiResponse } from '@/types/api';
 
 export interface MyApplicationItemDto {
+  recruitStatus: "OPEN" | "CLOSED";
   applicationId: number;
   teamId: number;
   contestImageUrl: string;
