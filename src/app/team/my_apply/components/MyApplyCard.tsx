@@ -14,6 +14,7 @@ export interface MyApplyCardProps {
   totalMembers: number;
   status: 'PENDING' | 'ACCEPTED' | 'REJECTED';
   recruitStatus: 'OPEN' | 'CLOSED';
+  onCardClick: (teamId: number) => void; // 카드 클릭 이벤트 핸들러
 }
 
 export default function MyApplyCard({
@@ -24,18 +25,23 @@ export default function MyApplyCard({
   totalMembers,
   status,
   recruitStatus,
+  onCardClick,
 }: MyApplyCardProps) {
   const { mutate: cancelMutation, isPending } = useCancelApplication();
 
   const canCancel = status === 'PENDING';
   const isRecruitOpen = recruitStatus === 'OPEN';
 
-  const handleCancel = () => {
+  const handleCancel = (e: React.MouseEvent) => {
+    e.stopPropagation(); // 이벤트 버블링 방지
     cancelMutation({ teamId });
   };
 
   return (
-    <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md bg-white hover:scale-105 transition duration-300">
+    <div
+      className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md bg-white hover:scale-105 transition duration-300 cursor-pointer"
+      onClick={() => onCardClick(teamId)}
+    >
       <div className="relative w-full h-[160px] bg-gray-100">
         <NextImage src={image} alt={title} fill className="object-cover rounded-t-lg" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" />
 

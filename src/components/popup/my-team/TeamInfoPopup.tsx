@@ -8,6 +8,7 @@ import LayerPopup from '../../common/layerpopup/LayerPopup';
 import { useTeamDetail } from '@/hooks/team/useTeamDetail';
 import { useUpdateTeamMemo } from '@/hooks/team/useUpdateTeamMemo';
 import RemovePlayerPopup from './RemovePlayerPopup'; // 내보내기 팝업
+import { useUserProfile } from '@/hooks/mypage/useUserProfile'; // 현재 사용자 정보
 
 const TeamInfoPopup = ({
   open,
@@ -20,6 +21,7 @@ const TeamInfoPopup = ({
 }) => {
   // API Hooks
   const { data, isLoading, isError } = useTeamDetail(teamId);
+  const { data: userProfile } = useUserProfile();
   const { mutate: updateMemo, isPending: isUpdatingMemo } = useUpdateTeamMemo();
 
   // State
@@ -57,14 +59,16 @@ const TeamInfoPopup = ({
     );
   };
 
-  // TODO: API 응답에 'isLeader'와 멤버별 'isMe' 정보가 필요합니다.
-  // const handleOpenKickPopup = (player: { id: number; name: string }) => {
-  //   setSelectedPlayer(player);
-  //   setIsKickPopupOpen(true);
-  // };
+  const handleOpenKickPopup = (player: { id: number; name: string }) => {
+    setSelectedPlayer(player);
+    setIsKickPopupOpen(true);
+  };
 
   if (isLoading) return <LayerPopup open={open} setOpen={setOpen} title="팀 정보"><p>로딩 중...</p></LayerPopup>;
   if (isError || !data) return <LayerPopup open={open} setOpen={setOpen} title="팀 정보"><p>오류가 발생했습니다.</p></LayerPopup>;
+
+  // 현재 사용자가 리더인지 확인 (이름으로 비교, ID로 비교하는 것이 더 정확합니다)
+  const isLeader = userProfile?.name === data.leaderName;
 
   return (
     <>
@@ -74,7 +78,6 @@ const TeamInfoPopup = ({
             <div className="flex flex-col gap-3 pb-5 border-b">
               <div>
                 <p className="text-text-01 font-semibold text-xl mb-1">{data.title}</p>
-                {/* 'contestOrganizationName' 필드가 API 응답에 없어 제거되었습니다. */}
               </div>
 
               <div className="flex justify-between h-9 items-end">
@@ -83,7 +86,8 @@ const TeamInfoPopup = ({
                   인원 {data.memberCount}/{data.maxMember}명
                 </p>
 
-                {!isEditing && (
+                {/* 리더일 경우에만 수정 버튼 노출 */}
+                {isLeader && !isEditing && (
                   <Button
                     variant="ghost"
                     className="px-2 h-9 text-text-02 flex gap-1"
@@ -111,30 +115,47 @@ const TeamInfoPopup = ({
               <div className="flex flex-col gap-4 text-[14px]">
                 <p className="text-base">팀원 관리</p>
 
-                {(data?.members ?? []).map((player) => (
-                  <div key={player.memberId}>
-                    <div className="flex items-center gap-3">
-                      <div className="relative w-8 h-8 rounded-full bg-amber-300 shrink-0">
-                        {/* TODO: API 응답에 player.role 정보가 필요합니다. */}
-                      </div>
-                      <div className="flex justify-between w-full">
-                        <div className="flex gap-1.5">
-                          <p>{player.name}</p>
-                           {/* TODO: API 응답에 player.isMe 정보가 필요합니다. */}
+                {(data?.members ?? []).map((player) => {
+                  const playerRole = player.name === data.leaderName ? '팀장' : '팀원';
+                  return (
+                    <div key={player.memberId}>
+                      <div className="flex items-center gap-3">
+                        <div className="relative w-8 h-8 rounded-full bg-amber-300 shrink-0">
+                          {playerRole === '팀장' && (
+                            <div className="p-[1px] bg-blue absolute right-0 bottom-0 rounded-full">
+                              <Crown size={11} className="fill-white text-blue" />
+                            </div>
+                          )}
                         </div>
-                        
-                        {/* TODO: API 응답에 isLeader, player.isMe 정보가 없어 내보내기 버튼을 비활성화합니다. */}
+                        <div className="flex justify-between w-full">
+                          <div className="flex gap-1.5">
+                            <p>{player.name}</p>
+                            <p className="text-text-04">
+                              {playerRole} {userProfile?.name === player.name ? '/ 나' : ''}
+                            </p>
+                          </div>
+
+                          {/* 내보내기 → 수정 모드 & 내가 리더 & 다른 팀원일 때 */}
+                          {isEditing && isLeader && player.name !== data.leaderName && (
+                            <button
+                              className="text-blue cursor-pointer"
+                              onClick={() => handleOpenKickPopup({ id: player.memberId, name: player.name })}
+                            >
+                              내보내기
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>
 
           {/* 하단 버튼 */}
           <div className="pt-5 flex gap-3">
-            {isEditing ? (
+            {isEditing && isLeader ? (
               <Button onClick={handleSave} className="w-full" variant="primary" disabled={isUpdatingMemo}>
                 {isUpdatingMemo ? '저장 중...' : '수정 완료'}
               </Button>
@@ -143,14 +164,14 @@ const TeamInfoPopup = ({
                 <Button
                   className="w-full"
                   variant="secondary"
-                  disabled={true} // 'contestUrl' 정보가 API에 없어 비활성화
+                  disabled={true} 
                 >
                   공모전 바로가기
                 </Button>
                 <Button
                   className="w-full"
                   variant="primary"
-                  onClick={() => console.log('팀 채팅 이동')} // 'chatUrl' 정보가 API에 없어 console.log로 대체
+                  onClick={() => console.log('팀 채팅 이동')}
                 >
                   팀 채팅
                 </Button>
@@ -161,7 +182,6 @@ const TeamInfoPopup = ({
       </LayerPopup>
       
       {/* 팀원 내보내기 팝업 */}
-      {/* 로직 비활성화
       {selectedPlayer && (
         <RemovePlayerPopup
           open={isKickPopupOpen}
@@ -171,7 +191,6 @@ const TeamInfoPopup = ({
           memberId={selectedPlayer.id}
         />
       )}
-      */}
     </>
   );
 };
