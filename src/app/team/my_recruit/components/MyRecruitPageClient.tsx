@@ -85,6 +85,7 @@ export default function MyRecruitPageClient() {
               image={team.contestImageUrl}
               totalMembers={team.maxMember}
               applicants={team.requestedCount}
+              recruitedCount={team.memberCount}
               status={normalizeStatus(team.status)}
               onClick={() => handleCardClick(team)}
             />

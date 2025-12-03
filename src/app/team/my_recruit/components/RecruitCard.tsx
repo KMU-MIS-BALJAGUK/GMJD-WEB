@@ -13,6 +13,7 @@ export interface RecruitManageCardProps {
   image: string;
   totalMembers: number;
   applicants: number;
+  recruitedCount: number;
   status: '모집중' | '모집완료';
   onClick?: () => void;
 }
@@ -24,6 +25,7 @@ export default function RecruitManageCard({
   image,
   totalMembers,
   applicants,
+  recruitedCount,
   status,
   onClick,
 }: RecruitManageCardProps) {
@@ -76,8 +78,9 @@ export default function RecruitManageCard({
 
         {/* 모집 현황 */}
         <p className="flex items-center gap-1 text-sm mt-2">
-          <UsersRound size={15} /> 모집 인원 {totalMembers}명{' '}
-          <span className="text-blue-500 font-semibold ml-1">/ 지원 {applicants}명</span>
+          <UsersRound size={15} /> 모집 인원 {totalMembers}명 /
+          <span className="text-blue-500 font-semibold ml-1">지원 {applicants}명</span>
+          <span className="text-blue-500 font-semibold ml-1">/ 영입 {recruitedCount}명</span>
         </p>
       </div>
     </div>
