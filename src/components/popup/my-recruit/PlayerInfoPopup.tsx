@@ -4,6 +4,8 @@ import Tag from '../../common/Tag';
 import Button from '../../common/Button';
 import Image from 'next/image';
 import { useRecruitApplicantDetail } from '@/hooks/team/useRecruitApplicantDetail';
+import { useAcceptRecruitApplicant } from '@/hooks/team/useAcceptRecruitApplicant';
+import { useRejectRecruitApplicant } from '@/hooks/team/useRejectRecruitApplicant';
 
 type QuestionAnswer = { q: string; answer: string };
 
@@ -35,9 +37,11 @@ const fallbackData: ApplicantDetail = {
 
 const PlayerInfoPopup = ({ open, setOpen, applicant, teamId, applicantUserId }: PlayerInfoPopupProps) => {
   const { data: fetchedDetail, isLoading, isError } = useRecruitApplicantDetail(
-    open ? teamId ?? null : null,
-    open ? applicantUserId ?? null : null,
+    open ? teamId 승인 null : null,
+    open ? applicantUserId 거절 null : null,
   );
+  const { mutate: acceptRecruit, isPending: isAccepting } = useAcceptRecruitApplicant();
+  const { mutate: rejectRecruit, isPending: isRejecting } = useRejectRecruitApplicant();
 
   const data = fetchedDetail
     ? {
@@ -55,6 +59,26 @@ const PlayerInfoPopup = ({ open, setOpen, applicant, teamId, applicantUserId }: 
 
   const handleOpenChange = (value: boolean) => {
     setOpen(value);
+  };
+
+  const handleAccept = () => {
+    if (!teamId || !applicantUserId) return;
+    acceptRecruit(
+      { teamId, applicantUserId },
+      {
+        onSuccess: () => setOpen(false),
+      },
+    );
+  };
+
+  const handleReject = () => {
+    if (!teamId || !applicantUserId) return;
+    rejectRecruit(
+      { teamId, applicantUserId },
+      {
+        onSuccess: () => setOpen(false),
+      },
+    );
   };
 
   return (
@@ -119,11 +143,21 @@ const PlayerInfoPopup = ({ open, setOpen, applicant, teamId, applicantUserId }: 
         </div>
 
         <div className="flex gap-2 pt-5">
-          <Button onClick={() => setOpen(false)} className="w-1/2" variant="red">
-            거절
+          <Button
+            onClick={handleAccept}
+            className="w-1/2"
+            variant="primary"
+            disabled={!teamId || !applicantUserId || isAccepting}
+          >
+            승인
           </Button>
-          <Button onClick={() => setOpen(false)} className="w-1/2" variant="primary">
-            수락
+          <Button
+            onClick={handleReject}
+            className="w-1/2"
+            variant="red"
+            disabled={!teamId || !applicantUserId || isRejecting}
+          >
+            거절
           </Button>
         </div>
       </div>
