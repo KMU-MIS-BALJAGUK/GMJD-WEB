@@ -63,7 +63,7 @@ export default function MyApplyCard({
         );
       case 'ACCEPTED':
         return (
-          <Button variant="green" className="w-full mt-4" disabled>
+          <Button variant="secondary" className="w-full mt-4" disabled>
             승인됨
           </Button>
         );
