@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { useRecruitApplicantDetail } from '@/hooks/team/useRecruitApplicantDetail';
 import { useAcceptRecruitApplicant } from '@/hooks/team/useAcceptRecruitApplicant';
 import { useRejectRecruitApplicant } from '@/hooks/team/useRejectRecruitApplicant';
+import { Loader, X } from 'lucide-react';
 
 type QuestionAnswer = { q: string; answer: string };
 
@@ -38,11 +39,22 @@ const fallbackData: ApplicantDetail = {
   status: 'PENDING',
 };
 
-const PlayerInfoPopup = ({ open, setOpen, applicant, teamId, applicantUserId }: PlayerInfoPopupProps) => {
+const PlayerInfoPopup = ({
+  open,
+  setOpen,
+  applicant,
+  teamId,
+  applicantUserId,
+}: PlayerInfoPopupProps) => {
   const [alreadyProcessed, setAlreadyProcessed] = useState(false);
-  const { data: fetchedDetail, isLoading, isError, error } = useRecruitApplicantDetail(
+  const {
+    data: fetchedDetail,
+    isLoading,
+    isError,
+    error,
+  } = useRecruitApplicantDetail(
     open ? teamId ?? null : null,
-    open ? applicantUserId ?? null : null,
+    open ? applicantUserId ?? null : null
   );
   const { mutate: acceptRecruit, isPending: isAccepting } = useAcceptRecruitApplicant();
   const { mutate: rejectRecruit, isPending: isRejecting } = useRejectRecruitApplicant();
@@ -97,7 +109,7 @@ const PlayerInfoPopup = ({ open, setOpen, applicant, teamId, applicantUserId }: 
             setAlreadyProcessed(true);
           }
         },
-      },
+      }
     );
   };
 
@@ -113,7 +125,7 @@ const PlayerInfoPopup = ({ open, setOpen, applicant, teamId, applicantUserId }: 
             setAlreadyProcessed(true);
           }
         },
-      },
+      }
     );
   };
 
@@ -130,10 +142,10 @@ const PlayerInfoPopup = ({ open, setOpen, applicant, teamId, applicantUserId }: 
           />
 
           <div className="gap-1.5 flex flex-col">
-            <div className="flex items-end">
+            <div className="flex items-center">
               <p>{data.name}</p>
               <Tag variant="blue" className="ml-2 text-xs">
-                추천LV.{data.level}
+                추천 LV.{data.level}
               </Tag>
             </div>
             <div className="flex gap-1.5 flex-wrap">
@@ -155,20 +167,32 @@ const PlayerInfoPopup = ({ open, setOpen, applicant, teamId, applicantUserId }: 
                 {skill}
               </Tag>
             ))}
-            {data.skills.length === 0 && <p className="text-text-03 text-sm">등록된 스킬이 없습니다.</p>}
+            {data.skills.length === 0 && (
+              <p className="text-text-03 text-sm">등록된 스킬이 없습니다.</p>
+            )}
           </div>
         </div>
 
-        <div className="flex flex-col gap-1 pt-5">
+        <div className="flex flex-col gap-2 pt-5">
           <p>질문 / 답변</p>
 
-          {isLoading && <p className="text-text-03 text-sm mb-2">불러오는 중...</p>}
-          {isError && <p className="text-text-03 text-sm mb-2">불러오기에 실패했습니다.</p>}
+          {isLoading && (
+            <div className="flex items-center gap-1 text-text-03 text-sm">
+              <Loader size={16} className="animate-spin" />
+              <span>불러오는 중...</span>
+            </div>
+          )}
+          {isError && (
+            <div className="flex items-center gap-1 text-text-03 text-sm">
+              <X size={16} />
+              <span>불러오기에 실패했습니다.</span>
+            </div>
+          )}
 
           {data.question.map((item, index) => (
             <div key={index} className="mb-4">
-              <p className="text-[13px] text-text-03 mb-1">
-                질문{index + 1}. {item.q}
+              <p className="text-[13px] font-bold text-text-03 mb-1">
+                Q{index + 1}. {item.q}
               </p>
               <p className="text-[15px] text-text-01">{item.answer}</p>
             </div>
@@ -183,7 +207,7 @@ const PlayerInfoPopup = ({ open, setOpen, applicant, teamId, applicantUserId }: 
             <Button
               onClick={handleAccept}
               className="w-1/2"
-              variant="primary"
+              variant="green"
               disabled={!teamId || !applicantUserId || isAccepting}
             >
               승인
