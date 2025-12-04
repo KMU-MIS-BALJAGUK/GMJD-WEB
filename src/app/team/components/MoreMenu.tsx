@@ -2,17 +2,19 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useExpireTeam } from '@/hooks/team/useExpireTeam';
+import { useCloseRecruit } from '@/hooks/team/useCloseRecruit';
+import { useExpireRecruit } from '@/hooks/team/useExpireRecruit';
 
 interface MoreMenuProps {
   teamId: number;
-  status: '모집중' | '모집완료';
+  status: '모집중' | '모집완료' | '모집만료';
 }
 
 export default function MoreMenu({ teamId, status }: MoreMenuProps) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const { mutate: expireRecruit, isPending } = useExpireTeam();
+  const { mutate: closeRecruit, isPending: isClosing } = useCloseRecruit();
+  const { mutate: expireRecruit, isPending: isExpiring } = useExpireRecruit();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -43,16 +45,28 @@ export default function MoreMenu({ teamId, status }: MoreMenuProps) {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                handleExpire();
+                closeRecruit(teamId, { onSuccess: () => setOpen(false) });
               }}
-              disabled={isPending}
+              disabled={isClosing}
               className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 disabled:opacity-60 cursor-pointer"
             >
-              {isPending ? '마감 처리 중...' : '모집 마감'}
+              {isClosing ? '마감 처리 중...' : '모집 마감'}
             </button>
           )}
           {status === '모집완료' && (
-            <div className="px-3 py-2 text-sm text-text-03 cursor-default">이미 모집 마감</div>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                expireRecruit(teamId, { onSuccess: () => setOpen(false) });
+              }}
+              disabled={isExpiring}
+              className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 disabled:opacity-60 cursor-pointer"
+            >
+              {isExpiring ? '만료 처리 중...' : '모집 만료'}
+            </button>
+          )}
+          {status === '모집만료' && (
+            <div className="px-3 py-2 text-sm text-text-03 cursor-default">이미 모집 만료</div>
           )}
         </div>
       )}

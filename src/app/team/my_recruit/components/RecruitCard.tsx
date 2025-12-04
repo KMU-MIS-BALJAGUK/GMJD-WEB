@@ -15,7 +15,7 @@ export interface RecruitManageCardProps {
   totalMembers: number;
   applicants: number;
   recruitedCount: number;
-  status: '모집중' | '모집완료';
+  status: '모집중' | '모집완료' | '모집만료';
   onClick?: () => void;
 }
 
@@ -50,9 +50,13 @@ export default function RecruitManageCard({
             <Tag variant="green" shape="square" className="text-xs">
               모집중
             </Tag>
-          ) : (
+          ) : status === '모집완료' ? (
             <Tag variant="gray" shape="square" className="text-xs">
               모집 마감
+            </Tag>
+          ) : (
+            <Tag variant="gray" shape="square" className="text-xs">
+              모집 만료
             </Tag>
           )}
         </div>
