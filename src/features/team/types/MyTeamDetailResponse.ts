@@ -13,9 +13,9 @@ export interface MyTeamDetailDto {
   contestOrganizationName: string;
   memberCount: number;
   myMemberType: string;
-  maxMember: number;
   members: MyTeamMemberDto[];
   memo?: string;
+  contestId: number;
 }
 
 export interface MyTeamDetailResponseDto {

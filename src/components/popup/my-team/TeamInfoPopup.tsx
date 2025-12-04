@@ -11,7 +11,7 @@ import { useUpdateTeamMemo } from '@/hooks/team/useUpdateTeamMemo';
 import RemovePlayerPopup from './RemovePlayerPopup';
 import { useUserProfile } from '@/hooks/mypage/useUserProfile';
 import { useRecruitApplicants } from '@/hooks/team/useRecruitApplicants';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 
 const TeamInfoPopup = ({
   open,
@@ -22,7 +22,8 @@ const TeamInfoPopup = ({
   setOpen: (value: boolean) => void;
   teamId: number | null;
 }) => {
-  const { data, isLoading, isError } = useTeamDetail(teamId);
+  const router = useRouter();
+  const { data, isLoading, isError, refetch } = useTeamDetail(teamId);
   const { data: userProfile } = useUserProfile();
   const { mutate: updateMemo, isPending: isUpdatingMemo } = useUpdateTeamMemo();
   const { data: applicants, isLoading: isApplicantsLoading } = useRecruitApplicants(teamId ?? null);
@@ -36,11 +37,15 @@ const TeamInfoPopup = ({
     if (data?.memo) {
       setMemo(data.memo);
     }
-  }, [data]);
+  }, [data?.memo]);
 
   const reset = () => {
     setIsEditing(false);
-    if (data?.memo) setMemo(data.memo);
+    if (data?.memo) {
+      setMemo(data.memo);
+    } else {
+      setMemo('');
+    }
   };
 
   const handleOpenChange = (value: boolean) => {
@@ -55,6 +60,7 @@ const TeamInfoPopup = ({
       {
         onSuccess: () => {
           setIsEditing(false);
+          refetch(); // 메모 저장 후 팀 상세 정보 다시 불러오기
         },
       },
     );
@@ -75,7 +81,7 @@ const TeamInfoPopup = ({
   if (isLoading) return <LayerPopup open={open} setOpen={setOpen} title="팀 정보"><p>로딩 중...</p></LayerPopup>;
   if (isError || !data) return <LayerPopup open={open} setOpen={setOpen} title="팀 정보"><p>오류가 발생했습니다.</p></LayerPopup>;
 
-  const isLeader = userProfile?.name === data.leaderName;
+  const isLeader = data.myMemberType === 'LEADER';
 
   return (
     <>
@@ -84,13 +90,14 @@ const TeamInfoPopup = ({
           <div className="flex flex-col px-2 h-auto pb-1 max-h-[600px] overflow-y-auto scrollbar">
             <div className="flex flex-col gap-3 pb-5 border-b">
               <div>
-                <p className="text-text-01 font-semibold text-xl mb-1">{data.title}</p>
+                <p className="text-text-01 font-semibold text-xl mb-1">{data.teamTitle}</p>
+                <p className="text-text-03 text-sm mt-1">{data.contestName}</p>
               </div>
 
               <div className="flex justify-between h-9 items-end">
                 <p className="flex gap-1 items-center text-text-02 text-[14px]">
                   <UsersRound size={16} />
-                  인원 {data.memberCount}/{data.maxMember}명
+                  인원 {data.memberCount}명
                 </p>
 
                 {isLeader && !isEditing && (
@@ -106,7 +113,6 @@ const TeamInfoPopup = ({
               </div>
             </div>
 
-            {/* 메모 */}
             <div className="flex flex-col gap-5 pt-5 text-text-01">
               <div className="flex flex-col gap-1">
                 <p>메모</p>
@@ -118,17 +124,16 @@ const TeamInfoPopup = ({
                 />
               </div>
 
-              {/* 팀원 관리 */}
               <div className="flex flex-col gap-4 text-[14px]">
                 <p className="text-base">팀원 관리</p>
-
                 {(data?.members ?? []).map((player) => {
-                  const playerRole = player.name === data.leaderName ? '팀장' : '팀원';
+                  const isCurrentUser = userProfile?.name === player.name;
                   return (
                     <div key={player.memberId}>
                       <div className="flex items-center gap-3">
-                        <div className="relative w-8 h-8 rounded-full bg-amber-300 shrink-0">
-                          {playerRole === '팀장' && (
+                        <div className="relative w-8 h-8 rounded-full bg-gray-200 shrink-0 overflow-hidden">
+                          <Image src={player.profileImageUrl || '/profile.png'} alt={player.name} fill className="object-cover" />
+                          {player.memberType === 'LEADER' && (
                             <div className="p-[1px] bg-blue absolute right-0 bottom-0 rounded-full">
                               <Crown size={11} className="fill-white text-blue" />
                             </div>
@@ -138,11 +143,10 @@ const TeamInfoPopup = ({
                           <div className="flex gap-1.5">
                             <p>{player.name}</p>
                             <p className="text-text-04">
-                              {playerRole} {userProfile?.name === player.name ? '/ 나' : ''}
+                              {player.memberType === 'LEADER' ? '팀장' : '팀원'} {isCurrentUser ? '/ 나' : ''}
                             </p>
                           </div>
-
-                          {isEditing && isLeader && player.name !== data.leaderName && (
+                          {isEditing && isLeader && !isCurrentUser && (
                             <button
                               className="text-blue cursor-pointer"
                               onClick={() => handleOpenKickPopup({ id: player.memberId, name: player.name })}
@@ -157,15 +161,14 @@ const TeamInfoPopup = ({
                 })}
               </div>
 
-              {/* 지원자 목록 */}
-              <div className="flex flex-col gap-4 text-[14px]">
-                <p className="text-base">지원자</p>
-                {isApplicantsLoading && <p className="text-text-03 text-sm">불러오는 중...</p>}
-                {!isApplicantsLoading && (applicants?.length ?? 0) === 0 && (
-                  <p className="text-text-03 text-sm">지원자가 없습니다.</p>
-                )}
-                {!isApplicantsLoading &&
-                  applicants?.map((applicant) => (
+              {isLeader && (
+                <div className="flex flex-col gap-4 text-[14px]">
+                  <p className="text-base">지원자</p>
+                  {isApplicantsLoading && <p className="text-text-03 text-sm">불러오는 중...</p>}
+                  {!isApplicantsLoading && (applicants?.length ?? 0) === 0 && (
+                    <p className="text-text-03 text-sm">지원자가 없습니다.</p>
+                  )}
+                  {applicants?.map((applicant) => (
                     <div key={applicant.userId}>
                       <div className="flex items-center gap-3">
                         <div className="relative w-8 h-8 rounded-full overflow-hidden bg-gray-200 shrink-0">
@@ -187,28 +190,30 @@ const TeamInfoPopup = ({
                       </div>
                     </div>
                   ))}
-              </div>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* 하단 버튼 */}
           <div className="pt-5 flex gap-3">
             {isEditing && isLeader ? (
               <Button onClick={handleSave} className="w-full" variant="primary" disabled={isUpdatingMemo}>
                 {isUpdatingMemo ? '저장 중...' : '수정 완료'}
               </Button>
             ) : (
-
-
               <>
-                <Button className="w-full" variant="secondary" disabled>
+                <Button
+                  className="w-full"
+                  variant="secondary"
+                  onClick={handleNavigateToContest}
+                  disabled={!data.contestId}
+                >
                   공모전 바로가기
                 </Button>
                 <Button className="w-full" variant="primary" onClick={() => console.log('팀 채팅 이동')}>
                   팀 채팅
                 </Button>
               </>
-// ...
             )}
           </div>
         </div>
@@ -228,3 +233,4 @@ const TeamInfoPopup = ({
 };
 
 export default TeamInfoPopup;
+

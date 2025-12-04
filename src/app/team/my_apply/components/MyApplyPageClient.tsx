@@ -77,8 +77,7 @@ export default function MyApplyPageClient() {
                   memberCount={item.memberCount}
                   maxMember={item.maxMember}
                   recruitStatus={recruitStatus}
-                  onCardClick={handleCardClick}
-                />
+                  onCardClick={handleCardClick} contestId={0}                />
               );
             })}
           </div>
