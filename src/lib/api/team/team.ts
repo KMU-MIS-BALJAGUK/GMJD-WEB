@@ -11,6 +11,7 @@ import { TeamMemoUpdateRequest } from '@/features/team/types/TeamMemoUpdateReque
 import { TeamMemoUpdateResponse } from '@/features/team/types/TeamMemoUpdateResponse';
 import { RecruitApplicantsResponse, RecruitApplicantDto } from '@/features/team/types/MyRecruitApplicantsResponse';
 import { RecruitApplicantDetailResponse, RecruitApplicantDetailDto } from '@/features/team/types/MyRecruitApplicantDetailResponse';
+import { MyTeamDetailDto, MyTeamDetailResponseDto } from '@/features/team/types/MyTeamDetailResponse';
 
 import type { TeamApplyRequestDto } from '@/features/team/types/TeamApplyRequest';
 import type { TeamApplyResponseDto } from '@/features/team/types/TeamApplyResponse';
@@ -42,6 +43,12 @@ export async function fetchTeamDetail(teamId: number): Promise<TeamDetailDto> {
 // GET /api/v1/teams/{teamId}/detail
 export async function fetchTeamDetailPublic(teamId: number): Promise<TeamDetailDto> {
   const res = await api.get<TeamDetailResponseDto>(`/api/v1/teams/${teamId}/detail`);
+  return res.data.data;
+}
+
+// 나의 팀 상세 조회 (멤버 포함)
+export async function fetchMyTeamDetail(teamId: number): Promise<MyTeamDetailDto> {
+  const res = await api.get<MyTeamDetailResponseDto>(`/api/v1/teams/my-teams/${teamId}`);
   return res.data.data;
 }
 
