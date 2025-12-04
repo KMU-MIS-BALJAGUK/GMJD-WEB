@@ -116,6 +116,12 @@ export async function closeRecruitTeam(teamId: number): Promise<ApiBaseResponse>
   return response.data;
 }
 
+// 팀 모집 만료(EXPIRED)
+export async function expireTeam(teamId: number): Promise<ApiBaseResponse> {
+  const response = await api.patch<ApiBaseResponse>(`/api/v1/teams/${teamId}/expire`);
+  return response.data;
+}
+
 // 팀 지원자 목록 조회
 export async function fetchRecruitApplicants(teamId: number): Promise<RecruitApplicantDto[]> {
   const response = await api.get<RecruitApplicantsResponse>(`/api/v1/teams/my-recruit/${teamId}`);
