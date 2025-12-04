@@ -41,9 +41,9 @@ export default function TeamDetailPopup({ teamId, open, setOpen }: TeamDetailPop
     }
   };
 
-  const handleKickMember = (memberId: number) => {
+  const handleKickMember = (userId: number) => {
     if (teamId) {
-      kickMember({ teamId, memberId });
+      kickMember({ teamId, userId });
     }
   };
   
@@ -94,14 +94,14 @@ export default function TeamDetailPopup({ teamId, open, setOpen }: TeamDetailPop
                     <span>{member.name}</span>
                     {/* [FIX] 리더일 경우에만, 그리고 자기 자신이 아닐 경우에만 내보내기 버튼 표시 */}
                     {isLeader && member.name !== team.leaderName && (
-                      <Button 
-                        onClick={() => handleKickMember(member.memberId)} 
-                        variant="red"
-                        disabled={isKickingMember}
-                      >
-                        내보내기
-                      </Button>
-                    )}
+                          <Button 
+                            onClick={() => handleKickMember(member.userId ?? member.memberId)} 
+                            variant="red"
+                            disabled={isKickingMember}
+                          >
+                            내보내기
+                          </Button>
+                        )}
                   </div>
                 ))}
               </div>
