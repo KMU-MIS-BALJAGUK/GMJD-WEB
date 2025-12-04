@@ -4,6 +4,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useCloseRecruit } from '@/hooks/team/useCloseRecruit';
 import { useExpireRecruit } from '@/hooks/team/useExpireRecruit';
+import { useCreateChatRoom } from '@/hooks/chat/useCreateChatRoom';
 
 interface MoreMenuProps {
   teamId: number;
@@ -15,6 +16,7 @@ export default function MoreMenu({ teamId, status }: MoreMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
   const { mutate: closeRecruit, isPending: isClosing } = useCloseRecruit();
   const { mutate: expireRecruit, isPending: isExpiring } = useExpireRecruit();
+  const createChatRoomMutation = useCreateChatRoom();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -45,7 +47,15 @@ export default function MoreMenu({ teamId, status }: MoreMenuProps) {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                closeRecruit(teamId, { onSuccess: () => setOpen(false) });
+                closeRecruit(teamId, { onSuccess: () => {
+                  setOpen(false);
+                  try {
+                    createChatRoomMutation.mutate({ teamId });
+                  } catch (err) {
+                    // createChatRoom hook will handle toast; log for debugging
+                    console.error('create chat room failed', err);
+                  }
+                } });
               }}
               disabled={isClosing}
               className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 disabled:opacity-60 cursor-pointer"

@@ -6,9 +6,12 @@ import {
   closeRecruitTeam,
   fetchMyRecruitList,
 } from '@/lib/api/team/team';
+import { useCreateChatRoom } from '@/hooks/chat/useCreateChatRoom';
 
 export function useAcceptRecruitApplicant() {
   const queryClient = useQueryClient();
+
+  const createChatRoom = useCreateChatRoom();
 
   return useMutation<unknown, Error, { teamId: number; applicantUserId: number }>({
     mutationFn: ({ teamId, applicantUserId }) => acceptRecruitApplicant(teamId, applicantUserId),
@@ -30,6 +33,11 @@ export function useAcceptRecruitApplicant() {
 
       if (team && isOpen && isFull) {
         await closeRecruitTeam(teamId);
+        try {
+          createChatRoom.mutate({ teamId });
+        } catch (err) {
+          console.error('create chat room failed after auto-close', err);
+        }
       }
 
       queryClient.invalidateQueries({ queryKey: ['myRecruitTeams'] });
