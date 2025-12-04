@@ -1,5 +1,6 @@
 import { ChatRoomResponse } from '@/features/chat/type/chatMessage';
 import { ChatRoomListResponse } from '@/features/chat/type/chatResponse';
+import { CreateChatRoomRequestDto } from '@/features/chat/type/chatRequest';
 import api from '@/lib/axios';
 
 export const getChatRoomList = async (): Promise<ChatRoomListResponse['data']['chatRooms']> => {
@@ -24,3 +25,7 @@ export async function getChatRoomMessages(params: {
   const res = await api.get<ChatRoomResponse>(`/api/v1/chat/${roomId}?${query.toString()}`);
   return res.data;
 }
+
+export const createChatRoom = async (body: CreateChatRoomRequestDto): Promise<void> => {
+  await api.post('/api/v1/chat/rooms', body);
+};

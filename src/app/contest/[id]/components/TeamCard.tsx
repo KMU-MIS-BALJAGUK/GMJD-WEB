@@ -5,6 +5,7 @@ import Button from '@/components/common/Button';
 import type { ContestTeamItemDto } from '@/features/contest/types/ContestTeamListResponse';
 
 import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/store/authStore';
 import { useUserProfile } from '@/hooks/mypage/useUserProfile';
 import { useToast } from '@/components/ui/use-toast';
 import { useState } from 'react';
@@ -19,16 +20,15 @@ export default function TeamCard({ team, onClickApply }: TeamCardProps) {
   const router = useRouter();
   const { data: user } = useUserProfile();
   const isLoggedIn = !!user;
+  const { toast } = useToast();
   const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
 
   const isOpen = team.status === 'OPEN';
 
   const handleProtectedApplyClick = () => {
     if (!isLoggedIn) {
-      if (!isLoggedIn) {
-        setIsLoginPopupOpen(true);
-        return;
-      }
+      setIsLoginPopupOpen(true);
+      return;
     }
 
     // 로그인 상태일 경우: 부모 컴포넌트에서 받은 원래 신청 함수 호출
