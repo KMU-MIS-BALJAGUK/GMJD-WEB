@@ -19,7 +19,7 @@ interface MyRecruitPopupProps {
   open: boolean;
   setOpen: (value: boolean) => void;
   title?: string;
-  status?: '모집중' | '모집완료';
+  status?: '모집중' | '모집완료' | '모집만료';
   recruitMember?: number;
   applyNumber?: number;
   applicants?: ApplicantSummary[];
