@@ -81,7 +81,7 @@ const TeamInfoPopup = ({
   if (isLoading) return <LayerPopup open={open} setOpen={setOpen} title="팀 정보"><p>로딩 중...</p></LayerPopup>;
   if (isError || !data) return <LayerPopup open={open} setOpen={setOpen} title="팀 정보"><p>오류가 발생했습니다.</p></LayerPopup>;
 
-  const isLeader = data.myMemberType === 'LEADER';
+  const isLeader = data.myMemberType === 'LEADER' || data.myMemberType === '팀장';
 
   return (
     <>
