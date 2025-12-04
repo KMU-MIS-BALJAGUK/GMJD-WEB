@@ -141,10 +141,10 @@ const TeamInfoPopup = ({
                             {userProfile?.name === player.name && <span className="text-text-04 text-sm">/ 나</span>}
                           </div>
 
-                          {isEditing && isLeader && !isLeaderMember && (
+                            {isEditing && isLeader && !isLeaderMember && (
                             <button
                               className="text-blue cursor-pointer"
-                              onClick={() => handleOpenKickPopup({ id: player.memberId, name: player.name })}
+                              onClick={() => handleOpenKickPopup({ id: player.userId ?? player.memberId, name: player.name })}
                             >
                               내보내기
                             </button>
@@ -188,7 +188,7 @@ const TeamInfoPopup = ({
           setOpen={setIsKickPopupOpen}
           playerName={selectedPlayer.name}
           teamId={teamId}
-          memberId={selectedPlayer.id}
+          userId={selectedPlayer.id}
         />
       )}
     </>

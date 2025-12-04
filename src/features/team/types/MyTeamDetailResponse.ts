@@ -2,6 +2,7 @@
 
 export interface MyTeamMemberDto {
   memberId: number;
+  userId?: number;
   profileImageUrl?: string;
   name: string;
   memberType: string;

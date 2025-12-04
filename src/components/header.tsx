@@ -211,20 +211,31 @@ const Header = () => {
           </nav>
 
           <div className="mt-auto flex justify-between items-center text-text-03">
-            <Link
-              className={`flex gap-2 cursor-pointer font-semibold ${
-                pathname === '/mypage' && 'text-blue'
-              } hover:text-blue transition-colors`}
-              href="/mypage"
-              onClick={() => setOpen(false)}
-            >
-              <UserRound size={20} />
-              <p>{user?.name} 님</p>
-            </Link>
+            {isLoggedIn ? (
+              <>
+                <Link
+                  className={`flex gap-2 cursor-pointer font-semibold ${
+                    pathname === '/mypage' && 'text-blue'
+                  } hover:text-blue transition-colors`}
+                  href="/mypage"
+                  onClick={() => setOpen(false)}
+                >
+                  <UserRound size={20} />
+                  <p>{user?.name} 님</p>
+                </Link>
 
-            <button className="hover:text-blue transition-colors cursor-pointer" onClick={onLogout}>
-              로그아웃
-            </button>
+                <button
+                  className="hover:text-blue transition-colors cursor-pointer"
+                  onClick={onLogout}
+                >
+                  로그아웃
+                </button>
+              </>
+            ) : (
+              <Link href="/signup" className="hover:text-blue transition-colors cursor-pointer">
+                회원가입 / 로그인
+              </Link>
+            )}
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@
 
 export interface MemberDto {
   memberId: number;
+  userId?: number;
   name: string;
   // profileImageUrl, role 등 추가될 수 있음
 }

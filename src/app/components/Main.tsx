@@ -11,7 +11,6 @@ import { Package } from 'lucide-react';
 
 const Main = () => {
   const { data: user, isLoading: userLoading } = useUserProfile(); // 스켈레톤 UI
-  console.log(user);
   const isLoggedIn = !!user;
   const recommendContestsParams =
     isLoggedIn && user.categoryList?.length > 0
