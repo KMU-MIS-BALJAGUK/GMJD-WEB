@@ -89,7 +89,7 @@ export default function MyApplyCard({
 
         <p className="flex items-center gap-1 text-sm mt-2">
           <UsersRound size={15} /> 모집 인원 {maxMember}명 /
-          <span className="text-blue font-semibold ml-1">영입 {memberCount}명</span>
+          <span className="text-blue font-semibold ml-1">현재 {memberCount}명</span>
         </p>
 
         <div className="mt-auto pt-4 h-[44px] flex items-end">{renderActionButton()}</div>

@@ -77,7 +77,7 @@ export default function RecruitManageCard({
         <p className="flex items-center gap-1 text-sm mt-2">
           <UsersRound size={15} /> 모집 인원 {totalMembers}명 /
           <span className="text-blue font-semibold ml-1">지원 {applicants}명</span>
-          <span className="text-blue font-semibold ml-1">/ 영입 {recruitedCount}명</span>
+          <span className="text-blue font-semibold ml-1">/ 현재 {recruitedCount}명</span>
         </p>
       </div>
     </div>
