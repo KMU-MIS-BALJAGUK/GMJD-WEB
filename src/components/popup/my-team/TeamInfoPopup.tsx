@@ -127,7 +127,7 @@ const TeamInfoPopup = ({
                 {(data?.members ?? []).map((player) => {
                   const isCurrentUser = userProfile?.name === player.name;
                   return (
-                    <div key={player.userId}>
+                    <div key={player.memberId}>
                       <div className="flex items-center gap-3">
                         <div className="relative w-8 h-8 rounded-full bg-gray-200 shrink-0 overflow-hidden">
                           <Image src={player.profileImageUrl || '/profile.png'} alt={player.name} fill className="object-cover" />
@@ -147,7 +147,7 @@ const TeamInfoPopup = ({
                           {isEditing && isLeader && !isCurrentUser && (
                             <button
                               className="text-blue cursor-pointer"
-                              onClick={() => handleOpenKickPopup({ userId: player.userId, name: player.name })}
+                              onClick={() => handleOpenKickPopup({ userId: player.userId ?? player.memberId, name: player.name })}
                             >
                               내보내기
                             </button>

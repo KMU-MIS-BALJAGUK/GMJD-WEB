@@ -3,7 +3,6 @@
 import { ReactNode } from 'react';
 
 export interface MyTeamMemberDto {
-  userId: number;
   memberId: number;
   userId?: number;
   profileImageUrl?: string;
