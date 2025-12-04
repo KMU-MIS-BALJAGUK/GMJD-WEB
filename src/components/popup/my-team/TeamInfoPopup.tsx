@@ -10,7 +10,6 @@ import { useTeamDetail } from '@/hooks/team/useTeamDetail';
 import { useUpdateTeamMemo } from '@/hooks/team/useUpdateTeamMemo';
 import RemovePlayerPopup from './RemovePlayerPopup';
 import { useUserProfile } from '@/hooks/mypage/useUserProfile';
-import { useRecruitApplicants } from '@/hooks/team/useRecruitApplicants';
 import { useRouter } from 'next/navigation';
 
 const TeamInfoPopup = ({
@@ -26,12 +25,11 @@ const TeamInfoPopup = ({
   const { data, isLoading, isError, refetch } = useTeamDetail(teamId);
   const { data: userProfile } = useUserProfile();
   const { mutate: updateMemo, isPending: isUpdatingMemo } = useUpdateTeamMemo();
-  const { data: applicants, isLoading: isApplicantsLoading } = useRecruitApplicants(teamId ?? null);
 
   const [memo, setMemo] = useState<string>('');
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isKickPopupOpen, setIsKickPopupOpen] = useState(false);
-  const [selectedPlayer, setSelectedPlayer] = useState<{ id: number; name: string } | null>(null);
+  const [selectedPlayer, setSelectedPlayer] = useState<{ userId: number; name: string } | null>(null);
 
   useEffect(() => {
     if (data?.memo) {
@@ -60,13 +58,13 @@ const TeamInfoPopup = ({
       {
         onSuccess: () => {
           setIsEditing(false);
-          refetch(); // 메모 저장 후 팀 상세 정보 다시 불러오기
+          refetch();
         },
       },
     );
   };
 
-  const handleOpenKickPopup = (player: { id: number; name: string }) => {
+  const handleOpenKickPopup = (player: { userId: number; name: string }) => {
     setSelectedPlayer(player);
     setIsKickPopupOpen(true);
   };
@@ -74,14 +72,14 @@ const TeamInfoPopup = ({
   const handleNavigateToContest = () => {
     if (data?.contestId) {
       router.push(`/contest/${data.contestId}`);
-      setOpen(false); // 팝업 닫기
+      setOpen(false);
     }
   };
 
   if (isLoading) return <LayerPopup open={open} setOpen={setOpen} title="팀 정보"><p>로딩 중...</p></LayerPopup>;
   if (isError || !data) return <LayerPopup open={open} setOpen={setOpen} title="팀 정보"><p>오류가 발생했습니다.</p></LayerPopup>;
 
-  const isLeader = data.myMemberType === 'LEADER' || data.myMemberType === '팀장';
+  const isLeader = data.myMemberType === '팀장';
 
   return (
     <>
@@ -129,11 +127,11 @@ const TeamInfoPopup = ({
                 {(data?.members ?? []).map((player) => {
                   const isCurrentUser = userProfile?.name === player.name;
                   return (
-                    <div key={player.memberId}>
+                    <div key={player.userId}>
                       <div className="flex items-center gap-3">
                         <div className="relative w-8 h-8 rounded-full bg-gray-200 shrink-0 overflow-hidden">
                           <Image src={player.profileImageUrl || '/profile.png'} alt={player.name} fill className="object-cover" />
-                          {player.memberType === 'LEADER' && (
+                          {player.memberType === '팀장' && (
                             <div className="p-[1px] bg-blue absolute right-0 bottom-0 rounded-full">
                               <Crown size={11} className="fill-white text-blue" />
                             </div>
@@ -143,13 +141,13 @@ const TeamInfoPopup = ({
                           <div className="flex gap-1.5">
                             <p>{player.name}</p>
                             <p className="text-text-04">
-                              {player.memberType === 'LEADER' ? '팀장' : '팀원'} {isCurrentUser ? '/ 나' : ''}
+                              {player.memberType === '팀장' ? '팀장' : '팀원'} {isCurrentUser ? '/ 나' : ''}
                             </p>
                           </div>
                           {isEditing && isLeader && !isCurrentUser && (
                             <button
                               className="text-blue cursor-pointer"
-                              onClick={() => handleOpenKickPopup({ id: player.memberId, name: player.name })}
+                              onClick={() => handleOpenKickPopup({ userId: player.userId, name: player.name })}
                             >
                               내보내기
                             </button>
@@ -160,38 +158,6 @@ const TeamInfoPopup = ({
                   );
                 })}
               </div>
-
-              {isLeader && (
-                <div className="flex flex-col gap-4 text-[14px]">
-                  <p className="text-base">지원자</p>
-                  {isApplicantsLoading && <p className="text-text-03 text-sm">불러오는 중...</p>}
-                  {!isApplicantsLoading && (applicants?.length ?? 0) === 0 && (
-                    <p className="text-text-03 text-sm">지원자가 없습니다.</p>
-                  )}
-                  {applicants?.map((applicant) => (
-                    <div key={applicant.userId}>
-                      <div className="flex items-center gap-3">
-                        <div className="relative w-8 h-8 rounded-full overflow-hidden bg-gray-200 shrink-0">
-                          <Image
-                            src={applicant.profileImageUrl || '/profile-image.png'}
-                            alt={`${applicant.name} 프로필`}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                        <div className="flex justify-between w-full">
-                          <div className="flex flex-col">
-                            <p className="font-medium">{applicant.name}</p>
-                            <p className="text-text-04 text-sm">
-                              {applicant.aiTags.map((tag) => `#${tag}`).join(' ')}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
           </div>
 
@@ -225,7 +191,7 @@ const TeamInfoPopup = ({
           setOpen={setIsKickPopupOpen}
           playerName={selectedPlayer.name}
           teamId={teamId}
-          userId={selectedPlayer.id}
+          userId={selectedPlayer.userId}
         />
       )}
     </>
@@ -233,4 +199,3 @@ const TeamInfoPopup = ({
 };
 
 export default TeamInfoPopup;
-
