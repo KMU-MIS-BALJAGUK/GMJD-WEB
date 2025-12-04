@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
-import { ChevronRight, UsersRound } from 'lucide-react';
+import { ChevronRight, UsersRound, Loader, X } from 'lucide-react';
 import LayerPopup from '../../common/layerpopup/LayerPopup';
 import Tag from '../../common/Tag';
 import Button from '../../common/Button';
@@ -44,10 +44,12 @@ const MyRecruitPopup = ({
   teamId,
 }: MyRecruitPopupProps) => {
   const [applicantPopupOpen, setApplicantPopupOpen] = useState(false);
-  const [selectedApplicant, setSelectedApplicant] = useState<ApplicantSummary | undefined>(undefined);
+  const [selectedApplicant, setSelectedApplicant] = useState<ApplicantSummary | undefined>(
+    undefined
+  );
 
   const { data: fetchedApplicants, isLoading: isApplicantsLoading } = useRecruitApplicants(
-    open ? teamId ?? null : null,
+    open ? teamId ?? null : null
   );
 
   const handleOpenChange = (value: boolean) => {
@@ -120,10 +122,18 @@ const MyRecruitPopup = ({
               <div className="flex flex-col gap-4 text-[14px]">
                 <p className="text-base">지원자 리스트</p>
 
-                {isApplicantsLoading && <p className="text-text-03 text-sm">불러오는 중...</p>}
+                {isApplicantsLoading && (
+                  <div className="flex items-center gap-1 text-text-03 text-sm">
+                    <Loader size={16} className="animate-spin" />
+                    <span>불러오는 중...</span>
+                  </div>
+                )}
 
                 {!isApplicantsLoading && resolvedData.applyPlayers.length === 0 && (
-                  <p className="text-text-03 text-sm">지원자가 없습니다.</p>
+                  <div className="flex items-center gap-1 text-text-03 text-sm">
+                    <X size={16} />
+                    <span>지원자가 없습니다.</span>
+                  </div>
                 )}
 
                 {resolvedData.applyPlayers.map((player) => (
@@ -137,7 +147,7 @@ const MyRecruitPopup = ({
                           className="object-cover"
                         />
                       </div>
-                      <div className="flex justify-between w-full">
+                      <div className="flex items-center justify-between w-full">
                         <div className="flex max-sm:flex-col sm:gap-1.5">
                           <p>{player.name}</p>
                           <p className="text-text-04">
