@@ -52,7 +52,7 @@ export default function RecruitManageCard({
             </Tag>
           ) : (
             <Tag variant="gray" shape="square" className="text-xs">
-              모집완료
+              모집 마감
             </Tag>
           )}
         </div>
