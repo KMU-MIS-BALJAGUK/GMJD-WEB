@@ -11,6 +11,7 @@ type ApplicantSummary = {
   userId: number;
   name: string;
   summary: string[];
+  status?: string;
   profileImageUrl?: string;
   detail?: ApplicantDetail;
 };
@@ -66,6 +67,7 @@ const MyRecruitPopup = ({
         userId: item.userId,
         name: item.name,
         summary: item.aiTags,
+        status: item.status,
         profileImageUrl: item.profileImageUrl,
         detail: {
           userId: item.userId,
@@ -80,6 +82,9 @@ const MyRecruitPopup = ({
     }
     return [];
   }, [applicants, fetchedApplicants]);
+
+  const requestedApplicants = resolvedApplicants.filter((p) => p.status === 'REQUESTED');
+  const acceptedApplicants = resolvedApplicants.filter((p) => p.status === 'ACCEPTED');
 
   const handleApplicantClick = (applicant: ApplicantSummary) => {
     setSelectedApplicant(applicant);
@@ -129,14 +134,14 @@ const MyRecruitPopup = ({
                   </div>
                 )}
 
-                {!isApplicantsLoading && resolvedData.applyPlayers.length === 0 && (
+                {!isApplicantsLoading && requestedApplicants.length === 0 && (
                   <div className="flex items-center gap-1 text-text-03 text-sm">
                     <X size={16} />
-                    <span>지원자가 없습니다.</span>
+                    <span>승인 대기 중인 유저가 없습니다.</span>
                   </div>
                 )}
 
-                {resolvedData.applyPlayers.map((player) => (
+                {requestedApplicants.map((player) => (
                   <div key={player.userId}>
                     <div className="flex items-center gap-3">
                       <div className="relative w-8 h-8 rounded-full bg-amber-300 shrink-0 overflow-hidden">
@@ -166,6 +171,33 @@ const MyRecruitPopup = ({
                     </div>
                   </div>
                 ))}
+                {acceptedApplicants.length > 0 && (
+                  <div className="mt-4">
+                    <p className="text-base">영입한 유저</p>
+                    <div className="flex flex-col gap-2 mt-2">
+                      {acceptedApplicants.map((player) => (
+                        <div key={`accepted-${player.userId}`} className="flex items-center gap-3">
+                          <div className="relative w-8 h-8 rounded-full bg-amber-300 shrink-0 overflow-hidden">
+                            <Image
+                              src={player.profileImageUrl || '/profile-image.png'}
+                              alt={`${player.name} 프로필`}
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
+                          <div className="flex items-center w-full">
+                            <div className="flex max-sm:flex-col sm:gap-1.5">
+                              <p>{player.name}</p>
+                              <p className="text-text-04">
+                                {player.summary.map((item) => `#${item}`).join('\u00A0\u00A0')}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
