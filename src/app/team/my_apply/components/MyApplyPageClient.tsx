@@ -11,8 +11,8 @@ export default function MyApplyPageClient() {
   const { data: myAppliedList, isLoading, isError } = useMyAppliedList();
 
   return (
-    <div className="max-w-[1200px] mx-auto py-10 px-4 md:px-6 lg:px-8">
-      <h1 className="text-2xl font-bold mb-6">팀 관리</h1>
+    <div className="max-w-[1200px] mx-auto max-md:py-7 py-10 px-4 md:px-6 lg:px-8">
+      <h1 className="max-md:text-xl text-2xl font-bold mb-6">팀 관리</h1>
 
       {/* 탭 */}
       <nav className="flex gap-6 mb-8 border-b pb-2 text-sm">

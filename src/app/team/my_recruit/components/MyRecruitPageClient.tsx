@@ -1,5 +1,3 @@
-// src/app/team/my_recruit/components/MyRecruitPageClient.tsx
-
 'use client';
 
 import Link from 'next/link';
@@ -19,7 +17,7 @@ interface PopupTeamData {
 }
 
 const normalizeStatus = (
-  status: 'OPEN' | 'CLOSED' | '모집중' | '모집완료',
+  status: 'OPEN' | 'CLOSED' | '모집중' | '모집완료'
 ): '모집중' | '모집완료' => {
   switch (status) {
     case 'OPEN':
@@ -48,8 +46,8 @@ export default function MyRecruitPageClient() {
   };
 
   return (
-    <div className="max-w-[1200px] mx-auto py-10 px-4 md:px-6 lg:px-8">
-      <h1 className="text-2xl font-bold mb-6">팀 모집 관리</h1>
+    <div className="max-w-[1200px] mx-auto max-md:py-7 py-10 px-4 md:px-6 lg:px-8">
+      <h1 className="max-md:text-xl text-2xl font-bold mb-6">팀 관리</h1>
 
       <nav className="flex gap-6 mb-8 border-b pb-2 text-sm">
         <Link href="/team" className="text-gray-600 hover:text-black">
