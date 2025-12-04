@@ -173,7 +173,7 @@ const PlayerInfoPopup = ({
           </div>
         </div>
 
-        <div className="flex flex-col gap-1 pt-5">
+        <div className="flex flex-col gap-2 pt-5">
           <p>질문 / 답변</p>
 
           {isLoading && (
