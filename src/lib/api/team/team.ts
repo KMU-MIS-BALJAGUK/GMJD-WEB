@@ -59,8 +59,8 @@ export async function updateTeamMemo(teamId: number, data: TeamMemoUpdateRequest
 }
 
 // 팀원 내보내기 API
-export async function kickTeamMember(teamId: number, memberId: number): Promise<TeamKickMemberResponse> {
-  const response = await api.delete<TeamKickMemberResponse>(`/api/v1/teams/${teamId}/members/${memberId}`);
+export async function kickTeamMember(teamId: number, userId: number): Promise<TeamKickMemberResponse> {
+  const response = await api.delete<TeamKickMemberResponse>(`/api/v1/teams/${teamId}/members/${userId}`);
   return response.data;
 }
 

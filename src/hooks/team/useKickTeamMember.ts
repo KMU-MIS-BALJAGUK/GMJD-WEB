@@ -8,8 +8,8 @@ import { TeamKickMemberResponse } from '@/features/team/types/TeamKickMemberResp
 export function useKickTeamMember() {
   const queryClient = useQueryClient();
 
-  return useMutation<TeamKickMemberResponse, Error, { teamId: number; memberId: number }>({
-    mutationFn: ({ teamId, memberId }) => kickTeamMember(teamId, memberId),
+  return useMutation<TeamKickMemberResponse, Error, { teamId: number; userId: number }>({
+    mutationFn: ({ teamId, userId }) => kickTeamMember(teamId, userId),
     onSuccess: (_data, variables) => {
       // 성공 시 관련 캐시 무효화
       queryClient.invalidateQueries({ queryKey: ['teamDetail', variables.teamId] });

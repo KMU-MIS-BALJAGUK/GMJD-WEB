@@ -2,9 +2,10 @@
 
 export interface MemberDto {
   memberId: number;
+  userId: number;
   profileImageUrl: string;
   name: string;
-  memberType: string; // "LEADER" or "MEMBER"
+  memberType: '팀장' | '팀원';
 }
 
 // 팀 상세 정보 DTO

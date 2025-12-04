@@ -225,7 +225,7 @@ const TeamInfoPopup = ({
           setOpen={setIsKickPopupOpen}
           playerName={selectedPlayer.name}
           teamId={teamId}
-          memberId={selectedPlayer.id}
+          userId={selectedPlayer.id}
         />
       )}
     </>
