@@ -49,7 +49,10 @@ export default function MyApplyCard({
       <Button
         className="w-full mt-4 bg-gray-200 text-gray-700 hover:bg-gray-300 cursor-pointer border border-gray-300"
         variant="ghost"
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => {
+          e.stopPropagation();
+          handleCancel(e);
+        }}
       >
         삭제
       </Button>
