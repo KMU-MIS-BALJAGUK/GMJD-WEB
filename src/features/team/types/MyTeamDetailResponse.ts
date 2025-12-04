@@ -8,14 +8,15 @@ export interface MyTeamMemberDto {
 }
 
 export interface MyTeamDetailDto {
+  contestId: any;
   teamTitle: string;
   contestName: string;
   contestOrganizationName: string;
   memberCount: number;
   myMemberType: string;
+  maxMember: number;
   members: MyTeamMemberDto[];
   memo?: string;
-  contestId: number;
 }
 
 export interface MyTeamDetailResponseDto {

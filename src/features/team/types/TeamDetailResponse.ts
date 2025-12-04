@@ -4,7 +4,7 @@ export interface MemberDto {
   memberId: number;
   profileImageUrl: string;
   name: string;
-  memberType: string; // "LEADER" or "MEMBER"
+  memberType: '팀장' | '팀원'; 
 }
 
 // 팀 상세 정보 DTO
@@ -13,7 +13,7 @@ export interface TeamDetailDto {
   contestName: string;
   contestOrganizationName: string;
   memberCount: number;
-  myMemberType: string; // "LEADER" or "MEMBER"
+  myMemberType: '팀장' | '팀원'; 
   memo?: string;
   members: MemberDto[];
   contestId: number;
