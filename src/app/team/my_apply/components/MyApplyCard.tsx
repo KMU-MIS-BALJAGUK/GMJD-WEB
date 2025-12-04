@@ -14,7 +14,6 @@ export interface MyApplyCardProps {
   memberCount: number; // 모집된 인원
   maxMember: number; // 모집 목표 인원
   recruitStatus: '모집중' | '모집완료';
-  requestedCount: number;
   onCardClick: (teamId: number) => void;
 }
 
@@ -26,7 +25,6 @@ export default function MyApplyCard({
   memberCount,
   maxMember,
   recruitStatus,
-  requestedCount,
   onCardClick,
 }: MyApplyCardProps) {
   const { mutate: cancelApplication, isPending: isCancelling } = useCancelApplication();
@@ -91,8 +89,7 @@ export default function MyApplyCard({
 
         <p className="flex items-center gap-1 text-sm mt-2">
           <UsersRound size={15} /> 모집 인원 {maxMember}명 /
-          <span className="text-blue font-semibold ml-1">지원 {requestedCount}명</span> /
-          <span className="text-blue font-semibold ml-1">모집 {memberCount}명</span>
+          <span className="text-blue font-semibold ml-1">영입 {memberCount}명</span>
         </p>
 
         <div className="mt-auto pt-4 h-[44px] flex items-end">{renderActionButton()}</div>

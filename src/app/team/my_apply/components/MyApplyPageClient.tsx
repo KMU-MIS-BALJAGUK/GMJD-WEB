@@ -72,7 +72,6 @@ export default function MyApplyPageClient() {
                   memberCount={item.memberCount}
                   maxMember={item.maxMember}
                   recruitStatus={recruitStatus}
-                  requestedCount={item.requestedCount ?? 0}
                   onCardClick={handleCardClick}
                 />
               );
