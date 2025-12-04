@@ -7,6 +7,7 @@ import { UsersRound } from 'lucide-react';
 import { useCancelApplication } from '@/hooks/mypage/useCancelApplication';
 
 export interface MyApplyCardProps {
+  contestId: number;
   teamId: number;
   title: string;
   subtitle: string;

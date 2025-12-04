@@ -1,6 +1,9 @@
 // 나의 팀 상세 조회 (GET /api/v1/teams/my-teams/{teamId})
 
+import { ReactNode } from 'react';
+
 export interface MyTeamMemberDto {
+  userId: number;
   memberId: number;
   userId?: number;
   profileImageUrl?: string;
@@ -9,6 +12,10 @@ export interface MyTeamMemberDto {
 }
 
 export interface MyTeamDetailDto {
+  introduction: ReactNode;
+  leaderName: ReactNode;
+  title: ReactNode;
+  contestId: any;
   teamTitle: string;
   contestName: string;
   contestOrganizationName: string;

@@ -31,6 +31,7 @@ export default function MyApplyPageClient() {
       <div className="max-w-[1200px] mx-auto max-md:py-7 py-10 px-4 md:px-6 lg:px-8">
       <h1 className="max-md:text-xl text-2xl font-bold mb-6">팀 관리</h1>
 
+        {/* 탭 */}
         <nav className="flex gap-6 mb-8 border-b pb-2 text-sm">
           <Link href="/team" className="text-gray-600 hover:text-black">
             나의 팀
@@ -43,10 +44,13 @@ export default function MyApplyPageClient() {
           </span>
         </nav>
 
+        {/* 로딩 */}
         {isLoading && <Loading />}
 
+        {/* 에러 */}
         {isError && <Error message="팀 정보를 불러오는 과정에서 문제가 발생했습니다." />}
 
+        {/* 빈 상태 */}
         {!isLoading && myAppliedList?.length === 0 && (
           <div className="flex flex-col items-center justify-center h-[300px] text-center">
             <div className="p-4 bg-gray-100 rounded-full mb-3">
@@ -57,6 +61,7 @@ export default function MyApplyPageClient() {
           </div>
         )}
 
+        {/* 카드 리스트 */}
         {myAppliedList && myAppliedList.length > 0 && !isLoading && !isError && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {myAppliedList.map((item) => {
@@ -72,8 +77,7 @@ export default function MyApplyPageClient() {
                   memberCount={item.memberCount}
                   maxMember={item.maxMember}
                   recruitStatus={recruitStatus}
-                  onCardClick={handleCardClick}
-                />
+                  onCardClick={handleCardClick} contestId={0}                />
               );
             })}
           </div>
