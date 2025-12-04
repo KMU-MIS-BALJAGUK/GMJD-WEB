@@ -10,7 +10,8 @@ export type ButtonVariant =
   | 'disabled'
   | 'active'
   | 'gray'
-  | 'red';
+  | 'red'
+  | 'green';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -38,6 +39,7 @@ export const Button: React.FC<ButtonProps> = ({
     active: 'bg-[#F1F8FF] text-blue border border-blue',
     gray: 'bg-btn-gray text-text-02 hover:bg-gray-300',
     red: 'bg-red-100 text-[#F35064] hover:bg-red-200',
+    green: 'bg-green-100 text-green-600 hover:bg-green-200',
   };
 
   return (

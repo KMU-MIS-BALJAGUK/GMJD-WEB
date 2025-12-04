@@ -207,7 +207,7 @@ const PlayerInfoPopup = ({
             <Button
               onClick={handleAccept}
               className="w-1/2"
-              variant="primary"
+              variant="green"
               disabled={!teamId || !applicantUserId || isAccepting}
             >
               승인
