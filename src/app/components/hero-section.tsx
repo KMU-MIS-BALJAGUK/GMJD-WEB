@@ -98,7 +98,7 @@ const HeroSection = () => {
 
               {/* 메인 카드 */}
               <div
-                className="relative w-[200px] h-[300px] rounded-[14px] overflow-hidden cursor-pointer"
+                className="relative w-[200px] h-[300px] rounded-[14px] overflow-hidden cursor-pointer transition-transform duration-200 hover:-translate-y-2"
                 onClick={() => {
                   if (list.length > 0) {
                     router.push(`/contest/${list[safeIndex].id}`);
@@ -181,7 +181,7 @@ const HeroSection = () => {
           {/* 오른쪽 작은 카드 */}
           {(isLoading || list.length > 1) && (
             <div
-              className="relative w-[170px] h-60 rounded-[10px] overflow-hidden mb-10 max-md:hidden cursor-pointer"
+              className="relative w-[170px] h-60 rounded-[10px] overflow-hidden mb-10 max-md:hidden cursor-pointer transition-transform duration-200 hover:-translate-y-2"
               onClick={() => {
                 if (!isLoading && list.length > 1) {
                   router.push(`/contest/${list[(safeIndex + 1) % list.length].id}`);
