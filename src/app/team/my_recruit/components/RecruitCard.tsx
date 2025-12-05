@@ -86,7 +86,7 @@ export default function RecruitManageCard({
               지원 {applicants}명
             </div>
             <div className="px-1.5 py-0.5 bg-green-50 text-green-600 rounded text-xs font-medium">
-              현재 {recruitedCount}명
+              현재 팀원 {recruitedCount}명
             </div>
           </div>
         </div>
