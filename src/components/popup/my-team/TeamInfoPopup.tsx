@@ -29,7 +29,9 @@ const TeamInfoPopup = ({
   const [memo, setMemo] = useState<string>('');
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isKickPopupOpen, setIsKickPopupOpen] = useState(false);
-  const [selectedPlayer, setSelectedPlayer] = useState<{ userId: number; name: string } | null>(null);
+  const [selectedPlayer, setSelectedPlayer] = useState<{ userId: number; name: string } | null>(
+    null
+  );
 
   useEffect(() => {
     if (data?.memo) {
@@ -60,7 +62,7 @@ const TeamInfoPopup = ({
           setIsEditing(false);
           refetch();
         },
-      },
+      }
     );
   };
 
@@ -76,8 +78,18 @@ const TeamInfoPopup = ({
     }
   };
 
-  if (isLoading) return <LayerPopup open={open} setOpen={setOpen} title="팀 정보"><p>로딩 중...</p></LayerPopup>;
-  if (isError || !data) return <LayerPopup open={open} setOpen={setOpen} title="팀 정보"><p>오류가 발생했습니다.</p></LayerPopup>;
+  if (isLoading)
+    return (
+      <LayerPopup open={open} setOpen={setOpen} title="팀 정보">
+        <p>로딩 중...</p>
+      </LayerPopup>
+    );
+  if (isError || !data)
+    return (
+      <LayerPopup open={open} setOpen={setOpen} title="팀 정보">
+        <p>오류가 발생했습니다.</p>
+      </LayerPopup>
+    );
 
   const isLeader = data.myMemberType === '팀장';
 
@@ -115,7 +127,9 @@ const TeamInfoPopup = ({
               <div className="flex flex-col gap-1">
                 <p>메모</p>
                 <Input
-                  placeholder={isEditing ? '메모를 자유롭게 작성해주세요.' : '작성된 메모가 없습니다.'}
+                  placeholder={
+                    isEditing ? '메모를 자유롭게 작성해주세요.' : '작성된 메모가 없습니다.'
+                  }
                   value={memo}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMemo(e.target.value)}
                   disabled={!isEditing}
@@ -129,10 +143,15 @@ const TeamInfoPopup = ({
                   return (
                     <div key={player.memberId}>
                       <div className="flex items-center gap-3">
-                        <div className="relative w-8 h-8 rounded-full bg-gray-200 shrink-0 overflow-hidden">
-                          <Image src={player.profileImageUrl || '/profile.png'} alt={player.name} fill className="object-cover" />
+                        <div className="relative w-8 h-8 rounded-full bg-gray-200 shrink-0">
+                          <Image
+                            src={player.profileImageUrl || '/profile.png'}
+                            alt={player.name}
+                            fill
+                            className="object-cover w-8 h-8 rounded-full"
+                          />
                           {player.memberType === '팀장' && (
-                            <div className="p-[1px] bg-blue absolute right-0 bottom-0 rounded-full">
+                            <div className="p-[1px] bg-blue absolute -right-0.5 -bottom-0.5 rounded-full z-10">
                               <Crown size={11} className="fill-white text-blue" />
                             </div>
                           )}
@@ -141,13 +160,19 @@ const TeamInfoPopup = ({
                           <div className="flex gap-1.5">
                             <p>{player.name}</p>
                             <p className="text-text-04">
-                              {player.memberType === '팀장' ? '팀장' : '팀원'} {isCurrentUser ? '/ 나' : ''}
+                              {player.memberType === '팀장' ? '팀장' : '팀원'}{' '}
+                              {isCurrentUser ? '/ 나' : ''}
                             </p>
                           </div>
                           {isEditing && isLeader && !isCurrentUser && (
                             <button
                               className="text-blue cursor-pointer"
-                              onClick={() => handleOpenKickPopup({ userId: player.userId ?? player.memberId, name: player.name })}
+                              onClick={() =>
+                                handleOpenKickPopup({
+                                  userId: player.userId ?? player.memberId,
+                                  name: player.name,
+                                })
+                              }
                             >
                               내보내기
                             </button>
@@ -163,7 +188,12 @@ const TeamInfoPopup = ({
 
           <div className="pt-5 flex gap-3">
             {isEditing && isLeader ? (
-              <Button onClick={handleSave} className="w-full" variant="primary" disabled={isUpdatingMemo}>
+              <Button
+                onClick={handleSave}
+                className="w-full"
+                variant="primary"
+                disabled={isUpdatingMemo}
+              >
                 {isUpdatingMemo ? '저장 중...' : '수정 완료'}
               </Button>
             ) : (
@@ -176,7 +206,11 @@ const TeamInfoPopup = ({
                 >
                   공모전 바로가기
                 </Button>
-                <Button className="w-full" variant="primary" onClick={() => console.log('팀 채팅 이동')}>
+                <Button
+                  className="w-full"
+                  variant="primary"
+                  onClick={() => console.log('팀 채팅 이동')}
+                >
                   팀 채팅
                 </Button>
               </>

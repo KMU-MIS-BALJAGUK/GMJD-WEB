@@ -124,81 +124,98 @@ const MyRecruitPopup = ({
             </div>
 
             <div className="flex flex-col gap-5 pt-5 text-text-01">
-              <div className="flex flex-col gap-4 text-[14px]">
-                <p className="text-base">지원자 리스트</p>
-
-                {isApplicantsLoading && (
-                  <div className="flex items-center gap-1 text-text-03 text-sm">
-                    <Loader size={16} className="animate-spin" />
-                    <span>불러오는 중...</span>
+              {resolvedData.status === '모집완료' ? (
+                <div className="flex flex-col items-center gap-4 py-8 text-center">
+                  <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center">
+                    <X size={24} className="text-text-03" />
                   </div>
-                )}
-
-                {!isApplicantsLoading && requestedApplicants.length === 0 && (
-                  <div className="flex items-center gap-1 text-text-03 text-sm">
-                    <X size={16} />
-                    <span>승인 대기 중인 유저가 없습니다.</span>
+                  <div>
+                    <p className="text-lg font-medium text-text-01 mb-2">모집이 완료되었습니다</p>
+                    <p className="text-text-03 text-sm">
+                      모집을 마감해서 더 이상 지원을 받지 않습니다.
+                    </p>
                   </div>
-                )}
+                </div>
+              ) : (
+                <div className="flex flex-col gap-4 text-[14px]">
+                  <p className="text-base">지원자 리스트</p>
 
-                {requestedApplicants.map((player) => (
-                  <div key={player.userId}>
-                    <div className="flex items-center gap-3">
-                      <div className="relative w-8 h-8 rounded-full bg-amber-300 shrink-0 overflow-hidden">
-                        <Image
-                          src={player.profileImageUrl || '/profile-image.png'}
-                          alt={`${player.name} 프로필`}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <div className="flex items-center justify-between w-full">
-                        <div className="flex max-sm:flex-col sm:gap-1.5">
-                          <p>{player.name}</p>
-                          <p className="text-text-04">
-                            {player.summary.map((item) => `#${item}`).join('\u00A0\u00A0')}
-                          </p>
+                  {isApplicantsLoading && (
+                    <div className="flex items-center gap-1 text-text-03 text-sm">
+                      <Loader size={16} className="animate-spin" />
+                      <span>불러오는 중...</span>
+                    </div>
+                  )}
+
+                  {!isApplicantsLoading && requestedApplicants.length === 0 && (
+                    <div className="flex items-center gap-1 text-text-03 text-sm">
+                      <X size={16} />
+                      <span>승인 대기 중인 유저가 없습니다.</span>
+                    </div>
+                  )}
+
+                  {requestedApplicants.map((player) => (
+                    <div key={player.userId}>
+                      <div className="flex items-center gap-3">
+                        <div className="relative w-8 h-8 rounded-full bg-amber-300 shrink-0 overflow-hidden">
+                          <Image
+                            src={player.profileImageUrl || '/profile-image.png'}
+                            alt={`${player.name} 프로필`}
+                            fill
+                            className="object-cover"
+                          />
                         </div>
+                        <div className="flex items-center justify-between w-full">
+                          <div className="flex max-sm:flex-col sm:gap-1.5">
+                            <p>{player.name}</p>
+                            <p className="text-text-04">
+                              {player.summary.map((item) => `#${item}`).join('\u00A0\u00A0')}
+                            </p>
+                          </div>
 
-                        <button
-                          className="p-1 cursor-pointer"
-                          onClick={() => handleApplicantClick(player)}
-                          aria-label={`${player.name} 지원자 정보 보기`}
-                        >
-                          <ChevronRight size={20} className="text-text-03 cursor-pointer" />
-                        </button>
+                          <button
+                            className="p-1 cursor-pointer"
+                            onClick={() => handleApplicantClick(player)}
+                            aria-label={`${player.name} 지원자 정보 보기`}
+                          >
+                            <ChevronRight size={20} className="text-text-03 cursor-pointer" />
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-                {acceptedApplicants.length > 0 && (
-                  <div className="mt-4">
-                    <p className="text-base">영입한 유저</p>
-                    <div className="flex flex-col gap-2 mt-2">
-                      {acceptedApplicants.map((player) => (
-                        <div key={`accepted-${player.userId}`} className="flex items-center gap-3">
-                          <div className="relative w-8 h-8 rounded-full bg-amber-300 shrink-0 overflow-hidden">
-                            <Image
-                              src={player.profileImageUrl || '/profile-image.png'}
-                              alt={`${player.name} 프로필`}
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-                          <div className="flex items-center w-full">
-                            <div className="flex max-sm:flex-col sm:gap-1.5">
-                              <p>{player.name}</p>
-                              <p className="text-text-04">
-                                {player.summary.map((item) => `#${item}`).join('\u00A0\u00A0')}
-                              </p>
+                  ))}
+                  {acceptedApplicants.length > 0 && (
+                    <div className="mt-4">
+                      <p className="text-base">팀원으로 합류한 멤버</p>
+                      <div className="flex flex-col gap-2 mt-2">
+                        {acceptedApplicants.map((player) => (
+                          <div
+                            key={`accepted-${player.userId}`}
+                            className="flex items-center gap-3"
+                          >
+                            <div className="relative w-8 h-8 rounded-full bg-amber-300 shrink-0 overflow-hidden">
+                              <Image
+                                src={player.profileImageUrl || '/profile-image.png'}
+                                alt={`${player.name} 프로필`}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
+                            <div className="flex items-center w-full">
+                              <div className="flex max-sm:flex-col sm:gap-1.5">
+                                <p>{player.name}</p>
+                                <p className="text-text-04">
+                                  {player.summary.map((item) => `#${item}`).join('\u00A0\u00A0')}
+                                </p>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 

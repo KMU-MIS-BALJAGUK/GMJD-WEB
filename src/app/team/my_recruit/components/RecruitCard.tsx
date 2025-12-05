@@ -34,7 +34,7 @@ export default function RecruitManageCard({
 
   return (
     <div
-      className="border border-gray-200 rounded-lg shadow-sm hover:shadow-md bg-white relative hover:scale-105 transition duration-300 cursor-pointer"
+      className="border border-gray-200 rounded-lg shadow-sm hover:shadow-md bg-white relative hover:scale-105 transition duration-300 cursor-pointer h-[280px] flex flex-col"
       onClick={onClick}
       role="button"
       tabIndex={0}
@@ -62,7 +62,7 @@ export default function RecruitManageCard({
         </div>
       </div>
 
-      <div className="p-4 relative">
+      <div className="p-4 relative flex flex-col flex-1">
         <div
           className="absolute top-3 right-3"
           onClick={(e) => e.stopPropagation()}
@@ -71,14 +71,25 @@ export default function RecruitManageCard({
           <MoreMenu teamId={id} status={status} />
         </div>
 
-        <p className="font-semibold text-sm leading-tight line-clamp-2 pr-6">{title}</p>
-        <p className="text-xs text-gray-500 mt-1">{subtitle}</p>
+        <div className="flex-1">
+          <p className="font-semibold text-sm leading-tight line-clamp-2 pr-6">{title}</p>
+          <p className="text-xs text-gray-500 mt-1">{subtitle}</p>
+        </div>
 
-        <p className="flex items-center gap-1 text-sm mt-2">
-          <UsersRound size={15} /> 모집 인원 {totalMembers}명 /
-          <span className="text-blue font-semibold ml-1">지원 {applicants}명</span>
-          <span className="text-blue font-semibold ml-1">/ 현재 {recruitedCount}명</span>
-        </p>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 text-xs text-text-02">
+            <UsersRound size={12} />
+            <span>모집 인원 {totalMembers}명</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded text-xs font-medium">
+              지원 {applicants}명
+            </div>
+            <div className="px-1.5 py-0.5 bg-green-50 text-green-600 rounded text-xs font-medium">
+              현재 팀원 {recruitedCount}명
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
