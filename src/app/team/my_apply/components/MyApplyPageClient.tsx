@@ -19,7 +19,7 @@ export default function MyApplyPageClient() {
 
   const normalizeRecruitStatus = (
     status: '모집중' | '모집완료' | string | undefined,
-    fallbackStatus?: string,
+    fallbackStatus?: string
   ): '모집중' | '모집완료' => {
     const primary = status ?? fallbackStatus;
     if (primary === '모집중') return '모집중';
@@ -29,7 +29,7 @@ export default function MyApplyPageClient() {
   return (
     <>
       <div className="max-w-[1200px] mx-auto max-md:py-7 py-10 px-4 md:px-6 lg:px-8">
-      <h1 className="max-md:text-xl text-2xl font-bold mb-6">팀 관리</h1>
+        <h1 className="max-md:text-xl text-2xl font-bold mb-6">팀 관리</h1>
 
         {/* 탭 */}
         <nav className="flex gap-6 mb-8 border-b pb-2 text-sm">
@@ -65,11 +65,15 @@ export default function MyApplyPageClient() {
         {myAppliedList && myAppliedList.length > 0 && !isLoading && !isError && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {myAppliedList.map((item) => {
-              const recruitStatus = normalizeRecruitStatus(item.recruitStatus as any, item.status as any);
+              const recruitStatus = normalizeRecruitStatus(
+                item.recruitStatus as any,
+                item.status as any
+              );
 
               return (
                 <MyApplyCard
                   key={item.teamId}
+                  contestId={item.contestId}
                   teamId={item.teamId}
                   title={item.contestName}
                   subtitle={item.teamTitle}
@@ -77,7 +81,8 @@ export default function MyApplyPageClient() {
                   memberCount={item.memberCount}
                   maxMember={item.maxMember}
                   recruitStatus={recruitStatus}
-                  onCardClick={handleCardClick} contestId={0}                />
+                  onCardClick={handleCardClick}
+                />
               );
             })}
           </div>
@@ -85,7 +90,11 @@ export default function MyApplyPageClient() {
       </div>
 
       {selectedTeamId && (
-        <TeamInfoPopup open={!!selectedTeamId} setOpen={() => setSelectedTeamId(null)} teamId={selectedTeamId} />
+        <TeamInfoPopup
+          open={!!selectedTeamId}
+          setOpen={() => setSelectedTeamId(null)}
+          teamId={selectedTeamId}
+        />
       )}
     </>
   );

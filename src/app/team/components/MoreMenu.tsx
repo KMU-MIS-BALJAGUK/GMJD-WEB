@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useCloseRecruit } from '@/hooks/team/useCloseRecruit';
 import { useExpireRecruit } from '@/hooks/team/useExpireRecruit';
 import { useCreateChatRoom } from '@/hooks/chat/useCreateChatRoom';
+import { Loader } from 'lucide-react';
 
 interface MoreMenuProps {
   teamId: number;
@@ -37,7 +38,10 @@ export default function MoreMenu({ teamId, status }: MoreMenuProps) {
 
   return (
     <div ref={menuRef} className="relative">
-      <button onClick={() => setOpen(!open)} className="p-2 hover:bg-gray-100 rounded-full cursor-pointer">
+      <button
+        onClick={() => setOpen(!open)}
+        className="p-2 hover:bg-gray-100 rounded-full cursor-pointer"
+      >
         <span className="text-lg">···</span>
       </button>
 
@@ -47,19 +51,22 @@ export default function MoreMenu({ teamId, status }: MoreMenuProps) {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                closeRecruit(teamId, { onSuccess: () => {
-                  setOpen(false);
-                  try {
-                    createChatRoomMutation.mutate({ teamId });
-                  } catch (err) {
-                    // createChatRoom hook will handle toast; log for debugging
-                    console.error('create chat room failed', err);
-                  }
-                } });
+                closeRecruit(teamId, {
+                  onSuccess: () => {
+                    setOpen(false);
+                    try {
+                      createChatRoomMutation.mutate({ teamId });
+                    } catch (err) {
+                      // createChatRoom hook will handle toast; log for debugging
+                      console.error('create chat room failed', err);
+                    }
+                  },
+                });
               }}
               disabled={isClosing}
-              className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 disabled:opacity-60 cursor-pointer"
+              className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 disabled:opacity-60 cursor-pointer flex items-center gap-2"
             >
+              {isClosing && <Loader size={14} className="animate-spin" />}
               {isClosing ? '마감 처리 중...' : '모집 마감'}
             </button>
           )}
@@ -70,8 +77,9 @@ export default function MoreMenu({ teamId, status }: MoreMenuProps) {
                 expireRecruit(teamId, { onSuccess: () => setOpen(false) });
               }}
               disabled={isExpiring}
-              className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 disabled:opacity-60 cursor-pointer"
+              className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 disabled:opacity-60 cursor-pointer flex items-center gap-2"
             >
+              {isExpiring && <Loader size={14} className="animate-spin" />}
               {isExpiring ? '만료 처리 중...' : '모집 만료'}
             </button>
           )}

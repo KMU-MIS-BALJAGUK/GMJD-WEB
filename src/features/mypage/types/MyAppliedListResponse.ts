@@ -7,6 +7,7 @@ export interface MyApplicationItemDto {
   recruitStatus?: 'OPEN' | 'CLOSED' | '모집중' | '모집완료';
   applicationId: number;
   teamId: number;
+  contestId: number;
   contestImageUrl: string;
   contestName: string;
   teamTitle: string;
@@ -17,7 +18,7 @@ export interface MyApplicationItemDto {
 }
 
 export interface MyApplicationListDataDto {
-    myApplyList: MyApplicationItemDto[];
+  myApplyList: MyApplicationItemDto[];
 }
 
 export type MyAppliedListResponse = ApiResponse<MyApplicationListDataDto>;
