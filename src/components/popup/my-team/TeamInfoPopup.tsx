@@ -127,7 +127,7 @@ const TeamInfoPopup = ({
                 {(data?.members ?? []).map((player) => {
                   const isCurrentUser = userProfile?.name === player.name;
                   return (
-                    <div key={player.memberId}>
+                    <div key={player.userId}>
                       <div className="flex items-center gap-3">
                         <div className="relative w-8 h-8 rounded-full bg-gray-200 shrink-0 overflow-hidden">
                           <Image src={player.profileImageUrl || '/profile.png'} alt={player.name} fill className="object-cover" />
