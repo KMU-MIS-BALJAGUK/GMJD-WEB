@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
-import { ChevronRight, UsersRound } from 'lucide-react';
+import { ChevronRight, UsersRound, Loader, X } from 'lucide-react';
 import LayerPopup from '../../common/layerpopup/LayerPopup';
 import Tag from '../../common/Tag';
 import Button from '../../common/Button';
@@ -11,6 +11,7 @@ type ApplicantSummary = {
   userId: number;
   name: string;
   summary: string[];
+  status?: string;
   profileImageUrl?: string;
   detail?: ApplicantDetail;
 };
@@ -19,7 +20,7 @@ interface MyRecruitPopupProps {
   open: boolean;
   setOpen: (value: boolean) => void;
   title?: string;
-  status?: '모집중' | '모집완료';
+  status?: '모집중' | '모집완료' | '모집만료';
   recruitMember?: number;
   applyNumber?: number;
   applicants?: ApplicantSummary[];
@@ -44,10 +45,12 @@ const MyRecruitPopup = ({
   teamId,
 }: MyRecruitPopupProps) => {
   const [applicantPopupOpen, setApplicantPopupOpen] = useState(false);
-  const [selectedApplicant, setSelectedApplicant] = useState<ApplicantSummary | undefined>(undefined);
+  const [selectedApplicant, setSelectedApplicant] = useState<ApplicantSummary | undefined>(
+    undefined
+  );
 
   const { data: fetchedApplicants, isLoading: isApplicantsLoading } = useRecruitApplicants(
-    open ? teamId ?? null : null,
+    open ? teamId ?? null : null
   );
 
   const handleOpenChange = (value: boolean) => {
@@ -64,6 +67,7 @@ const MyRecruitPopup = ({
         userId: item.userId,
         name: item.name,
         summary: item.aiTags,
+        status: item.status,
         profileImageUrl: item.profileImageUrl,
         detail: {
           userId: item.userId,
@@ -78,6 +82,9 @@ const MyRecruitPopup = ({
     }
     return [];
   }, [applicants, fetchedApplicants]);
+
+  const requestedApplicants = resolvedApplicants.filter((p) => p.status === 'REQUESTED');
+  const acceptedApplicants = resolvedApplicants.filter((p) => p.status === 'ACCEPTED');
 
   const handleApplicantClick = (applicant: ApplicantSummary) => {
     setSelectedApplicant(applicant);
@@ -117,46 +124,98 @@ const MyRecruitPopup = ({
             </div>
 
             <div className="flex flex-col gap-5 pt-5 text-text-01">
-              <div className="flex flex-col gap-4 text-[14px]">
-                <p className="text-base">지원자 리스트</p>
+              {resolvedData.status === '모집완료' ? (
+                <div className="flex flex-col items-center gap-4 py-8 text-center">
+                  <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center">
+                    <X size={24} className="text-text-03" />
+                  </div>
+                  <div>
+                    <p className="text-lg font-medium text-text-01 mb-2">모집이 완료되었습니다</p>
+                    <p className="text-text-03 text-sm">
+                      모집을 마감해서 더 이상 지원을 받지 않습니다.
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-4 text-[14px]">
+                  <p className="text-base">지원자 리스트</p>
 
-                {isApplicantsLoading && <p className="text-text-03 text-sm">불러오는 중...</p>}
+                  {isApplicantsLoading && (
+                    <div className="flex items-center gap-1 text-text-03 text-sm">
+                      <Loader size={16} className="animate-spin" />
+                      <span>불러오는 중...</span>
+                    </div>
+                  )}
 
-                {!isApplicantsLoading && resolvedData.applyPlayers.length === 0 && (
-                  <p className="text-text-03 text-sm">지원자가 없습니다.</p>
-                )}
+                  {!isApplicantsLoading && requestedApplicants.length === 0 && (
+                    <div className="flex items-center gap-1 text-text-03 text-sm">
+                      <X size={16} />
+                      <span>승인 대기 중인 유저가 없습니다.</span>
+                    </div>
+                  )}
 
-                {resolvedData.applyPlayers.map((player) => (
-                  <div key={player.userId}>
-                    <div className="flex items-center gap-3">
-                      <div className="relative w-8 h-8 rounded-full bg-amber-300 shrink-0 overflow-hidden">
-                        <Image
-                          src={player.profileImageUrl || '/profile-image.png'}
-                          alt={`${player.name} 프로필`}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <div className="flex justify-between w-full">
-                        <div className="flex max-sm:flex-col sm:gap-1.5">
-                          <p>{player.name}</p>
-                          <p className="text-text-04">
-                            {player.summary.map((item) => `#${item}`).join('\u00A0\u00A0')}
-                          </p>
+                  {requestedApplicants.map((player) => (
+                    <div key={player.userId}>
+                      <div className="flex items-center gap-3">
+                        <div className="relative w-8 h-8 rounded-full bg-amber-300 shrink-0 overflow-hidden">
+                          <Image
+                            src={player.profileImageUrl || '/profile-image.png'}
+                            alt={`${player.name} 프로필`}
+                            fill
+                            className="object-cover"
+                          />
                         </div>
+                        <div className="flex items-center justify-between w-full">
+                          <div className="flex max-sm:flex-col sm:gap-1.5">
+                            <p>{player.name}</p>
+                            <p className="text-text-04">
+                              {player.summary.map((item) => `#${item}`).join('\u00A0\u00A0')}
+                            </p>
+                          </div>
 
-                        <button
-                          className="p-1 cursor-pointer"
-                          onClick={() => handleApplicantClick(player)}
-                          aria-label={`${player.name} 지원자 정보 보기`}
-                        >
-                          <ChevronRight size={20} className="text-text-03 cursor-pointer" />
-                        </button>
+                          <button
+                            className="p-1 cursor-pointer"
+                            onClick={() => handleApplicantClick(player)}
+                            aria-label={`${player.name} 지원자 정보 보기`}
+                          >
+                            <ChevronRight size={20} className="text-text-03 cursor-pointer" />
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                  {acceptedApplicants.length > 0 && (
+                    <div className="mt-4">
+                      <p className="text-base">팀원으로 합류한 멤버</p>
+                      <div className="flex flex-col gap-2 mt-2">
+                        {acceptedApplicants.map((player) => (
+                          <div
+                            key={`accepted-${player.userId}`}
+                            className="flex items-center gap-3"
+                          >
+                            <div className="relative w-8 h-8 rounded-full bg-amber-300 shrink-0 overflow-hidden">
+                              <Image
+                                src={player.profileImageUrl || '/profile-image.png'}
+                                alt={`${player.name} 프로필`}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
+                            <div className="flex items-center w-full">
+                              <div className="flex max-sm:flex-col sm:gap-1.5">
+                                <p>{player.name}</p>
+                                <p className="text-text-04">
+                                  {player.summary.map((item) => `#${item}`).join('\u00A0\u00A0')}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 

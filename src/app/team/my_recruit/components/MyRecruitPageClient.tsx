@@ -1,5 +1,3 @@
-// src/app/team/my_recruit/components/MyRecruitPageClient.tsx
-
 'use client';
 
 import Link from 'next/link';
@@ -13,21 +11,16 @@ import { Megaphone } from 'lucide-react';
 
 interface PopupTeamData {
   title: string;
-  status: '모집중' | '모집완료';
+  status: '모집중' | '모집완료' | '모집만료';
   recruitMember: number;
   applyNumber: number;
 }
 
-const normalizeStatus = (
-  status: 'OPEN' | 'CLOSED' | '모집중' | '모집완료',
-): '모집중' | '모집완료' => {
-  switch (status) {
-    case 'OPEN':
-    case '모집중':
-      return '모집중';
-    default:
-      return '모집완료';
-  }
+const normalizeStatus = (status: string): '모집중' | '모집완료' | '모집만료' => {
+  if (status === 'OPEN' || status === '모집중') return '모집중';
+  if (status === 'CLOSED' || status === '모집완료') return '모집완료';
+  if (status === 'EXPIRED' || status === '모집만료') return '모집만료';
+  return '모집완료';
 };
 
 export default function MyRecruitPageClient() {
@@ -48,8 +41,8 @@ export default function MyRecruitPageClient() {
   };
 
   return (
-    <div className="max-w-[1200px] mx-auto py-10 px-4 md:px-6 lg:px-8">
-      <h1 className="text-2xl font-bold mb-6">팀 모집 관리</h1>
+    <div className="max-w-[1200px] mx-auto max-md:py-7 py-10 px-4 md:px-6 lg:px-8">
+      <h1 className="max-md:text-xl text-2xl font-bold mb-6">팀 관리</h1>
 
       <nav className="flex gap-6 mb-8 border-b pb-2 text-sm">
         <Link href="/team" className="text-gray-600 hover:text-black">
@@ -85,6 +78,7 @@ export default function MyRecruitPageClient() {
               image={team.contestImageUrl}
               totalMembers={team.maxMember}
               applicants={team.requestedCount}
+              recruitedCount={team.memberCount}
               status={normalizeStatus(team.status)}
               onClick={() => handleCardClick(team)}
             />

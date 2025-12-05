@@ -122,7 +122,9 @@ const ContestPageClient = () => {
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[904px]">
       <h1 className="text-2xl font-bold mb-5 max-md:hidden mt-10">공모전</h1>
-      {keyword && <p className="mb-5 text-text-02">{`🔎 "${keyword}"에 대한 검색 결과입니다.`}</p>}
+      {keyword && (
+        <p className="mb-5 text-text-02 max-sm:mb-3 max-sm:mt-5">{`🔎 "${keyword}"에 대한 검색 결과입니다.`}</p>
+      )}
 
       <div className="flex justify-between items-center mb-5 max-md:mt-7">
         <SelectBox

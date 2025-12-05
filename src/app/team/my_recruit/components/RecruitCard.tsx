@@ -4,6 +4,7 @@
 
 import Image from 'next/image';
 import MoreMenu from '@/app/team/components/MoreMenu';
+import Tag from '@/components/common/Tag';
 import { UsersRound } from 'lucide-react';
 
 export interface RecruitManageCardProps {
@@ -13,7 +14,8 @@ export interface RecruitManageCardProps {
   image: string;
   totalMembers: number;
   applicants: number;
-  status: '모집중' | '모집완료';
+  recruitedCount: number;
+  status: '모집중' | '모집완료' | '모집만료';
   onClick?: () => void;
 }
 
@@ -24,6 +26,7 @@ export default function RecruitManageCard({
   image,
   totalMembers,
   applicants,
+  recruitedCount,
   status,
   onClick,
 }: RecruitManageCardProps) {
@@ -31,7 +34,7 @@ export default function RecruitManageCard({
 
   return (
     <div
-      className="border border-gray-200 rounded-lg shadow-sm hover:shadow-md bg-white relative hover:scale-105 transition duration-300 cursor-pointer"
+      className="border border-gray-200 rounded-lg shadow-sm hover:shadow-md bg-white relative hover:scale-105 transition duration-300 cursor-pointer h-[280px] flex flex-col"
       onClick={onClick}
       role="button"
       tabIndex={0}
@@ -39,27 +42,27 @@ export default function RecruitManageCard({
         if (e.key === 'Enter' || e.key === ' ') onClick?.();
       }}
     >
-      {/* 썸네일 */}
       <div className="relative w-full h-[160px] bg-gray-100">
         <Image src={image} alt={title} fill className="object-cover rounded-t-lg" />
 
-        {/* 모집 상태 */}
         <div className="absolute bottom-2 left-2">
           {isOpen ? (
-            <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-semibold shadow">
+            <Tag variant="green" shape="square" className="text-xs">
               모집중
-            </span>
+            </Tag>
+          ) : status === '모집완료' ? (
+            <Tag variant="gray" shape="square" className="text-xs">
+              모집 마감
+            </Tag>
           ) : (
-            <span className="bg-gray-600 text-white px-2 py-1 rounded text-xs font-semibold shadow">
-              모집완료
-            </span>
+            <Tag variant="gray" shape="square" className="text-xs">
+              모집 만료
+            </Tag>
           )}
         </div>
       </div>
 
-      {/* 내용 */}
-      <div className="p-4 relative">
-        {/* 더보기 메뉴 */}
+      <div className="p-4 relative flex flex-col flex-1">
         <div
           className="absolute top-3 right-3"
           onClick={(e) => e.stopPropagation()}
@@ -68,17 +71,25 @@ export default function RecruitManageCard({
           <MoreMenu teamId={id} status={status} />
         </div>
 
-        {/* 제목 */}
-        <p className="font-semibold text-sm leading-tight line-clamp-2 pr-6">{title}</p>
+        <div className="flex-1">
+          <p className="font-semibold text-sm leading-tight line-clamp-2 pr-6">{title}</p>
+          <p className="text-xs text-gray-500 mt-1">{subtitle}</p>
+        </div>
 
-        {/* 기관명 */}
-        <p className="text-xs text-gray-500 mt-1">{subtitle}</p>
-
-        {/* 모집 현황 */}
-        <p className="flex items-center gap-1 text-sm mt-2">
-          <UsersRound size={15} /> 모집 인원 {totalMembers}명{' '}
-          <span className="text-blue-500 font-semibold ml-1">/ 지원 {applicants}명</span>
-        </p>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 text-xs text-text-02">
+            <UsersRound size={12} />
+            <span>모집 인원 {totalMembers}명</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded text-xs font-medium">
+              지원 {applicants}명
+            </div>
+            <div className="px-1.5 py-0.5 bg-green-50 text-green-600 rounded text-xs font-medium">
+              현재 팀원 {recruitedCount}명
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

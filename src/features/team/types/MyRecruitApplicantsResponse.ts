@@ -3,6 +3,7 @@ export interface RecruitApplicantDto {
   profileImageUrl: string;
   name: string;
   aiTags: string[];
+  status?: string;
 }
 
 export interface RecruitApplicantsDataDto {

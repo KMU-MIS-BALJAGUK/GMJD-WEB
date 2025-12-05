@@ -1,4 +1,4 @@
-//src/features/team/types/MyApplyListResponse.ts
+// src/features/team/types/MyApplyListResponse.ts
 // 나의 지원 목록 조회 API 응답 DTO
 
 export interface MyApplyItemDto {
@@ -11,10 +11,14 @@ export interface MyApplyItemDto {
   teamTitle: string;
   memberCount: number;
 
-  // 팀 모집 상태 (OPEN, CLOSED)
-  recruitStatus: 'OPEN' | 'CLOSED';
+  // 팀 모집 상태 (모집중, 모집완료)
+  recruitStatus: '모집중' | '모집완료';
 
-  status: 'PENDING' | 'ACCEPTED' | 'REJECTED';
+  // 모집 상태를 나타내는 필드 (모집중, 모집완료)
+  status: '모집중' | '모집완료';
+
+  // 지원자 수 (있을 경우 사용)
+  requestedCount?: number;
 }
 
 export interface MyApplyListDataDto {
