@@ -113,9 +113,11 @@ const ChatRoom = ({
               <div key={`${msg.roomId}-${msg.userId}-${idx}`}>
                 {!isMine ? (
                   <div className="flex gap-3 items-start mb-3">
-                    <img
-                      src={sender?.userProfileUrl || msg.profileImageUrl}
+                    <Image
+                      src={sender?.userProfileUrl || msg.profileImageUrl || '/profile-image.png'}
                       alt={sender?.userName || 'User'}
+                      width={32}
+                      height={32}
                       className="w-8 h-8 rounded-full cursor-pointer object-cover"
                       onClick={() => handleUserClick(msg.userId)}
                     />

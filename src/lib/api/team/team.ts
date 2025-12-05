@@ -11,6 +11,7 @@ import { TeamMemoUpdateRequest } from '@/features/team/types/TeamMemoUpdateReque
 import { TeamMemoUpdateResponse } from '@/features/team/types/TeamMemoUpdateResponse';
 import { RecruitApplicantsResponse, RecruitApplicantDto } from '@/features/team/types/MyRecruitApplicantsResponse';
 import { RecruitApplicantDetailResponse, RecruitApplicantDetailDto } from '@/features/team/types/MyRecruitApplicantDetailResponse';
+import { MyTeamDetailDto, MyTeamDetailResponseDto } from '@/features/team/types/MyTeamDetailResponse';
 
 import type { TeamApplyRequestDto } from '@/features/team/types/TeamApplyRequest';
 import type { TeamApplyResponseDto } from '@/features/team/types/TeamApplyResponse';
@@ -45,6 +46,12 @@ export async function fetchTeamDetailPublic(teamId: number): Promise<TeamDetailD
   return res.data.data;
 }
 
+// 나의 팀 상세 조회 (멤버 포함)
+export async function fetchMyTeamDetail(teamId: number): Promise<MyTeamDetailDto> {
+  const res = await api.get<MyTeamDetailResponseDto>(`/api/v1/teams/my-teams/${teamId}`);
+  return res.data.data;
+}
+
 // 팀 메모 수정 API
 export async function updateTeamMemo(teamId: number, data: TeamMemoUpdateRequest): Promise<TeamMemoUpdateResponse> {
   const response = await api.patch<TeamMemoUpdateResponse>(`/api/v1/teams/my-teams/${teamId}/memo`, data);
@@ -52,8 +59,8 @@ export async function updateTeamMemo(teamId: number, data: TeamMemoUpdateRequest
 }
 
 // 팀원 내보내기 API
-export async function kickTeamMember(teamId: number, memberId: number): Promise<TeamKickMemberResponse> {
-  const response = await api.delete<TeamKickMemberResponse>(`/api/v1/teams/${teamId}/members/${memberId}`);
+export async function kickTeamMember(teamId: number, userId: number): Promise<TeamKickMemberResponse> {
+  const response = await api.delete<TeamKickMemberResponse>(`/api/v1/teams/${teamId}/members/${userId}`);
   return response.data;
 }
 
@@ -113,6 +120,12 @@ export async function fetchMyRecruitList(): Promise<MyRecruitItemDto[]> {
 // 팀 모집 마감
 export async function closeRecruitTeam(teamId: number): Promise<ApiBaseResponse> {
   const response = await api.patch<ApiBaseResponse>(`/api/v1/teams/${teamId}/close`);
+  return response.data;
+}
+
+// 팀 모집 만료(EXPIRED)
+export async function expireTeam(teamId: number): Promise<ApiBaseResponse> {
+  const response = await api.patch<ApiBaseResponse>(`/api/v1/teams/${teamId}/expire`);
   return response.data;
 }
 

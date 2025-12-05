@@ -11,23 +11,23 @@ const RemovePlayerPopup = ({
   setOpen,
   playerName,
   teamId,
-  memberId,
+  userId,
 }: {
   open: boolean;
   setOpen: (value: boolean) => void;
   playerName: string;
   teamId: number | null;
-  memberId: number | null;
+  userId: number | null;
 }) => {
   const { mutate: kickMember, isPending } = useKickTeamMember();
 
   const handleKick = () => {
-    if (!teamId || !memberId) {
-      console.error('Team ID or Member ID is missing');
+    if (!teamId || !userId) {
+      console.error('Team ID or User ID is missing');
       return;
     }
     kickMember(
-      { teamId, memberId },
+      { teamId, userId },
       {
         onSuccess: () => {
           setOpen(false); // 성공 시 팝업 닫기
@@ -47,7 +47,7 @@ const RemovePlayerPopup = ({
         <CircleAlert className="text-red-400" /> 내보낸 팀원은 복구할 수 없습니다.
       </div>
 
-      <Button variant="ghost" onClick={handleKick} disabled={isPending || !teamId || !memberId}>
+      <Button variant="ghost" onClick={handleKick} disabled={isPending || !teamId || !userId}>
         {isPending ? '내보내는 중...' : '내보내기'}
       </Button>
     </LayerPopup>

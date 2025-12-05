@@ -11,21 +11,16 @@ import { Megaphone } from 'lucide-react';
 
 interface PopupTeamData {
   title: string;
-  status: '모집중' | '모집완료';
+  status: '모집중' | '모집완료' | '모집만료';
   recruitMember: number;
   applyNumber: number;
 }
 
-const normalizeStatus = (
-  status: 'OPEN' | 'CLOSED' | '모집중' | '모집완료'
-): '모집중' | '모집완료' => {
-  switch (status) {
-    case 'OPEN':
-    case '모집중':
-      return '모집중';
-    default:
-      return '모집완료';
-  }
+const normalizeStatus = (status: string): '모집중' | '모집완료' | '모집만료' => {
+  if (status === 'OPEN' || status === '모집중') return '모집중';
+  if (status === 'CLOSED' || status === '모집완료') return '모집완료';
+  if (status === 'EXPIRED' || status === '모집만료') return '모집만료';
+  return '모집완료';
 };
 
 export default function MyRecruitPageClient() {
@@ -83,6 +78,7 @@ export default function MyRecruitPageClient() {
               image={team.contestImageUrl}
               totalMembers={team.maxMember}
               applicants={team.requestedCount}
+              recruitedCount={team.memberCount}
               status={normalizeStatus(team.status)}
               onClick={() => handleCardClick(team)}
             />
