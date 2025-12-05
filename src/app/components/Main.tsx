@@ -18,7 +18,9 @@ const Main = () => {
           sortType: 'popular' as const,
           page: 0,
           size: 4,
-          interest: CATEGORY_MAP[user.categoryList[0]],
+          categoryIdList: user.categoryList
+            .map((category) => CATEGORY_MAP[category])
+            .filter(Boolean),
         }
       : {
           sortType: 'popular' as const,

@@ -48,6 +48,7 @@ export default function MyApplyCard({
       {
         onSuccess: () => {
           toast({
+            variant: 'default',
             title: '지원이 취소되었습니다 ✅',
             description: isRecruitOpen
               ? '다시 지원을 원하시면 언제든지 신청해 주세요.'

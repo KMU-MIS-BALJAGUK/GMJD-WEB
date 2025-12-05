@@ -36,7 +36,7 @@ const ContestPageClient = () => {
 
   const params = {
     sortType: SORT_MAP[activeSort],
-    categoryIds:
+    categoryIdList:
       selectedCategories.length > 0
         ? selectedCategories.map((name) => CATEGORY_MAP[name])
         : undefined,

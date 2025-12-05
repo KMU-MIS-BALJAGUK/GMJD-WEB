@@ -3,7 +3,7 @@ import { fetchContestsList } from '@/lib/api/contest/contest';
 import { ContestsParams } from '@/features/contest/types/contest-request';
 
 interface UseContestsProps {
-  params: ContestsParams; // sortType, categoryIds, page, size
+  params: ContestsParams; // sortType, categoryIdList, page, size
   keyword?: string; // 검색어 (optional)
 }
 
@@ -18,7 +18,7 @@ export function useContests({ params, keyword }: UseContestsProps) {
       params.sortType,
       params.page,
       params.size,
-      JSON.stringify(params.categoryIds),
+      JSON.stringify(params.categoryIdList),
       body.keyword,
     ],
     queryFn: () => fetchContestsList(params, body),

@@ -1,7 +1,7 @@
 export interface ContestsParams {
   // 공모전 리스트 파라미터 DTO
   sortType: 'latest' | 'popular' | 'deadline';
-  categoryIds?: number[];
+  categoryIdList?: number[];
   page?: number;
   size?: number;
 }

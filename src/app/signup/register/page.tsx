@@ -73,9 +73,9 @@ export default function RegisterPage() {
     onSuccess: (data) => {
       console.log('✅ 회원가입 성공:', data);
       toast({
+        variant: 'default',
         title: '회원가입이 성공적으로 완료되었습니다! 🎉',
         description: '메인 페이지로 이동합니다.',
-        variant: 'default',
       });
       router.push('/');
     },
@@ -174,9 +174,9 @@ export default function RegisterPage() {
     if (formData.interest && !categoryId) {
       console.error('유효하지 않은 관심분야 값입니다.');
       toast({
+        variant: 'destructive',
         title: '관심분야 선택 오류 🚨',
         description: '관심분야를 올바르게 선택해주세요.',
-        variant: 'destructive',
       });
       return;
     }
@@ -395,6 +395,14 @@ export default function RegisterPage() {
                   name="skills"
                   value={formData.skills}
                   onChange={handleInputChange}
+                  onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      if (formData.skills.trim()) {
+                        handleAddSkill(formData.skills);
+                      }
+                    }
+                  }}
                   placeholder="활용 가능한 기술을 작성해주세요"
                   icon={
                     <p
@@ -437,6 +445,11 @@ export default function RegisterPage() {
               isLoading={isPending}
               disabled={!isButtonActive || isPending} // 실제 클릭 방지
               onClick={handleSubmit}
+              onKeyDown={(e: React.KeyboardEvent<HTMLButtonElement>) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                }
+              }}
             >
               {isPending ? '등록 중...' : '완료'}
             </Button>
