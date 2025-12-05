@@ -51,7 +51,7 @@ export default function MyTeamPageClient() {
 
       {isError && <Error message="팀 정보를 불러오는 과정에서 문제가 발생했습니다." />}
 
-      {!myTeams && !isLoading && !isError && (
+      {!isLoading && !isError && mergedTeams.length === 0 && (
         <div className="flex flex-col items-center justify-center h-[300px] text-center">
           <div className="p-4 bg-gray-100 rounded-full mb-3">
             <UsersRound className="w-10 h-10 text-gray-400" />
