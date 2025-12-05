@@ -13,6 +13,7 @@ import { fetchTeamDetailPublic, applyTeam } from '@/lib/api/team/team';
 import type { TeamApplyRequestDto } from '@/features/team/types/TeamApplyRequest';
 import type { TeamDetailDto } from '@/features/team/types/TeamDetailResponse';
 import { useToast } from '@/components/ui/use-toast';
+import { useUserProfile } from '@/hooks/mypage/useUserProfile';
 import axios from 'axios';
 
 interface RequestPopupProps {
@@ -31,6 +32,10 @@ interface RequestPopupProps {
 
 export default function RequestPopup({ open, setOpen, teamId }: RequestPopupProps) {
   const { toast } = useToast();
+
+  // 사용자 프로필 조회 (스킬셋 자동 채우기용)
+  const { data: userProfile } = useUserProfile();
+
   // =========================
   // 1. 팀 상세 조회 (TeamDetailDto)
   // =========================
@@ -82,6 +87,13 @@ export default function RequestPopup({ open, setOpen, teamId }: RequestPopupProp
     setAnswers(Array(questions.length).fill(''));
   }, [questions.length, open]);
 
+  // 팝업이 열릴 때 사용자 프로필의 스킬셋으로 초기화
+  useEffect(() => {
+    if (open && userProfile?.skillList && userProfile.skillList.length > 0) {
+      setSkills(userProfile.skillList);
+    }
+  }, [open, userProfile?.skillList]);
+
   // =========================
   // 4. 팀 신청 mutation
   // =========================
@@ -103,6 +115,7 @@ export default function RequestPopup({ open, setOpen, teamId }: RequestPopupProp
     },
     onError: (error) => {
       console.error('팀 신청 실패:', error);
+      setOpen(false);
 
       if (axios.isAxiosError(error)) {
         const errorCode = error.response?.data?.code;
@@ -152,7 +165,8 @@ export default function RequestPopup({ open, setOpen, teamId }: RequestPopupProp
   };
 
   const reset = () => {
-    setSkills([]);
+    // 스킬셋은 사용자 프로필의 스킬로 재설정
+    setSkills(userProfile?.skillList || []);
     setSkillInput('');
     setAnswers(Array(questions.length).fill(''));
   };
@@ -242,6 +256,15 @@ export default function RequestPopup({ open, setOpen, teamId }: RequestPopupProp
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setSkillInput(e.target.value);
                 }}
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (skillInput.trim()) {
+                      addSkills(skillInput);
+                      setSkillInput('');
+                    }
+                  }
+                }}
                 onIconClick={() => {
                   addSkills(skillInput);
                   setSkillInput('');
@@ -293,6 +316,11 @@ export default function RequestPopup({ open, setOpen, teamId }: RequestPopupProp
         <div className="pt-5">
           <Button
             onClick={handleSubmit}
+            onKeyDown={(e: React.KeyboardEvent<HTMLButtonElement>) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+              }
+            }}
             className="w-full"
             variant={checkValidation() || isApplyLoading ? 'disabled' : 'primary'}
             disabled={checkValidation() || isApplyLoading}

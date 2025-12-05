@@ -134,7 +134,11 @@ const HeroSection = () => {
                           <div className="flex gap-1 mb-1.5">
                             <Tag
                               shape="square"
-                              variant="transparentOrange"
+                              variant={
+                                list[safeIndex].remainingDays <= 2
+                                  ? 'transparentOrange'
+                                  : 'transparentBlue'
+                              }
                               className="text-[10px] px-1.5 py-1"
                             >
                               D-{list[safeIndex].remainingDays}
@@ -222,7 +226,11 @@ const HeroSection = () => {
                         <div className="flex gap-1 mb-1.5">
                           <Tag
                             shape="square"
-                            variant="transparentOrange"
+                            variant={
+                              list[(safeIndex + 1) % list.length].remainingDays <= 2
+                                ? 'transparentOrange'
+                                : 'transparentBlue'
+                            }
                             className="text-[10px] px-1.5 py-1"
                           >
                             D-{list[(safeIndex + 1) % list.length].remainingDays}

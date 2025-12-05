@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Button from '../../common/Button';
+import Loading from '../../common/Loading';
+import Error from '../../common/Error';
 import { Crown, PenLine, UsersRound } from 'lucide-react';
 import Input from '../../common/Input';
 import LayerPopup from '../../common/layerpopup/LayerPopup';
@@ -81,13 +83,13 @@ const TeamInfoPopup = ({
   if (isLoading)
     return (
       <LayerPopup open={open} setOpen={setOpen} title="팀 정보">
-        <p>로딩 중...</p>
+        <Loading />
       </LayerPopup>
     );
   if (isError || !data)
     return (
       <LayerPopup open={open} setOpen={setOpen} title="팀 정보">
-        <p>오류가 발생했습니다.</p>
+        <Error message="팀 정보를 불러오는 데 실패했습니다." />
       </LayerPopup>
     );
 

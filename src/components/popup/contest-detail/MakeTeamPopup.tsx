@@ -70,6 +70,7 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
     },
     onError: (error) => {
       console.error('팀 생성 실패:', error);
+      setOpen(false);
 
       if (axios.isAxiosError(error)) {
         // 이제 error는 AxiosError 타입으로 추론됨

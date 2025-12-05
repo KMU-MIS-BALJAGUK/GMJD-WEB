@@ -19,6 +19,7 @@ export const useCreateChatRoom = (options?: UseCreateChatRoomOptions) => {
       queryClient.invalidateQueries({ queryKey: ['chatRoomList'] });
 
       toast({
+        variant: 'default',
         title: '채팅방 생성 완료 🎉',
         description: '팀원들과 대화를 시작해보세요!',
       });

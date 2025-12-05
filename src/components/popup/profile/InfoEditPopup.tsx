@@ -165,6 +165,7 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
             description: '관심분야를 올바르게 선택해주세요.',
             variant: 'destructive',
           });
+          setOpen(false);
           return;
         }
 
@@ -213,6 +214,11 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
               className="w-full"
               variant="primary"
               onClick={handleSubmit}
+              onKeyDown={(e: React.KeyboardEvent<HTMLButtonElement>) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                }
+              }}
               disabled={mutations.updateIntroMutation.isPending}
             >
               {mutations.updateIntroMutation.isPending ? '수정 중...' : '수정 완료'}
@@ -343,6 +349,11 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
               className="w-full"
               variant="primary"
               onClick={handleSubmit}
+              onKeyDown={(e: React.KeyboardEvent<HTMLButtonElement>) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                }
+              }}
               disabled={mutations.updateEducationMutation.isPending}
             >
               {mutations.updateEducationMutation.isPending ? '수정 중...' : '수정 완료'}
@@ -359,6 +370,15 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
               className="mt-1"
               value={skill}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSkill(e.target.value)}
+              onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  if (skill.trim()) {
+                    addSkills(skill);
+                    setSkill('');
+                  }
+                }
+              }}
               icon={
                 <p
                   className="text-blue text-xs font-extrabold"
@@ -398,6 +418,11 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
               className="w-full"
               variant="primary"
               onClick={handleSubmit}
+              onKeyDown={(e: React.KeyboardEvent<HTMLButtonElement>) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                }
+              }}
               disabled={mutations.updateSkillsMutation.isPending}
             >
               {mutations.updateSkillsMutation.isPending ? '수정 중...' : '수정 완료'}
@@ -424,6 +449,11 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
               className="w-full"
               variant="primary"
               onClick={handleSubmit}
+              onKeyDown={(e: React.KeyboardEvent<HTMLButtonElement>) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                }
+              }}
               disabled={mutations.updateCategoriesMutation.isPending}
             >
               {mutations.updateCategoriesMutation.isPending ? '수정 중...' : '수정 완료'}
