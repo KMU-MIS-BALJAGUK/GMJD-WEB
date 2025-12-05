@@ -1,19 +1,20 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import Button from "@/components/common/Button";
-import Tag from "@/components/common/Tag";
-import { UsersRound } from "lucide-react";
-import { useCancelApplication } from "@/hooks/mypage/useCancelApplication";
+import NextImage from 'next/image';
+import Button from '@/components/common/Button';
+import Tag from '@/components/common/Tag';
+import { UsersRound } from 'lucide-react';
+import { useCancelApplication } from '@/hooks/mypage/useCancelApplication';
 
 export interface MyApplyCardProps {
+  contestId: number;
   teamId: number;
   title: string;
   subtitle: string;
   image: string;
-  memberCount: number;
-  maxMember: number;
-  recruitStatus: "\ubaa8\uc9d1\uc911" | "\ubaa8\uc9d1\uc644\ub8cc";
+  memberCount: number; // 모집된 인원
+  maxMember: number; // 모집 목표 인원
+  recruitStatus: '모집중' | '모집완료';
   onCardClick: (teamId: number) => void;
 }
 
@@ -28,7 +29,7 @@ export default function MyApplyCard({
   onCardClick,
 }: MyApplyCardProps) {
   const { mutate: cancelApplication, isPending: isCancelling } = useCancelApplication();
-  const isRecruitOpen = recruitStatus === "\ubaa8\uc9d1\uc911";
+  const isRecruitOpen = recruitStatus === '모집중';
 
   const handleCancel = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -43,15 +44,18 @@ export default function MyApplyCard({
         disabled={isCancelling}
         onClick={handleCancel}
       >
-        {isCancelling ? "\ucde8\uc18c \uc9c4\ud589\uc911..." : "\uc2e0\uccad \ucde8\uc18c"}
+        {isCancelling ? '취소 중...' : '신청 취소'}
       </Button>
     ) : (
       <Button
         className="w-full mt-4 bg-gray-200 text-gray-700 hover:bg-gray-300 cursor-pointer border border-gray-300"
         variant="ghost"
-        disabled
+        onClick={(e) => {
+          e.stopPropagation();
+          handleCancel(e);
+        }}
       >
-        ???
+        삭제
       </Button>
     );
   };
@@ -62,8 +66,8 @@ export default function MyApplyCard({
       onClick={() => onCardClick(teamId)}
     >
       <div className="relative w-full h-[160px] bg-gray-100">
-        <Image
-          src={image || "/profile-image.png"}
+        <NextImage
+          src={image}
           alt={title}
           fill
           className="object-cover rounded-t-lg"
@@ -73,11 +77,11 @@ export default function MyApplyCard({
         <div className="absolute bottom-2 left-2">
           {isRecruitOpen ? (
             <Tag variant="green" shape="square" className="text-xs">
-              ???
+              모집중
             </Tag>
           ) : (
             <Tag variant="gray" shape="square" className="text-xs">
-              ????
+              모집완료
             </Tag>
           )}
         </div>
@@ -88,8 +92,8 @@ export default function MyApplyCard({
         <p className="text-xs text-gray-500 mt-1">{subtitle}</p>
 
         <p className="flex items-center gap-1 text-sm mt-2">
-          <UsersRound size={15} /> ?? ?? {maxMember}?/
-          <span className="text-blue font-semibold ml-1">?? {memberCount}?</span>
+          <UsersRound size={15} /> 모집 인원 {maxMember}명 /
+          <span className="text-blue font-semibold ml-1">현재 {memberCount}명</span>
         </p>
 
         <div className="mt-auto pt-4 h-[44px] flex items-end">{renderActionButton()}</div>
