@@ -19,6 +19,7 @@ import { useContests } from '@/hooks/contest/useContests';
 import { ContestItemDto } from '@/features/contest/types/contest-response';
 import Loading from '@/components/common/Loading';
 import Error from '@/components/common/Error';
+import { Search } from 'lucide-react';
 
 const ContestPageClient = () => {
   const searchParams = useSearchParams();
@@ -152,7 +153,29 @@ const ContestPageClient = () => {
       {isLoading && <Loading />}
       {isError && <Error />}
 
-      {contestList && !isLoading && (
+      {/* 검색결과 없음 UI */}
+      {!isLoading && !isError && contestList && contestList.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <div className="p-4 bg-bg-02 rounded-full mb-4">
+            <Search className="w-12 h-12 text-text-03" />
+          </div>
+          <h3 className="text-lg font-medium text-text-01 mb-2">
+            {keyword ? '검색 결과가 없어요' : '공모전이 없어요'}
+          </h3>
+          <p className="text-text-03 text-sm mb-1">
+            {keyword
+              ? `"${keyword}"에 대한 검색 결과를 찾을 수 없어요.`
+              : '현재 조건에 맞는 공모전이 없습니다.'}
+          </p>
+          <p className="text-text-03 text-sm">
+            {keyword
+              ? '다른 키워드로 검색해보거나 필터를 변경해보세요.'
+              : '필터 조건을 변경하거나 잠시 후 다시 확인해주세요.'}
+          </p>
+        </div>
+      )}
+
+      {contestList && contestList.length > 0 && !isLoading && (
         <div className="flex justify-center">
           <div className="grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid gap-x-6 gap-y-6">
             {contestList?.map((contest: ContestItemDto) => (
@@ -162,7 +185,7 @@ const ContestPageClient = () => {
         </div>
       )}
 
-      {contestList && !isLoading && (
+      {contestList && contestList.length > 0 && !isLoading && (
         <div className="mt-10 mb-5 flex justify-center">
           <Pagination>
             <PaginationContent>

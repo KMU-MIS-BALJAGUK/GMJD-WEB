@@ -364,7 +364,7 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
         // 🔹 스킬셋 수정
         <div className="flex flex-col gap-5">
           <div>
-            <p>스킬셋</p>
+            <p className="mb-2">스킬셋</p>
             <Input
               placeholder="스킬을 입력해주세요."
               value={skill}
@@ -432,7 +432,7 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
         // 🔹 관심분야 수정
         <div className="flex flex-col gap-5">
           <div>
-            <p>관심분야</p>
+            <p className="mb-2">관심분야</p>
             <SelectBox
               type="single"
               placeholder="선택해주세요"
