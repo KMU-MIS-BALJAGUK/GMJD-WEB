@@ -367,7 +367,6 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
             <p>스킬셋</p>
             <Input
               placeholder="스킬을 입력해주세요."
-              className="mt-1"
               value={skill}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSkill(e.target.value)}
               onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -381,7 +380,7 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
               }}
               icon={
                 <p
-                  className="text-blue text-xs font-extrabold"
+                  className="text-blue text-xs font-extrabold cursor-pointer"
                   onClick={() => {
                     if (!skill.trim()) return;
                     addSkills(skill);

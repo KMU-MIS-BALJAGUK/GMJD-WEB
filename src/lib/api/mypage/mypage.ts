@@ -9,7 +9,10 @@ import {
   CategoryRequestDto,
   IntroductionRequestDto,
 } from '@/features/mypage/types/my-profile-request';
-import { MyApplicationItemDto, MyAppliedListResponse } from '@/features/mypage/types/MyAppliedListResponse';
+import {
+  MyApplicationItemDto,
+  MyAppliedListResponse,
+} from '@/features/mypage/types/MyAppliedListResponse';
 import { MyApplyCancelRequest } from '@/features/mypage/types/MyApplyCancelRequest';
 import { MyApplyCancelResponse } from '@/features/mypage/types/MyApplyCancelResponse';
 

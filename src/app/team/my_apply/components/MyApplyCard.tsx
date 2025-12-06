@@ -87,7 +87,7 @@ export default function MyApplyCard({
 
   return (
     <div
-      className="border border-gray-200 rounded-lg shadow-sm hover:shadow-md bg-white relative hover:scale-105 transition duration-300 cursor-pointer h-[310px] flex flex-col"
+      className="border border-gray-200 rounded-lg shadow-sm hover:shadow-md bg-white relative hover:scale-105 transition duration-300 cursor-pointer flex flex-col"
       onClick={handleCardClick}
     >
       <div className="relative w-full h-[160px] bg-gray-100 flex-shrink-0">
@@ -112,13 +112,13 @@ export default function MyApplyCard({
         </div>
       </div>
 
-      <div className="p-4 pb-4 relative flex flex-col h-[150px]">
-        <div className="flex-1 min-h-0 mb-3">
-          <p className="font-semibold text-sm leading-tight line-clamp-2 pr-6">{title}</p>
-          <p className="text-xs text-gray-500 mt-1">{subtitle}</p>
+      <div className="p-4 flex flex-col gap-3 flex-1">
+        <div className="flex flex-col gap-2">
+          <p className="font-semibold text-sm leading-tight pr-6">{title}</p>
+          <p className="text-xs text-gray-500">{subtitle}</p>
         </div>
 
-        <div className="flex items-center gap-2 mb-4">
+        <div className="flex items-center gap-2">
           <div className="flex items-center gap-1 text-xs text-text-02">
             <UsersRound size={12} />
             <span>모집 {maxMember}명</span>
@@ -130,7 +130,7 @@ export default function MyApplyCard({
           </div>
         </div>
 
-        <div className="h-8 flex items-center mb-2">{renderActionButton()}</div>
+        <div className="mt-auto">{renderActionButton()}</div>
       </div>
     </div>
   );
