@@ -100,15 +100,21 @@ const PopupClient = () => {
       <MakeTeamPopup
         open={open1}
         setOpen={setOpen1}
-        contestId={10}   // 데모용이여서 1 같은 고정 값 
+        contestId={10} // 데모용이여서 1 같은 고정 값
       />
       <RequestPopup
         open={open2}
         setOpen={setOpen2}
-        teamId={1}   // 데모 페이지 임시값 
+        teamId={1} // 데모 페이지 임시값
       />
       <TeamInfoPopup open={open3} setOpen={setOpen3} teamId={1} />
-      <RemovePlayerPopup open={open4} setOpen={setOpen4} playerName="홍길동" teamId={1} userId={2} />
+      <RemovePlayerPopup
+        open={open4}
+        setOpen={setOpen4}
+        playerName="홍길동"
+        teamId={1}
+        userId={2}
+      />
       <MyRecruitPopup open={open5} setOpen={setOpen5} />
       <PlayerInfoPopup open={open6} setOpen={setOpen6} />
       <InfoEditPopup
