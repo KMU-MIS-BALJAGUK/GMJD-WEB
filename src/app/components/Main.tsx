@@ -3,15 +3,24 @@
 import React from 'react';
 import ContestCard from '@/components/common/contest/ContestCard';
 import { useUserProfile } from '@/hooks/mypage/useUserProfile';
-import { CATEGORY_MAP } from '@/constants/contest';
+import { useCategories } from '@/hooks/categories/useCategories';
 import { useContests } from '@/hooks/contest/useContests';
 import { ContestItemDto } from '@/features/contest/types/contest-response';
 import ContestCardSkeleton from '@/components/common/contest/ContestCardSkeleton';
 import { Package } from 'lucide-react';
 
 const Main = () => {
-  const { data: user, isLoading: userLoading } = useUserProfile(); // 스켈레톤 UI
+  const { data: user, isLoading: userLoading } = useUserProfile();
+  const { data: categories } = useCategories();
   const isLoggedIn = !!user;
+
+  // 카테고리 이름-ID 매핑 생성
+  const categoryMap =
+    categories?.reduce((acc, category) => {
+      acc[category.name] = category.id;
+      return acc;
+    }, {} as Record<string, number>) || {};
+
   const recommendContestsParams =
     isLoggedIn && user.categoryList?.length > 0
       ? {
@@ -19,7 +28,7 @@ const Main = () => {
           page: 0,
           size: 4,
           categoryIdList: user.categoryList
-            .map((category) => CATEGORY_MAP[category])
+            .map((category) => categoryMap[category])
             .filter(Boolean),
         }
       : {

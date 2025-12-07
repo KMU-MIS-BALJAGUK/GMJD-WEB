@@ -13,9 +13,10 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination';
 
-import { CATEGORY_MAP, SORT_MAP } from '@/constants/contest';
+import { SORT_MAP } from '@/constants/contest';
 import { useSearchParams } from 'next/navigation';
 import { useContests } from '@/hooks/contest/useContests';
+import { useCategories } from '@/hooks/categories/useCategories';
 import { ContestItemDto } from '@/features/contest/types/contest-response';
 import Loading from '@/components/common/Loading';
 import Error from '@/components/common/Error';
@@ -23,6 +24,7 @@ import { Search } from 'lucide-react';
 
 const ContestPageClient = () => {
   const searchParams = useSearchParams();
+  const { data: categories, isLoading: categoriesLoading } = useCategories();
 
   const keyword = searchParams.get('keyword') ?? '';
   const size = 30;
@@ -35,11 +37,18 @@ const ContestPageClient = () => {
   const [activeSort, setActiveSort] = useState('전체');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
+  // 카테고리 이름-ID 매핑 생성
+  const categoryMap =
+    categories?.reduce((acc, category) => {
+      acc[category.name] = category.id;
+      return acc;
+    }, {} as Record<string, number>) || {};
+
   const params = {
     sortType: SORT_MAP[activeSort],
     categoryIdList:
       selectedCategories.length > 0
-        ? selectedCategories.map((name) => CATEGORY_MAP[name])
+        ? selectedCategories.map((name) => categoryMap[name])
         : undefined,
     page,
     size,
@@ -78,15 +87,11 @@ const ContestPageClient = () => {
 
   const sortOptions = ['전체', '인기순', '마감임박순'];
 
-  const categories = [
-    { value: '기획/아이디어', label: '기획/아이디어' },
-    { value: '광고/마케팅', label: '광고/마케팅' },
-    { value: '사진/영상/UCC', label: '사진/영상/UCC' },
-    { value: '디자인/순수미술/공예', label: '디자인/순수미술/공예' },
-    { value: '네이밍/슬로건', label: '네이밍/슬로건' },
-    { value: '캐릭터/만화/게임', label: '캐릭터/만화/게임' },
-    { value: '건축/건설/인테리어', label: '건축/건설/인테리어' },
-  ];
+  const categoryOptions =
+    categories?.map((cat) => ({
+      value: cat.name,
+      label: cat.name,
+    })) || [];
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -130,7 +135,7 @@ const ContestPageClient = () => {
       <div className="flex justify-between items-center mb-5 max-md:mt-7">
         <SelectBox
           type="multiple"
-          options={categories}
+          options={categoryOptions}
           value={selectedCategories}
           onChange={setSelectedCategories}
           placeholder="전체"
