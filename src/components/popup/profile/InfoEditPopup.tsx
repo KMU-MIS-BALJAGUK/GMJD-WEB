@@ -132,12 +132,19 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
         const DEFAULT_EDUCATION = EDUCATION_MAP['대학교'];
         const DEFAULT_DEGREE = DEGREE_MAP['대학교 (4년제)'];
 
+        // 대학원 선택 시 특별 처리
+        const isGraduateSchool = selectedMajorType === '대학원';
+
         const body: EducationInfoRequestDto = {
           universityName: univ,
           major: major,
-          // 한글 -> ENUM 변환하여 전송 (EDUCATION_MAP, DEGREE_MAP 사용)
-          education: EDUCATION_MAP[selectedEducation] || DEFAULT_EDUCATION,
-          recognizedDegree: DEGREE_MAP[selectedMajorType] || DEFAULT_DEGREE,
+          // 대학원일 때는 education을 MASTER로, recognizedDegree를 null로
+          education: isGraduateSchool
+            ? 'MASTER'
+            : EDUCATION_MAP[selectedEducation] || DEFAULT_EDUCATION,
+          recognizedDegree: isGraduateSchool
+            ? null
+            : DEGREE_MAP[selectedMajorType] || DEFAULT_DEGREE,
         };
         mutations.updateEducationMutation.mutate(body, {
           onSuccess: () => {

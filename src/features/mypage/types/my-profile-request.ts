@@ -10,7 +10,7 @@ export interface EducationInfoRequestDto {
   universityName: string;
   major: string;
   education: EducationLevel;
-  recognizedDegree: RecognizedDegree;
+  recognizedDegree: RecognizedDegree | null;
 }
 
 // 3. 관심분야 수정 요청 DTO

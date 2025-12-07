@@ -1,8 +1,9 @@
 import { CATEGORY_MAP } from './contest';
 
-export const EDUCATION_MAP: Record<string, 'HIGH_SCHOOL' | 'UNIVERSITY'> = {
+export const EDUCATION_MAP: Record<string, 'HIGH_SCHOOL' | 'UNIVERSITY' | 'MASTER'> = {
   고등학교: 'HIGH_SCHOOL',
   대학교: 'UNIVERSITY',
+  대학원: 'MASTER',
 };
 export type EducationLevel = (typeof EDUCATION_MAP)[keyof typeof EDUCATION_MAP];
 

@@ -1,7 +1,7 @@
 // 회원가입 POST 데이터 DTO
 export interface UserProfileDto {
   introduction: string;
-  education: 'HIGH_SCHOOL' | 'UNIVERSITY';
+  education: 'HIGH_SCHOOL' | 'UNIVERSITY' | 'MASTER';
   universityName: string | null;
   recognizedDegree: string | null;
   major: string | null;

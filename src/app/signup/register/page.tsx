@@ -188,15 +188,22 @@ export default function RegisterPage() {
       major: null,
     };
 
+    // 대학원 선택 시 특별 처리
+    const isGraduateSchool = selectedMajorType === '대학원';
+
     const universityData = {
       universityName: formData.school.trim(),
-      recognizedDegree: DEGREE_MAP[selectedMajorType],
+      recognizedDegree: isGraduateSchool ? null : DEGREE_MAP[selectedMajorType],
       major: formData.department.trim(),
     };
 
     const submitData: UserProfileDto = {
       introduction: formData.intro.trim(),
-      education: EDUCATION_MAP[selectedEducation], // 'HIGH_SCHOOL' 또는 'UNIVERSITY' 또는 'MASTER'
+      education: isHighschool
+        ? EDUCATION_MAP[selectedEducation]
+        : isGraduateSchool
+        ? 'MASTER'
+        : EDUCATION_MAP[selectedEducation],
       categoryIds: categoryId ? [categoryId] : [],
       skills: skillsList,
       ...(isHighschool ? highschoolData : universityData),
