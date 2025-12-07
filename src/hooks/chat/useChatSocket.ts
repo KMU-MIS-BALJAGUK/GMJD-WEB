@@ -20,7 +20,7 @@ export function useChatSocket(roomId: number | null) {
     }
 
     // SockJS 연결 설정
-    const socket = new SockJS('http://dev.gmjd.site/ws/chat');
+    const socket = new SockJS('https://dev.gmjd.site/ws/chat');
     const stompClient = new Client({
       webSocketFactory: () => socket as any,
       connectHeaders: {
