@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '../../common/Button';
 import { CircleMinus, CirclePlus, CircleX } from 'lucide-react';
 import Input from '../../common/Input';
@@ -39,11 +39,12 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
   const [content, setContent] = useState<string>('');
   const [question, setQuestion] = useState<string[]>([]);
   const [questionInput, setQuestionInput] = useState<string>('');
-  const [questionSuggestions, setQuestionSuggestions] = useState<string[]>(DEFAULT_AI_QUESTIONS);
+  // questionSuggestions 상태 제거
 
-  // 2. 뮤테이션 훅
-  // AI 추천 질문 mutation
-  const { mutate: getAiQuestions, isPending: isAiLoading } = useAiQuestionRecommend();
+  // AI 추천 질문 useQuery 훅 (팝업 열릴 때 자동 호출)
+  const { data: aiQuestions, isLoading: isAiLoading } = useAiQuestionRecommend(contestId);
+
+  // useEffect 제거
   
   // 팀 생성 mutation
   const { mutate: createTeamMutate, isPending } = useMutation<
@@ -82,35 +83,12 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
             description: '잠시 후 다시 시도해주세요.',
           });
         }
-      } else {
-        toast({
-          variant: 'destructive',
-          title: '팀 생성에 실패했어요 🥲',
-          description: '잠시 후 다시 시도해주세요.',
-        });
       }
     },
   });
 
   // 4. 헬퍼 함수들
-  const handleGetAiQuestions = () => {
-    getAiQuestions({ contestId }, {
-      onSuccess: (data) => {
-        if(data && data.length > 0) {
-          setQuestionSuggestions(data);
-        }
-      },
-      onError: () => {
-        // AI 추천 질문 실패 시 기본 질문으로 설정
-        setQuestionSuggestions(DEFAULT_AI_QUESTIONS);
-        toast({
-          variant: 'destructive',
-          title: 'AI 추천 질문을 불러오는데 실패했어요.',
-          description: '기본 추천 질문을 표시합니다.',
-        });
-      }
-    });
-  };
+  // handleGetAiQuestions 함수 제거됨
 
   const addQuestion = (q: string) => {
     const trimmed = q.trim();
@@ -131,7 +109,7 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
     setContent('');
     setQuestion([]);
     setQuestionInput('');
-    setQuestionSuggestions(DEFAULT_AI_QUESTIONS);
+    // setQuestionSuggestions(DEFAULT_AI_QUESTIONS); // 리셋 시 기본 질문으로 (삭제)
   };
 
   const checkValidation = () => {
@@ -159,6 +137,9 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
     };
     createTeamMutate(payload);
   };
+
+  // 화면에 표시할 AI 질문 목록 (aiQuestions 데이터 또는 기본 질문)
+  const suggestionsToShow = (aiQuestions && aiQuestions.length > 0) ? aiQuestions : DEFAULT_AI_QUESTIONS;
 
   // 5. 렌더링
   return (
@@ -245,11 +226,13 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
               <p>💬 AI 추천 질문 리스트</p>
-              <Button variant='ghost' onClick={handleGetAiQuestions} disabled={isAiLoading}>
-                {isAiLoading ? '불러오는 중...' : '새로 추천받기'}
-              </Button>
+              {isAiLoading ? (
+                <p className="text-text-03 text-sm">불러오는 중...</p>
+              ) : (
+                null // 또는 빈 Fragment
+              )}
             </div>
-            {questionSuggestions.map((q, index) => (
+            {suggestionsToShow.map((q, index) => (
               <span
                 key={index}
                 className="inline-flex items-center text-sm px-4 py-2 border border-blue rounded-3xl text-blue bg-white cursor-pointer hover:bg-bg-blue"
@@ -278,3 +261,4 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
 };
 
 export default MakeTeamPopup;
+
