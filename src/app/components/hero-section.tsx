@@ -141,7 +141,9 @@ const HeroSection = () => {
                               }
                               className="text-[10px] px-1.5 py-1"
                             >
-                              D-{list[safeIndex].remainingDays}
+                              {list[safeIndex].remainingDays === 0
+                                ? 'D-Day'
+                                : `D-${list[safeIndex].remainingDays}`}
                             </Tag>
                             <Tag
                               shape="square"
@@ -233,7 +235,9 @@ const HeroSection = () => {
                             }
                             className="text-[10px] px-1.5 py-1"
                           >
-                            D-{list[(safeIndex + 1) % list.length].remainingDays}
+                            {list[(safeIndex + 1) % list.length].remainingDays === 0
+                              ? 'D-Day'
+                              : `D-${list[(safeIndex + 1) % list.length].remainingDays}`}
                           </Tag>
                           <Tag
                             shape="square"

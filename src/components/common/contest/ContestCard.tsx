@@ -28,7 +28,7 @@ export default function ContestCard({ contest }: ContestCardProps) {
           {/* 태그 */}
           <div className="flex items-center gap-[6px] text-xs mb-[12px]">
             <Tag variant={contest.remainingDays <= 2 ? 'orange' : 'blue'} shape="square">
-              D-{contest.remainingDays}
+              {contest.remainingDays === 0 ? 'D-Day' : `D-${contest.remainingDays}`}
             </Tag>
 
             <Tag variant="gray" shape="square">
