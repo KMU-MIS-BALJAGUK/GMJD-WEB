@@ -303,7 +303,9 @@ export default function RequestPopup({ open, setOpen, teamId }: RequestPopupProp
             <div className="flex flex-col gap-4">
               {questions.map((q, index) => (
                 <div key={index} className="flex flex-col gap-1">
-                  <p className="text-[14px]">{`질문 ${index + 1}. ${q}`}</p>
+                  <p className="text-[14px]">
+                    <strong>Q{index + 1}.</strong> {q}
+                  </p>
                   <Input
                     placeholder="답변을 작성해주세요."
                     value={answers[index] ?? ''}
