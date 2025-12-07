@@ -140,10 +140,10 @@ const TeamInfoPopup = ({
 
               <div className="flex flex-col gap-4 text-[14px]">
                 <p className="text-base">팀원 관리</p>
-                {(data?.members ?? []).map((player) => {
+                {(data?.members ?? []).map((player, index) => {
                   const isCurrentUser = userProfile?.name === player.name;
                   return (
-                    <div key={player.memberId}>
+                    <div key={`${player.memberId}-${player.name}-${index}`}>
                       <div className="flex items-center gap-3">
                         <div className="relative w-8 h-8 rounded-full bg-gray-200 shrink-0">
                           <Image
