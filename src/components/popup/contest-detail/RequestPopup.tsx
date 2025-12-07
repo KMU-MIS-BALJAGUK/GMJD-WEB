@@ -126,6 +126,12 @@ export default function RequestPopup({ open, setOpen, teamId }: RequestPopupProp
             title: '팀 신청에 실패했어요 🥲',
             description: '본인이 생성한 팀에는 신청할 수 없습니다.',
           });
+        } else if (errorCode === 40005) {
+          toast({
+            variant: 'destructive',
+            title: '팀 신청에 실패했어요 🥲',
+            description: '해당 공모전에 이미 참여 중인 팀이 있습니다.',
+          });
         } else if (errorCode === 40900) {
           toast({
             variant: 'destructive',
