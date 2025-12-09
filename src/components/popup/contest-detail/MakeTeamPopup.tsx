@@ -54,8 +54,15 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
   >({
     mutationFn: (body) => createTeam(contestId, body),
     onSuccess: async () => {
+      // 팀 생성 후 관련 쿼리들 무효화
       await queryClient.invalidateQueries({
         queryKey: ['contestTeams', contestId],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ['myTeams'],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ['myRecruitTeams'],
       });
       reset();
       setOpen(false);

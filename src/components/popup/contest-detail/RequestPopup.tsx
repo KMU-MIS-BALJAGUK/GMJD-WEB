@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import Button from '../../common/Button';
 import { CalendarDays, UsersRound, X } from 'lucide-react';
@@ -32,6 +32,7 @@ interface RequestPopupProps {
 
 export default function RequestPopup({ open, setOpen, teamId }: RequestPopupProps) {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   // 사용자 프로필 조회 (스킬셋 자동 채우기용)
   const { data: userProfile } = useUserProfile();
@@ -105,6 +106,10 @@ export default function RequestPopup({ open, setOpen, teamId }: RequestPopupProp
       return applyTeam(teamId, body);
     },
     onSuccess: () => {
+      // 팀 신청 후 관련 캐시 무효화
+      queryClient.invalidateQueries({ queryKey: ['myAppliedList'] });
+      queryClient.invalidateQueries({ queryKey: ['recruitApplicants', teamId] });
+      
       reset();
       setOpen(false);
       toast({
