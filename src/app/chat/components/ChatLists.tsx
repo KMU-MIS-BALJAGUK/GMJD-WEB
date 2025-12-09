@@ -80,7 +80,7 @@ const ChatLists = ({
                   </p>
                 </div>
 
-                <div className="flex flex-col items-end justify-between py-1">
+                <div className="flex flex-col items-end justify-between">
                   {room.lastChatInfo.lastMessageAt && (
                     <p className="text-[11px] text-text-03">
                       {formatChatTime(room.lastChatInfo.lastMessageAt)}
