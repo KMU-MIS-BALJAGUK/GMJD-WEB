@@ -211,7 +211,7 @@ const TeamInfoPopup = ({
                 <Button
                   className="w-full"
                   variant="primary"
-                  onClick={() => console.log('팀 채팅 이동')}
+                  onClick={() => router.push(`/chat?roomId=${data.chatRoomId}`)}
                 >
                   팀 채팅
                 </Button>
