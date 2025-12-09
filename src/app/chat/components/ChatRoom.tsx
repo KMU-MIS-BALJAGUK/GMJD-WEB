@@ -6,9 +6,9 @@ import { ChevronLeft, CircleArrowUp, MessageSquareDashed, UsersRound } from 'luc
 import Image from 'next/image';
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import PlayerInfoPopup from '@/components/popup/my-recruit/PlayerInfoPopup';
+import ChatMemberInfoPopup from '@/components/popup/chat/ChatMemberInfoPopup';
 import { useChatMessages } from '@/hooks/chat/useChatMessages';
-import { ChatMessageDTO } from '@/features/chat/type/chatMessage';
+import { ChatMessageDTO, TeamMember } from '@/features/chat/type/chatMessage';
 import { ChatRoomDTO } from '@/features/chat/type/chatResponse';
 import { useChatSocket } from '@/hooks/chat/useChatSocket';
 import { useUserProfile } from '@/hooks/mypage/useUserProfile';
@@ -24,7 +24,7 @@ const ChatRoom = ({
 }) => {
   const router = useRouter();
   const [openInfo, setOpenInfo] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [inputValue, setInputValue] = useState('');
@@ -50,7 +50,8 @@ const ChatRoom = ({
   }, [messages.length]);
 
   const handleUserClick = (userId: number) => {
-    setSelectedUserId(userId);
+    const member = teamMembers.find((m) => m.userId === userId);
+    setSelectedMember(member || null);
     setOpenInfo(true);
   };
 
@@ -183,7 +184,12 @@ const ChatRoom = ({
         />
       </div>
 
-      <PlayerInfoPopup open={openInfo} setOpen={setOpenInfo} />
+      <ChatMemberInfoPopup
+        open={openInfo}
+        setOpen={setOpenInfo}
+        member={selectedMember}
+        teamId={roomInfo.contestInfo.teamId}
+      />
     </div>
   );
 };
