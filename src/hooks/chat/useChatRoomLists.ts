@@ -6,6 +6,6 @@ export const useChatRoomList = () => {
   return useQuery<ChatRoomDTO[]>({
     queryKey: ['chatRoomList'],
     queryFn: getChatRoomList,
-    staleTime: 1000 * 60, // 1분 캐싱
+    staleTime: 1000 * 10, // 10초로 줄임
   });
 };

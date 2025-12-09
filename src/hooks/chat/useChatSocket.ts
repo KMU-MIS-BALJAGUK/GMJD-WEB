@@ -63,6 +63,25 @@ export function useChatSocket(roomId: number | null) {
               }),
             };
           });
+
+          // 채팅룸 리스트의 마지막 메시지 정보도 업데이트
+          queryClient.setQueryData(['chatRoomList'], (oldData: any) => {
+            if (!oldData) return oldData;
+
+            return oldData.map((room: any) => {
+              if (room.chatroomId === roomId) {
+                return {
+                  ...room,
+                  lastChatInfo: {
+                    ...room.lastChatInfo,
+                    lastMessage: chatMessage.message,
+                    lastMessageAt: chatMessage.createdAt,
+                  },
+                };
+              }
+              return room;
+            });
+          });
         } catch (error) {
           console.error('Error parsing message:', error);
         }

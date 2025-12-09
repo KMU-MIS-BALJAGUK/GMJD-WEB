@@ -34,8 +34,8 @@ const ChatRoom = ({
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useChatMessages(selectedRoom);
 
-  // 메시지를 역순으로 정렬 (최신 메시지가 아래로)
-  const messages = data?.pages?.flatMap((p) => p.data.messages).reverse() ?? [];
+  // 메시지를 정상 순서로 표시 (최신 메시지가 아래로)
+  const messages = data?.pages?.flatMap((p) => p.data.messages) ?? [];
 
   const teamMembers = data?.pages?.[0]?.data.teamMembers ?? [];
 
