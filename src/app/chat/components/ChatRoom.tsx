@@ -184,12 +184,12 @@ const ChatRoom = ({
         />
       </div>
 
-      <ChatMemberInfoPopup
+      {/* <ChatMemberInfoPopup
         open={openInfo}
         setOpen={setOpenInfo}
         member={selectedMember}
         teamId={roomInfo.contestInfo.teamId}
-      />
+      /> */}
     </div>
   );
 };
