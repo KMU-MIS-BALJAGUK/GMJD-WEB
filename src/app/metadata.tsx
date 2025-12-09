@@ -11,13 +11,13 @@ export const metadata: Metadata = {
     title: '🏆 공모자들 - 공모전 팀매칭 플랫폼',
     description:
       '🤝 혼자서는 도전하기 어려운 공모전, 이제 완벽한 팀원을 찾아 함께 도전하세요! ✨ 스마트 매칭으로 나와 맞는 팀원을 찾고 🚀 성공적인 프로젝트를 만들어보세요.',
-    url: 'www.gmjd.site',
+    url: 'https://www.gmjd.site',
     siteName: '공모자들',
     images: [
       {
         url: '/metadata.png',
-        width: 1200,
-        height: 630,
+        width: 1920,
+        height: 1080,
         alt: '🏆 공모자들 - 공모전 팀매칭 플랫폼으로 완벽한 팀원을 찾아 함께 도전하세요 🚀',
       },
     ],
