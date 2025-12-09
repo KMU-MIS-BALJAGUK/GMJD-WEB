@@ -10,6 +10,6 @@ export function useRecruitApplicants(teamId: number | null) {
     queryKey: ['recruitApplicants', teamId],
     queryFn: () => fetchRecruitApplicants(teamId as number),
     enabled: !!teamId,
-    staleTime: 1000 * 60 * 1,
+    staleTime: 1000 * 10, // 10초로 단축
   });
 }

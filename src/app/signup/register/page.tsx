@@ -11,7 +11,8 @@ import { useRouter } from 'next/navigation';
 
 import { useSignUp } from '@/hooks/register/useSignup';
 import { UserProfileDto } from '@/features/register/types/register';
-import { EDUCATION_MAP, DEGREE_MAP, CATEGORY_MAP } from '@/constants/register';
+import { EDUCATION_MAP, DEGREE_MAP } from '@/constants/register';
+import { useCategories } from '@/hooks/categories/useCategories';
 import { useToast } from '@/components/ui/use-toast';
 import { useUniversitySearch } from '@/hooks/univSearch/useUniversitySearch';
 
@@ -47,7 +48,21 @@ export default function RegisterPage() {
   const router = useRouter();
   const { toast } = useToast();
   const { query, setQuery, filtered } = useUniversitySearch();
+  const { data: categories } = useCategories();
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // 카테고리 이름-ID 매핑 및 옵션 생성
+  const categoryMap =
+    categories?.reduce((acc, category) => {
+      acc[category.name] = category.id;
+      return acc;
+    }, {} as Record<string, number>) || {};
+
+  const categoryOptions =
+    categories?.map((cat) => ({
+      value: cat.name,
+      label: cat.name,
+    })) || [];
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -170,7 +185,7 @@ export default function RegisterPage() {
     if (!isButtonActive || isPending) return;
 
     //  폼 데이터를 UserProfileDto에 맞게 가공
-    const categoryId = CATEGORY_MAP[formData.interest];
+    const categoryId = categoryMap[formData.interest];
     if (formData.interest && !categoryId) {
       console.error('유효하지 않은 관심분야 값입니다.');
       toast({
@@ -188,15 +203,22 @@ export default function RegisterPage() {
       major: null,
     };
 
+    // 대학원 선택 시 특별 처리
+    const isGraduateSchool = selectedMajorType === '대학원';
+
     const universityData = {
       universityName: formData.school.trim(),
-      recognizedDegree: DEGREE_MAP[selectedMajorType],
+      recognizedDegree: isGraduateSchool ? null : DEGREE_MAP[selectedMajorType],
       major: formData.department.trim(),
     };
 
     const submitData: UserProfileDto = {
       introduction: formData.intro.trim(),
-      education: EDUCATION_MAP[selectedEducation], // 'HIGH_SCHOOL' 또는 'UNIVERSITY' 또는 'MASTER'
+      education: isHighschool
+        ? EDUCATION_MAP[selectedEducation]
+        : isGraduateSchool
+        ? 'MASTER'
+        : EDUCATION_MAP[selectedEducation],
       categoryIds: categoryId ? [categoryId] : [],
       skills: skillsList,
       ...(isHighschool ? highschoolData : universityData),
@@ -381,10 +403,7 @@ export default function RegisterPage() {
                 placeholder="선택해주세요"
                 value={formData.interest}
                 onChange={handleInterestChange}
-                options={Object.keys(CATEGORY_MAP).map((key) => ({
-                  value: key,
-                  label: key,
-                }))}
+                options={categoryOptions}
               />
             </FormField>
 

@@ -27,10 +27,28 @@ const extractEndDateFromDuration = (duration: string | undefined): string | null
 const calculateDday = (endDateStr: string) => {
   const today = new Date();
   const end = new Date(endDateStr);
-  if (Number.isNaN(end.getTime())) return '마감일 미정';
+  if (Number.isNaN(end.getTime())) return { label: '마감일 미정', remainingDays: -1 };
 
   const diff = Math.ceil((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-  return diff > 0 ? `D-${diff}` : '마감';
+  if (diff === 0) return { label: 'D-Day', remainingDays: 0 };
+  if (diff > 0) return { label: `D-${diff}`, remainingDays: diff };
+  return { label: '마감', remainingDays: -1 };
+};
+
+// D-Day 색상 계산 함수
+const getDdayStyle = (remainingDays: number) => {
+  // D-Day, D-1, D-2일 때 오렌지색
+  if (remainingDays >= 0 && remainingDays <= 2) {
+    return {
+      background: 'rgba(242,149,62,0.15)',
+      color: '#F2953E',
+    };
+  }
+  // 그 외의 경우 파란색
+  return {
+    background: 'rgba(20,135,249,0.15)',
+    color: '#1487F9',
+  };
 };
 
 export default function ContestDetailPageClient({ contestId }: ContestDetailPageClientProps) {
@@ -69,7 +87,8 @@ export default function ContestDetailPageClient({ contestId }: ContestDetailPage
 
   // 여기까지 왔으면 contest는 반드시 존재
   const endDate = extractEndDateFromDuration(contest.duration);
-  const ddayLabel = endDate ? calculateDday(endDate) : '마감일 미정';
+  const ddayResult = endDate ? calculateDday(endDate) : { label: '마감일 미정', remainingDays: -1 };
+  const ddayStyle = getDdayStyle(ddayResult.remainingDays);
 
   return (
     <div className="min-h-screen bg-white">
@@ -78,8 +97,13 @@ export default function ContestDetailPageClient({ contestId }: ContestDetailPage
         <div className="flex items-end justify-between mb-8">
           <div className="flex flex-col gap-2">
             {/* D-day 라벨 */}
-            <div className="inline-flex items-center justify-center px-2 py-1 bg-[rgba(242,149,62,0.15)] rounded w-fit">
-              <span className="text-xs font-semibold text-[#F2953E]">{ddayLabel}</span>
+            <div
+              className="inline-flex items-center justify-center px-2 py-1 rounded w-fit"
+              style={{ backgroundColor: ddayStyle.background }}
+            >
+              <span className="text-xs font-semibold" style={{ color: ddayStyle.color }}>
+                {ddayResult.label}
+              </span>
             </div>
 
             {/* 제목 + 주최 */}

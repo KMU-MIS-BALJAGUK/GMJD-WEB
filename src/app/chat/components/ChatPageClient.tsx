@@ -11,7 +11,7 @@ import { useChatRoomList } from '@/hooks/chat/useChatRoomLists';
 export default function ChatPageClient({ initialRoomId }: { initialRoomId: number | null }) {
   const router = useRouter();
   const [selectedRoom, setSelectedRoom] = useState<number | null>(initialRoomId);
-  const [showChatRoom, setShowChatRoom] = useState(false);
+  const [showChatRoom, setShowChatRoom] = useState(!!initialRoomId);
 
   // 실제 API 데이터 사용
   const { data: roomLists } = useChatRoomList();

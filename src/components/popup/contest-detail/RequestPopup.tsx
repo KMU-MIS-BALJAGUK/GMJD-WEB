@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import Button from '../../common/Button';
 import { CalendarDays, UsersRound, X } from 'lucide-react';
@@ -32,6 +32,7 @@ interface RequestPopupProps {
 
 export default function RequestPopup({ open, setOpen, teamId }: RequestPopupProps) {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   // 사용자 프로필 조회 (스킬셋 자동 채우기용)
   const { data: userProfile } = useUserProfile();
@@ -105,6 +106,10 @@ export default function RequestPopup({ open, setOpen, teamId }: RequestPopupProp
       return applyTeam(teamId, body);
     },
     onSuccess: () => {
+      // 팀 신청 후 관련 캐시 무효화
+      queryClient.invalidateQueries({ queryKey: ['myAppliedList'] });
+      queryClient.invalidateQueries({ queryKey: ['recruitApplicants', teamId] });
+
       reset();
       setOpen(false);
       toast({
@@ -125,6 +130,12 @@ export default function RequestPopup({ open, setOpen, teamId }: RequestPopupProp
             variant: 'destructive',
             title: '팀 신청에 실패했어요 🥲',
             description: '본인이 생성한 팀에는 신청할 수 없습니다.',
+          });
+        } else if (errorCode === 40005) {
+          toast({
+            variant: 'destructive',
+            title: '팀 신청에 실패했어요 🥲',
+            description: '해당 공모전에 이미 참여 중인 팀이 있습니다.',
           });
         } else if (errorCode === 40900) {
           toast({
@@ -172,9 +183,20 @@ export default function RequestPopup({ open, setOpen, teamId }: RequestPopupProp
   };
 
   const checkValidation = () => {
-    if (!teamId) return true; // 팀 ID 없으면 신청 불가
-    if (skills.length === 0) return true;
-    if (answers.some((answer) => answer.trim() === '')) return true;
+    const isTeamIdMissing = !teamId;
+    const isSkillsEmpty = skills.length === 0;
+    const isAnswersEmpty = answers.some((answer) => answer.trim() === '');
+
+    console.log('=== 검증 디버그 ===');
+    console.log('isTeamIdMissing:', isTeamIdMissing);
+    console.log('isSkillsEmpty:', isSkillsEmpty);
+    console.log('isAnswersEmpty:', isAnswersEmpty);
+    console.log('skills:', skills);
+    console.log('answers:', answers);
+
+    if (isTeamIdMissing) return true; // 팀 ID 없으면 신청 불가
+    if (isSkillsEmpty) return true;
+    if (isAnswersEmpty) return true;
     return false;
   };
 
@@ -186,6 +208,12 @@ export default function RequestPopup({ open, setOpen, teamId }: RequestPopupProp
   };
 
   const handleSubmit = () => {
+    console.log('=== 팀 신청 디버그 ===');
+    console.log('teamId:', teamId);
+    console.log('skills:', skills);
+    console.log('answers:', answers);
+    console.log('checkValidation():', checkValidation());
+
     if (!teamId) {
       console.error('teamId가 없습니다. teamId props를 확인하세요.');
       return;
@@ -196,6 +224,7 @@ export default function RequestPopup({ open, setOpen, teamId }: RequestPopupProp
       skills,
     };
 
+    console.log('payload:', payload);
     applyTeamMutate(payload);
   };
 
@@ -297,7 +326,9 @@ export default function RequestPopup({ open, setOpen, teamId }: RequestPopupProp
             <div className="flex flex-col gap-4">
               {questions.map((q, index) => (
                 <div key={index} className="flex flex-col gap-1">
-                  <p className="text-[14px]">{`질문 ${index + 1}. ${q}`}</p>
+                  <p className="text-[14px]">
+                    <strong>Q{index + 1}.</strong> {q}
+                  </p>
                   <Input
                     placeholder="답변을 작성해주세요."
                     value={answers[index] ?? ''}

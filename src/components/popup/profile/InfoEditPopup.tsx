@@ -15,14 +15,9 @@ import {
   CategoryRequestDto,
 } from '@/features/mypage/types/my-profile-request';
 import { EDUCATION_MAP, DEGREE_MAP, EducationLevel, RecognizedDegree } from '@/constants/register';
-import { CATEGORY_MAP } from '@/constants/contest';
+import { useCategories } from '@/hooks/categories/useCategories';
 import { useToast } from '@/components/ui/use-toast';
 import { useUniversitySearch } from '@/hooks/univSearch/useUniversitySearch';
-
-const CATEGORY_OPTIONS = Object.keys(CATEGORY_MAP).map((name) => ({
-  value: name,
-  label: name,
-}));
 
 //ENUM <=> 한글 역매핑 상수 정의 (초기값 설정을 위해 ENUM -> 한글 변환)
 const REVERSE_EDUCATION_MAP: Record<string, string> = Object.entries(EDUCATION_MAP).reduce(
@@ -51,6 +46,21 @@ interface InfoEditPopupProps {
 }
 
 const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEditPopupProps) => {
+  const { data: categories } = useCategories();
+
+  // 카테고리 이름-ID 매핑 및 옵션 생성
+  const categoryMap =
+    categories?.reduce((acc, category) => {
+      acc[category.name] = category.id;
+      return acc;
+    }, {} as Record<string, number>) || {};
+
+  const categoryOptions =
+    categories?.map((cat) => ({
+      value: cat.name,
+      label: cat.name,
+    })) || [];
+
   // 변수 관리
   const [intro, setIntro] = useState<string>('');
   const [univ, setUniv] = useState<string>('');
@@ -132,12 +142,19 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
         const DEFAULT_EDUCATION = EDUCATION_MAP['대학교'];
         const DEFAULT_DEGREE = DEGREE_MAP['대학교 (4년제)'];
 
+        // 대학원 선택 시 특별 처리
+        const isGraduateSchool = selectedMajorType === '대학원';
+
         const body: EducationInfoRequestDto = {
           universityName: univ,
           major: major,
-          // 한글 -> ENUM 변환하여 전송 (EDUCATION_MAP, DEGREE_MAP 사용)
-          education: EDUCATION_MAP[selectedEducation] || DEFAULT_EDUCATION,
-          recognizedDegree: DEGREE_MAP[selectedMajorType] || DEFAULT_DEGREE,
+          // 대학원일 때는 education을 MASTER로, recognizedDegree를 null로
+          education: isGraduateSchool
+            ? 'MASTER'
+            : EDUCATION_MAP[selectedEducation] || DEFAULT_EDUCATION,
+          recognizedDegree: isGraduateSchool
+            ? null
+            : DEGREE_MAP[selectedMajorType] || DEFAULT_DEGREE,
         };
         mutations.updateEducationMutation.mutate(body, {
           onSuccess: () => {
@@ -157,7 +174,7 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
       }
       case 'interest': {
         // 관심분야는 SelectBox의 'value'를 사용하므로, 실제 백엔드 요청 DTO에 맞게 categoryIds를 구성해야 함.
-        const selectedId = CATEGORY_MAP[interest];
+        const selectedId = categoryMap[interest];
         if (!selectedId) {
           // 관심분야가 선택되지 않았거나 유효하지 않은 경우 (초기값 미설정 등)
           toast({
@@ -364,7 +381,7 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
         // 🔹 스킬셋 수정
         <div className="flex flex-col gap-5">
           <div>
-            <p>스킬셋</p>
+            <p className="mb-2">스킬셋</p>
             <Input
               placeholder="스킬을 입력해주세요."
               value={skill}
@@ -432,13 +449,13 @@ const InfoEditPopup = ({ open, setOpen, type, initialData, mutations }: InfoEdit
         // 🔹 관심분야 수정
         <div className="flex flex-col gap-5">
           <div>
-            <p>관심분야</p>
+            <p className="mb-2">관심분야</p>
             <SelectBox
               type="single"
               placeholder="선택해주세요"
               value={interest}
               onChange={(value) => setInterest(value)}
-              options={CATEGORY_OPTIONS}
+              options={categoryOptions}
               className="mt-1"
             />
           </div>

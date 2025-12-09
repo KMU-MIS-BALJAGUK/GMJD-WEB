@@ -6,11 +6,12 @@ import { ChevronLeft, CircleArrowUp, MessageSquareDashed, UsersRound } from 'luc
 import Image from 'next/image';
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import PlayerInfoPopup from '@/components/popup/my-recruit/PlayerInfoPopup';
+import ChatMemberInfoPopup from '@/components/popup/chat/ChatMemberInfoPopup';
 import { useChatMessages } from '@/hooks/chat/useChatMessages';
-import { ChatMessageDTO } from '@/features/chat/type/chatMessage';
+import { ChatMessageDTO, TeamMember } from '@/features/chat/type/chatMessage';
 import { ChatRoomDTO } from '@/features/chat/type/chatResponse';
 import { useChatSocket } from '@/hooks/chat/useChatSocket';
+import { useUserProfile } from '@/hooks/mypage/useUserProfile';
 
 const ChatRoom = ({
   roomInfo,
@@ -23,21 +24,23 @@ const ChatRoom = ({
 }) => {
   const router = useRouter();
   const [openInfo, setOpenInfo] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [inputValue, setInputValue] = useState('');
   const { sendMessage } = useChatSocket(selectedRoom); // 웹소켓 구독 및 훅 가져오기
+  const { data: userProfile } = useUserProfile();
 
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useChatMessages(selectedRoom);
 
-  // 메시지를 역순으로 정렬 (최신 메시지가 아래로)
-  const messages = data?.pages?.flatMap((p) => p.data.messages).reverse() ?? [];
+  // 메시지를 시간 순서대로 정렬 (최신 메시지가 아래로)
+  const messages =
+    data?.pages
+      ?.flatMap((p) => p.data.messages)
+      .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()) ?? [];
 
   const teamMembers = data?.pages?.[0]?.data.teamMembers ?? [];
-
-  const myId = 1; // TODO: 실제 사용자 ID로 교체
 
   // 새 메시지가 추가되면 스크롤을 아래로
   useEffect(() => {
@@ -47,7 +50,8 @@ const ChatRoom = ({
   }, [messages.length]);
 
   const handleUserClick = (userId: number) => {
-    setSelectedUserId(userId);
+    const member = teamMembers.find((m) => m.userId === userId);
+    setSelectedMember(member || null);
     setOpenInfo(true);
   };
 
@@ -80,7 +84,7 @@ const ChatRoom = ({
       </div>
 
       {/* 메시지 영역 */}
-      <div className="px-5 py-8 flex-1 overflow-y-auto flex flex-col">
+      <div className="px-5 py-8 flex-1 overflow-y-auto scrollbar flex flex-col">
         {isLoading && <div className="flex items-center justify-center h-full">로딩중…</div>}
 
         {!isLoading && hasNextPage && (
@@ -107,7 +111,7 @@ const ChatRoom = ({
           messages.length > 0 &&
           messages.map((msg: ChatMessageDTO, idx) => {
             const sender = teamMembers.find((m) => m.userId === msg.userId);
-            const isMine = msg.userId === myId;
+            const isMine = sender?.userName === userProfile?.name;
 
             return (
               <div key={`${msg.roomId}-${msg.userId}-${idx}`}>
@@ -180,7 +184,12 @@ const ChatRoom = ({
         />
       </div>
 
-      <PlayerInfoPopup open={openInfo} setOpen={setOpenInfo} />
+      {/* <ChatMemberInfoPopup
+        open={openInfo}
+        setOpen={setOpenInfo}
+        member={selectedMember}
+        teamId={roomInfo.contestInfo.teamId}
+      /> */}
     </div>
   );
 };

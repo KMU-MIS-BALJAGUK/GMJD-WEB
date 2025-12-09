@@ -13,15 +13,18 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination';
 
-import { CATEGORY_MAP, SORT_MAP } from '@/constants/contest';
+import { SORT_MAP } from '@/constants/contest';
 import { useSearchParams } from 'next/navigation';
 import { useContests } from '@/hooks/contest/useContests';
+import { useCategories } from '@/hooks/categories/useCategories';
 import { ContestItemDto } from '@/features/contest/types/contest-response';
 import Loading from '@/components/common/Loading';
 import Error from '@/components/common/Error';
+import { Search } from 'lucide-react';
 
 const ContestPageClient = () => {
   const searchParams = useSearchParams();
+  const { data: categories, isLoading: categoriesLoading } = useCategories();
 
   const keyword = searchParams.get('keyword') ?? '';
   const size = 30;
@@ -34,11 +37,18 @@ const ContestPageClient = () => {
   const [activeSort, setActiveSort] = useState('전체');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
+  // 카테고리 이름-ID 매핑 생성
+  const categoryMap =
+    categories?.reduce((acc, category) => {
+      acc[category.name] = category.id;
+      return acc;
+    }, {} as Record<string, number>) || {};
+
   const params = {
     sortType: SORT_MAP[activeSort],
     categoryIdList:
       selectedCategories.length > 0
-        ? selectedCategories.map((name) => CATEGORY_MAP[name])
+        ? selectedCategories.map((name) => categoryMap[name])
         : undefined,
     page,
     size,
@@ -77,15 +87,11 @@ const ContestPageClient = () => {
 
   const sortOptions = ['전체', '인기순', '마감임박순'];
 
-  const categories = [
-    { value: '기획/아이디어', label: '기획/아이디어' },
-    { value: '광고/마케팅', label: '광고/마케팅' },
-    { value: '사진/영상/UCC', label: '사진/영상/UCC' },
-    { value: '디자인/순수미술/공예', label: '디자인/순수미술/공예' },
-    { value: '네이밍/슬로건', label: '네이밍/슬로건' },
-    { value: '캐릭터/만화/게임', label: '캐릭터/만화/게임' },
-    { value: '건축/건설/인테리어', label: '건축/건설/인테리어' },
-  ];
+  const categoryOptions =
+    categories?.map((cat) => ({
+      value: cat.name,
+      label: cat.name,
+    })) || [];
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -129,7 +135,7 @@ const ContestPageClient = () => {
       <div className="flex justify-between items-center mb-5 max-md:mt-7">
         <SelectBox
           type="multiple"
-          options={categories}
+          options={categoryOptions}
           value={selectedCategories}
           onChange={setSelectedCategories}
           placeholder="전체"
@@ -152,7 +158,29 @@ const ContestPageClient = () => {
       {isLoading && <Loading />}
       {isError && <Error />}
 
-      {contestList && !isLoading && (
+      {/* 검색결과 없음 UI */}
+      {!isLoading && !isError && contestList && contestList.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <div className="p-4 bg-bg-02 rounded-full mb-4">
+            <Search className="w-12 h-12 text-text-03" />
+          </div>
+          <h3 className="text-lg font-medium text-text-01 mb-2">
+            {keyword ? '검색 결과가 없어요' : '공모전이 없어요'}
+          </h3>
+          <p className="text-text-03 text-sm mb-1">
+            {keyword
+              ? `"${keyword}"에 대한 검색 결과를 찾을 수 없어요.`
+              : '현재 조건에 맞는 공모전이 없습니다.'}
+          </p>
+          <p className="text-text-03 text-sm">
+            {keyword
+              ? '다른 키워드로 검색해보거나 필터를 변경해보세요.'
+              : '필터 조건을 변경하거나 잠시 후 다시 확인해주세요.'}
+          </p>
+        </div>
+      )}
+
+      {contestList && contestList.length > 0 && !isLoading && (
         <div className="flex justify-center">
           <div className="grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid gap-x-6 gap-y-6">
             {contestList?.map((contest: ContestItemDto) => (
@@ -162,7 +190,7 @@ const ContestPageClient = () => {
         </div>
       )}
 
-      {contestList && !isLoading && (
+      {contestList && contestList.length > 0 && !isLoading && (
         <div className="mt-10 mb-5 flex justify-center">
           <Pagination>
             <PaginationContent>

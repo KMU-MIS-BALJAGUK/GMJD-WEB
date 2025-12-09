@@ -29,6 +29,20 @@ export default function MyRecruitPageClient() {
   const [selectedTeam, setSelectedTeam] = useState<PopupTeamData | null>(null);
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
 
+  // 모집중인 팀이 먼저 오도록 정렬
+  const sortedRecruitTeams = recruitTeams
+    ? [...recruitTeams].sort((a, b) => {
+        const statusA = normalizeStatus(a.status);
+        const statusB = normalizeStatus(b.status);
+
+        // 모집중이면 0, 아니면 1로 계산해서 모집중인 것이 먼저 오도록
+        const priorityA = statusA === '모집중' ? 0 : 1;
+        const priorityB = statusB === '모집중' ? 0 : 1;
+
+        return priorityA - priorityB;
+      })
+    : null;
+
   const handleCardClick = (team: NonNullable<typeof recruitTeams>[number]) => {
     setSelectedTeam({
       title: team.contestName,
@@ -57,7 +71,7 @@ export default function MyRecruitPageClient() {
       {isLoading && <Loading />}
       {isError && <Error message="팀 정보를 불러오는 과정에서 문제가 발생했습니다." />}
 
-      {!isLoading && recruitTeams?.length === 0 && (
+      {!isLoading && sortedRecruitTeams?.length === 0 && (
         <div className="flex flex-col items-center justify-center h-[300px] text-center">
           <div className="p-4 bg-gray-100 rounded-full mb-3">
             <Megaphone className="w-10 h-10 text-gray-400" />
@@ -67,9 +81,9 @@ export default function MyRecruitPageClient() {
         </div>
       )}
 
-      {recruitTeams && recruitTeams.length > 0 && (
+      {sortedRecruitTeams && sortedRecruitTeams.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {recruitTeams.map((team) => (
+          {sortedRecruitTeams.map((team) => (
             <RecruitManageCard
               key={team.teamId}
               id={team.teamId}

@@ -40,6 +40,7 @@ const Header = () => {
   const onLogout = () => {
     logout(); // Zustand 토큰 삭제
     queryClient.clear(); // React Query 전체 캐시 삭제
+    setOpen(false); // 모바일 메뉴 닫기
     router.push('/');
   };
 
@@ -232,7 +233,11 @@ const Header = () => {
                 </button>
               </>
             ) : (
-              <Link href="/signup" className="hover:text-blue transition-colors cursor-pointer">
+              <Link
+                href="/signup"
+                className="hover:text-blue transition-colors cursor-pointer"
+                onClick={() => setOpen(false)}
+              >
                 회원가입 / 로그인
               </Link>
             )}

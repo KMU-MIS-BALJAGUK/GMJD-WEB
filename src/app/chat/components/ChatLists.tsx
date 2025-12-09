@@ -80,10 +80,12 @@ const ChatLists = ({
                   </p>
                 </div>
 
-                <div className="flex flex-col items-end justify-between py-1">
-                  <p className="text-[11px] text-text-03">
-                    {formatChatTime(room.lastChatInfo.lastMessageAt)}
-                  </p>
+                <div className="flex flex-col items-end justify-between">
+                  {room.lastChatInfo.lastMessageAt && (
+                    <p className="text-[11px] text-text-03">
+                      {formatChatTime(room.lastChatInfo.lastMessageAt)}
+                    </p>
+                  )}
                   {room.lastChatInfo.unReadMessageCount > 0 && (
                     <span className="bg-volcano text-white text-[10px] px-1.5 py-0.5 rounded-full font-semibold">
                       {room.lastChatInfo.unReadMessageCount}

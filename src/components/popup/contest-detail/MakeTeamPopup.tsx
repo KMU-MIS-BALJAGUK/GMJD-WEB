@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '../../common/Button';
 import { CircleMinus, CirclePlus, CircleX } from 'lucide-react';
 import Input from '../../common/Input';
@@ -14,8 +14,8 @@ import { createTeam } from '@/lib/api/team/team';
 import { useToast } from '@/components/ui/use-toast';
 import axios from 'axios';
 
-//  AI 추천 질문 API는 아직 403이라 나중에 연동
-// import { fetchAiQuestions } from '@/lib/api/team/team';
+// AI 추천 질문 API
+import { useAiQuestionRecommend } from '@/hooks/team/useAiQuestionRecommend';
 
 // 기본 AI 질문 (API 실패 / 미구현 시 fallback)
 const DEFAULT_AI_QUESTIONS = [
@@ -31,8 +31,7 @@ interface MakeTeamPopupProps {
 
 const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
   const queryClient = useQueryClient();
-
-  const { toast } = useToast(); //  토스트 훅
+  const { toast } = useToast();
 
   // 1. 상태 관리
   const [title, setTitle] = useState<string>('');
@@ -40,11 +39,14 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
   const [content, setContent] = useState<string>('');
   const [question, setQuestion] = useState<string[]>([]);
   const [questionInput, setQuestionInput] = useState<string>('');
+  // questionSuggestions 상태 제거
 
-  // 지금은 API 안 쓰고 기본 질문만 사용
-  const questionSuggestions = DEFAULT_AI_QUESTIONS;
+  // AI 추천 질문 useQuery 훅 (팝업 열릴 때 자동 호출)
+  const { data: aiQuestions, isLoading: isAiLoading } = useAiQuestionRecommend(contestId);
 
-  // 3. 팀 생성 mutation
+  // useEffect 제거
+
+  // 팀 생성 mutation
   const { mutate: createTeamMutate, isPending } = useMutation<
     TeamCreateResponseDto,
     Error,
@@ -52,16 +54,18 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
   >({
     mutationFn: (body) => createTeam(contestId, body),
     onSuccess: async () => {
-      // 1) 팀 목록 쿼리 무효화 → 자동 refetch
+      // 팀 생성 후 관련 쿼리들 무효화
       await queryClient.invalidateQueries({
         queryKey: ['contestTeams', contestId],
       });
-
-      //  2) 폼 리셋 + 모달 닫기
+      await queryClient.invalidateQueries({
+        queryKey: ['myTeams'],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ['myRecruitTeams'],
+      });
       reset();
       setOpen(false);
-
-      //  3) 팀 생성 성공 토스트
       toast({
         variant: 'default',
         title: '팀이 생성되었어요 ✅',
@@ -71,11 +75,8 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
     onError: (error) => {
       console.error('팀 생성 실패:', error);
       setOpen(false);
-
       if (axios.isAxiosError(error)) {
-        // 이제 error는 AxiosError 타입으로 추론됨
         const errorCode = error.response?.data?.code;
-
         if (errorCode === 40009) {
           toast({
             variant: 'destructive',
@@ -89,24 +90,17 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
             description: '잠시 후 다시 시도해주세요.',
           });
         }
-      } else {
-        // AxiosError가 아닌 다른 에러
-        toast({
-          variant: 'destructive',
-          title: '팀 생성에 실패했어요 🥲',
-          description: '잠시 후 다시 시도해주세요.',
-        });
       }
     },
   });
 
   // 4. 헬퍼 함수들
+  // handleGetAiQuestions 함수 제거됨
+
   const addQuestion = (q: string) => {
     const trimmed = q.trim();
     if (!trimmed) return;
-
     setQuestion((prev) => {
-      // 중복 추가 방지
       if (prev.includes(trimmed)) return prev;
       return [...prev, trimmed];
     });
@@ -122,6 +116,7 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
     setContent('');
     setQuestion([]);
     setQuestionInput('');
+    // setQuestionSuggestions(DEFAULT_AI_QUESTIONS); // 리셋 시 기본 질문으로 (삭제)
   };
 
   const checkValidation = () => {
@@ -141,23 +136,25 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
       console.error('contestId가 없습니다. 팀 생성이 불가능합니다.');
       return;
     }
-
     const payload: TeamCreateRequestDto = {
       title,
       maxMember: recruitNumber,
       introduction: content,
       questions: question,
     };
-
     createTeamMutate(payload);
   };
+
+  // 화면에 표시할 AI 질문 목록 (aiQuestions 데이터 또는 기본 질문)
+  const suggestionsToShow =
+    aiQuestions && aiQuestions.length > 0 ? aiQuestions : DEFAULT_AI_QUESTIONS;
 
   // 5. 렌더링
   return (
     <LayerPopup open={open} setOpen={handleOpenChange} title="팀 만들기">
       <div>
         <div className="flex flex-col gap-5 px-2 h-[500px] overflow-y-auto scrollbar">
-          {/* 제목 */}
+          {/* ... (title, recruitNumber, content inputs) ... */}
           <div className="flex flex-col gap-1">
             <p>
               제목<span className="text-red-500 ml-[1px]">*</span>
@@ -170,8 +167,6 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
               }}
             />
           </div>
-
-          {/* 모집 인원 */}
           <div className="flex flex-col gap-1">
             <p>
               모집 인원<span className="text-red-500 ml-[1px]">*</span>
@@ -190,8 +185,6 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
               />
             </div>
           </div>
-
-          {/* 모집 글 */}
           <div className="flex flex-col gap-1">
             <p>
               모집 글<span className="text-red-500 ml-[1px]">*</span>
@@ -222,7 +215,6 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
                 }
               }}
             />
-
             <div className="flex flex-col gap-1.5 mt-1">
               {question.map((q, index) => (
                 <span key={index} className="flex items-center text-sm text-text-02">
@@ -238,10 +230,16 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
             </div>
           </div>
 
-          {/* AI 추천 질문 (현재는 DEFAULT만) */}
+          {/* AI 추천 질문 */}
           <div className="flex flex-col gap-2">
-            <p>💬 AI 추천 질문 리스트</p>
-            {questionSuggestions.map((q, index) => (
+            <div className="flex items-center justify-between">
+              <p>💬 AI 추천 질문 리스트</p>
+              {isAiLoading ? (
+                <p className="text-text-03 text-sm">불러오는 중...</p>
+              ) : null // 또는 빈 Fragment
+              }
+            </div>
+            {suggestionsToShow.map((q, index) => (
               <span
                 key={index}
                 className="inline-flex items-center text-sm px-4 py-2 border border-blue rounded-3xl text-blue bg-white cursor-pointer hover:bg-bg-blue"

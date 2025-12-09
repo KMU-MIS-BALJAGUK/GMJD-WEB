@@ -14,6 +14,7 @@ export interface MyTeamDetailDto {
   introduction: ReactNode;
   leaderName: ReactNode;
   title: ReactNode;
+  chatRoomId: number;
   contestId: number;
   teamTitle: string;
   contestName: string;
