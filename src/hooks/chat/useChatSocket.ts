@@ -5,10 +5,12 @@ import { useQueryClient } from '@tanstack/react-query';
 import { ChatMessageDTO } from '@/features/chat/type/chatMessage';
 import SockJS from 'sockjs-client';
 import { Client, IMessage, IFrame } from '@stomp/stompjs';
+import { useUserProfile } from '@/hooks/mypage/useUserProfile';
 
 export function useChatSocket(roomId: number | null) {
   const stompClientRef = useRef<Client | null>(null);
   const queryClient = useQueryClient();
+  const { data: userProfile } = useUserProfile();
 
   useEffect(() => {
     if (!roomId) return;
@@ -70,12 +72,22 @@ export function useChatSocket(roomId: number | null) {
 
             return oldData.map((room: any) => {
               if (room.chatroomId === roomId) {
+                // 팀 멤버 정보에서 현재 메시지 보낸 사람의 이름 찾기
+                const currentChatData = queryClient.getQueryData(['chat-messages', roomId]) as any;
+                const teamMembers = currentChatData?.pages?.[0]?.data?.teamMembers ?? [];
+                const sender = teamMembers.find((m: any) => m.userId === chatMessage.userId);
+                const isMyMessage = sender?.userName === userProfile?.name;
+
                 return {
                   ...room,
                   lastChatInfo: {
                     ...room.lastChatInfo,
                     lastMessage: chatMessage.message,
                     lastMessageAt: chatMessage.createdAt,
+                    // 본인이 보낸 메시지가 아닐 때만 unReadMessageCount 증가
+                    unReadMessageCount: isMyMessage
+                      ? room.lastChatInfo.unReadMessageCount
+                      : (room.lastChatInfo.unReadMessageCount || 0) + 1,
                   },
                 };
               }

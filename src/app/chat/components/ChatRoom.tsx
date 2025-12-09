@@ -83,7 +83,7 @@ const ChatRoom = ({
       </div>
 
       {/* 메시지 영역 */}
-      <div className="px-5 py-8 flex-1 overflow-y-auto flex flex-col">
+      <div className="px-5 py-8 flex-1 overflow-y-auto scrollbar flex flex-col">
         {isLoading && <div className="flex items-center justify-center h-full">로딩중…</div>}
 
         {!isLoading && hasNextPage && (
