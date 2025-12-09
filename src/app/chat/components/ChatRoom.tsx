@@ -11,6 +11,7 @@ import { useChatMessages } from '@/hooks/chat/useChatMessages';
 import { ChatMessageDTO } from '@/features/chat/type/chatMessage';
 import { ChatRoomDTO } from '@/features/chat/type/chatResponse';
 import { useChatSocket } from '@/hooks/chat/useChatSocket';
+import { useUserProfile } from '@/hooks/mypage/useUserProfile';
 
 const ChatRoom = ({
   roomInfo,
@@ -28,6 +29,7 @@ const ChatRoom = ({
 
   const [inputValue, setInputValue] = useState('');
   const { sendMessage } = useChatSocket(selectedRoom); // 웹소켓 구독 및 훅 가져오기
+  const { data: userProfile } = useUserProfile();
 
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useChatMessages(selectedRoom);
@@ -36,8 +38,6 @@ const ChatRoom = ({
   const messages = data?.pages?.flatMap((p) => p.data.messages).reverse() ?? [];
 
   const teamMembers = data?.pages?.[0]?.data.teamMembers ?? [];
-
-  const myId = 1; // TODO: 실제 사용자 ID로 교체
 
   // 새 메시지가 추가되면 스크롤을 아래로
   useEffect(() => {
@@ -107,7 +107,7 @@ const ChatRoom = ({
           messages.length > 0 &&
           messages.map((msg: ChatMessageDTO, idx) => {
             const sender = teamMembers.find((m) => m.userId === msg.userId);
-            const isMine = msg.userId === myId;
+            const isMine = sender?.userName === userProfile?.name;
 
             return (
               <div key={`${msg.roomId}-${msg.userId}-${idx}`}>

@@ -109,7 +109,7 @@ export default function RequestPopup({ open, setOpen, teamId }: RequestPopupProp
       // 팀 신청 후 관련 캐시 무효화
       queryClient.invalidateQueries({ queryKey: ['myAppliedList'] });
       queryClient.invalidateQueries({ queryKey: ['recruitApplicants', teamId] });
-      
+
       reset();
       setOpen(false);
       toast({
@@ -183,9 +183,20 @@ export default function RequestPopup({ open, setOpen, teamId }: RequestPopupProp
   };
 
   const checkValidation = () => {
-    if (!teamId) return true; // 팀 ID 없으면 신청 불가
-    if (skills.length === 0) return true;
-    if (answers.some((answer) => answer.trim() === '')) return true;
+    const isTeamIdMissing = !teamId;
+    const isSkillsEmpty = skills.length === 0;
+    const isAnswersEmpty = answers.some((answer) => answer.trim() === '');
+
+    console.log('=== 검증 디버그 ===');
+    console.log('isTeamIdMissing:', isTeamIdMissing);
+    console.log('isSkillsEmpty:', isSkillsEmpty);
+    console.log('isAnswersEmpty:', isAnswersEmpty);
+    console.log('skills:', skills);
+    console.log('answers:', answers);
+
+    if (isTeamIdMissing) return true; // 팀 ID 없으면 신청 불가
+    if (isSkillsEmpty) return true;
+    if (isAnswersEmpty) return true;
     return false;
   };
 
@@ -197,6 +208,12 @@ export default function RequestPopup({ open, setOpen, teamId }: RequestPopupProp
   };
 
   const handleSubmit = () => {
+    console.log('=== 팀 신청 디버그 ===');
+    console.log('teamId:', teamId);
+    console.log('skills:', skills);
+    console.log('answers:', answers);
+    console.log('checkValidation():', checkValidation());
+
     if (!teamId) {
       console.error('teamId가 없습니다. teamId props를 확인하세요.');
       return;
@@ -207,6 +224,7 @@ export default function RequestPopup({ open, setOpen, teamId }: RequestPopupProp
       skills,
     };
 
+    console.log('payload:', payload);
     applyTeamMutate(payload);
   };
 

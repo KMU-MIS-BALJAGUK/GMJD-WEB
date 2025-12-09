@@ -45,7 +45,7 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
   const { data: aiQuestions, isLoading: isAiLoading } = useAiQuestionRecommend(contestId);
 
   // useEffect 제거
-  
+
   // 팀 생성 mutation
   const { mutate: createTeamMutate, isPending } = useMutation<
     TeamCreateResponseDto,
@@ -146,7 +146,8 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
   };
 
   // 화면에 표시할 AI 질문 목록 (aiQuestions 데이터 또는 기본 질문)
-  const suggestionsToShow = (aiQuestions && aiQuestions.length > 0) ? aiQuestions : DEFAULT_AI_QUESTIONS;
+  const suggestionsToShow =
+    aiQuestions && aiQuestions.length > 0 ? aiQuestions : DEFAULT_AI_QUESTIONS;
 
   // 5. 렌더링
   return (
@@ -235,9 +236,8 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
               <p>💬 AI 추천 질문 리스트</p>
               {isAiLoading ? (
                 <p className="text-text-03 text-sm">불러오는 중...</p>
-              ) : (
-                null // 또는 빈 Fragment
-              )}
+              ) : null // 또는 빈 Fragment
+              }
             </div>
             {suggestionsToShow.map((q, index) => (
               <span
@@ -268,4 +268,3 @@ const MakeTeamPopup = ({ open, setOpen, contestId }: MakeTeamPopupProps) => {
 };
 
 export default MakeTeamPopup;
-
