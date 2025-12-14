@@ -28,6 +28,7 @@ const ChatRoom = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [inputValue, setInputValue] = useState('');
+  const [isComposing, setIsComposing] = useState(false);
   const { sendMessage } = useChatSocket(selectedRoom); // 웹소켓 구독 및 훅 가져오기
   const { data: userProfile } = useUserProfile();
 
@@ -164,8 +165,11 @@ const ChatRoom = ({
           className="flex-1 min-w-0"
           value={inputValue}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)}
+          onCompositionStart={() => setIsComposing(true)}
+          onCompositionEnd={() => setIsComposing(false)}
           onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !isComposing) {
+              e.preventDefault();
               sendMessage(inputValue);
               setInputValue('');
             }
