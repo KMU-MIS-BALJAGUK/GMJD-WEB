@@ -12,8 +12,8 @@ const CtaSection = () => {
               지금 바로 시작해보세요!
             </h2>
             <p className="text-base md:text-lg lg:text-xl text-gray-600 mb-6 md:mb-8 max-w-2xl mx-auto">
-              완벽한 팀원을 찾고 성공적인 공모전에 도전해보세요. 개발자들의 성장과 도전을 응원하는
-              공모자들에서 시작하세요.
+              팀을 찾는 순간, 도전은 시작됩니다. <br />
+              공모전의 시작, <strong>공모자들</strong>.
             </p>
             <Link href="/signup">
               <button className="bg-blue text-white px-6 md:px-8 py-3 md:py-4 rounded-lg text-base md:text-lg font-medium hover:bg-blue-600 transition-colors cursor-pointer">

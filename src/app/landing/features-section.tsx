@@ -14,8 +14,8 @@ const FeaturesSection = () => {
                 🤝 팀 매칭 시스템
               </h2>
               <p className="text-base md:text-lg text-gray-600 mb-4 md:mb-6">
-                개발 스킬, 경험 레벨, 관심 분야를 확인하여 원하는 팀원을 직접 찾아보세요. 다양한
-                팀원들과 연결되어 완벽한 팀을 구성할 수 있습니다.
+                스킬셋, 경험, 관심 분야를 확인하여 원하는 팀원을 직접 찾아보세요. 다양한 팀원들과
+                연결되어 완벽한 팀을 구성할 수 있습니다.
               </p>
               <ul className="space-y-2 text-sm md:text-base text-gray-600">
                 <li className="flex items-start">
@@ -86,8 +86,8 @@ const FeaturesSection = () => {
                 📋 최신 공모전 정보
               </h2>
               <p className="text-base md:text-lg text-gray-600 mb-4 md:mb-6">
-                다양한 개발 관련 공모전 정보를 한눈에 확인하고, 관심있는 공모전에 바로 지원하세요.
-                놓치기 쉬운 마감일도 체크해드립니다.
+                다양한 공모전 정보를 한눈에 확인하고, 관심있는 공모전에 바로 지원하세요. 놓치기 쉬운
+                마감일도 체크해드립니다.
               </p>
               <ul className="space-y-2 text-sm md:text-base text-gray-600">
                 <li className="flex items-start">
@@ -100,7 +100,7 @@ const FeaturesSection = () => {
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue mr-2">✓</span>
-                  상세 정보 및 요구사항 확인
+                  상세 정보 등 확인
                 </li>
               </ul>
             </div>

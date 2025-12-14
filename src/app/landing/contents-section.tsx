@@ -12,8 +12,8 @@ const ContentsSection = () => {
               이런 경험 있으신가요?
             </h2>
             <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto mb-8 md:mb-12">
-              공모전에 참여하고 싶지만 혼자서는 어려운 일들이 많죠. 많은 개발자들이 겪는 공통된
-              문제들을 해결해드립니다.
+              공모전에 참여하고 싶지만 혼자서는 어려운 일들이 많죠. <br />
+              많은 참가자들이 겪는 공통된 문제들을 해결해드립니다.
             </p>
           </div>
         </ScrollAnimation>

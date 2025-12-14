@@ -21,7 +21,7 @@ const AnimatedText = () => {
 
   return (
     <span
-      className={`inline-block w-[120px] text-right text-blue transition-all duration-300 ${
+      className={`inline-block w-[90px] sm:w-[120px] text-right text-blue transition-all duration-300 ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
       }`}
     >
