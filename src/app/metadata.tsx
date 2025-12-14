@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     siteName: '공모자들',
     images: [
       {
-        url: '/metadata.png',
+        url: 'https://www.gmjd.site/metadata.png',
         width: 1920,
         height: 1080,
         alt: '🏆 공모자들 - 공모전 팀매칭 플랫폼으로 완벽한 팀원을 찾아 함께 도전하세요 🚀',
@@ -28,7 +28,11 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: '🏆 공모자들 - 공모전 팀매칭 플랫폼',
     description: '🤝 혼자서는 도전하기 어려운 공모전, 이제 완벽한 팀원을 찾아 함께 도전하세요! 🚀',
-    images: ['/metadata.png'],
+    images: ['https://www.gmjd.site/metadata.png'],
+  },
+  metadataBase: new URL('https://www.gmjd.site'),
+  alternates: {
+    canonical: 'https://www.gmjd.site',
   },
   robots: {
     index: true,

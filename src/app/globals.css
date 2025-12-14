@@ -104,6 +104,21 @@
     outline-color: var(--color-ring);
     font-family: inherit;
   }
+
+  /* 모바일에서 input focus 시 줌 방지 */
+  @media screen and (max-width: 768px) {
+    input[type='text'],
+    input[type='email'],
+    input[type='password'],
+    input[type='tel'],
+    input[type='url'],
+    input[type='search'],
+    textarea,
+    select {
+      font-size: 16px !important;
+      transform: none !important;
+    }
+  }
 }
 
 /* 기본 커스텀 스크롤바 */
