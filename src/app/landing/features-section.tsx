@@ -11,7 +11,7 @@ const FeaturesSection = () => {
           <div className="grid sm:grid-cols-2 gap-6 md:gap-8 lg:gap-12 items-center mb-10 md:mb-16 lg:mb-20">
             <div>
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 md:mb-6">
-                🤝 팀 매칭 시스템
+                팀 매칭 시스템
               </h2>
               <p className="text-base md:text-lg text-gray-600 mb-4 md:mb-6">
                 스킬셋, 경험, 관심 분야를 확인하여 원하는 팀원을 직접 찾아보세요. 다양한 팀원들과
@@ -58,7 +58,7 @@ const FeaturesSection = () => {
             </div>
             <div>
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 md:mb-6">
-                💬 실시간 팀 채팅
+                실시간 팀 채팅
               </h2>
               <p className="text-base md:text-lg text-gray-600 mb-4 md:mb-6">
                 팀이 구성되면 바로 채팅을 시작할 수 있습니다. 아이디어 공유부터 프로젝트 진행까지
@@ -83,7 +83,7 @@ const FeaturesSection = () => {
           <div className="grid sm:grid-cols-2 gap-6 md:gap-8 lg:gap-12 items-center mb-8 sm:mb-10 md:mb-16 lg:mb-20">
             <div>
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 md:mb-6">
-                📋 최신 공모전 정보
+                최신 공모전 정보
               </h2>
               <p className="text-base md:text-lg text-gray-600 mb-4 md:mb-6">
                 다양한 공모전 정보를 한눈에 확인하고, 관심있는 공모전에 바로 지원하세요. 놓치기 쉬운
@@ -130,7 +130,7 @@ const FeaturesSection = () => {
             </div>
             <div>
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 md:mb-6">
-                👥 통합 팀 관리
+                통합 팀 관리
               </h2>
               <p className="text-base md:text-lg text-gray-600 mb-4 md:mb-6">
                 팀원 모집부터 팀 지원, 팀 운영까지 체계적으로 관리하세요. 팀장은 지원자를 검토하고
