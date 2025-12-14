@@ -72,7 +72,7 @@ const CoreCallbackLogic: React.FC = () => {
         const isRegistered =
           typeof decoded.isRegistered === 'boolean' ? decoded.isRegistered : false;
 
-        router.replace(isRegistered ? '/' : '/signup/register');
+        router.replace(isRegistered ? '/main' : '/signup/register');
       } catch (e) {
         let message = '로그인 처리 중 오류가 발생했습니다.';
 
@@ -97,7 +97,7 @@ const CoreCallbackLogic: React.FC = () => {
           <h2 className="text-xl font-bold mb-3">로그인 실패</h2>
           <p className="text-sm">{error}</p>
           <button
-            onClick={() => router.push('/')}
+            onClick={() => router.push('/main')}
             className="mt-5 px-5 py-2 bg-gray-700 text-white rounded-full hover:bg-gray-800 transition-colors shadow-md"
           >
             홈으로 돌아가기

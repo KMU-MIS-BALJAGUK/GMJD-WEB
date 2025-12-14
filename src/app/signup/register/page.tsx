@@ -92,7 +92,7 @@ export default function RegisterPage() {
         title: '회원가입이 성공적으로 완료되었습니다! 🎉',
         description: '메인 페이지로 이동합니다.',
       });
-      router.push('/');
+      router.push('/main');
     },
     onError: (err) => {
       console.error('❌ 회원가입 실패:', err);

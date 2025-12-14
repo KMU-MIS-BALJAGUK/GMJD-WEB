@@ -1,11 +1,15 @@
-import HeroSection from './components/hero-section';
-import Main from './components/Main';
+import HeroSection from './landing/hero-section';
+import FeaturesSection from './landing/features-section';
+import ContentsSection from './landing/contents-section';
+import CtaSection from './landing/cta-section';
 
-export default function Home() {
+export default function LandingPage() {
   return (
     <div>
       <HeroSection />
-      <Main />
+      <ContentsSection />
+      <FeaturesSection />
+      <CtaSection />
     </div>
   );
 }

@@ -41,7 +41,7 @@ const Header = () => {
     logout(); // Zustand 토큰 삭제
     queryClient.clear(); // React Query 전체 캐시 삭제
     setOpen(false); // 모바일 메뉴 닫기
-    router.push('/');
+    router.push('/main');
   };
 
   const handleProtectedClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -64,11 +64,11 @@ const Header = () => {
     <header className="w-full h-[68px] border-b border-border-01">
       <div className="flex justify-between w-[90%] lg:w-[80%] mx-auto items-center h-full">
         <div className="flex gap-3 items-center flex-1">
-          <Link href="/">
+          <Link href="/main">
             <Image src={'/logo.png'} alt="logo" width={70} height={40} className="cursor-pointer" />
           </Link>
 
-          {pathname !== '/' && (
+          {pathname !== '/main' && (
             <div className="hidden md:block w-full max-w-[500px] mr-7">
               <Input
                 placeholder="공모전 정보를 검색해 보세요"
